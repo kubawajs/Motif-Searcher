@@ -50,9 +50,7 @@ int main()
 	data.filterLowSubstrs(data.getMatrix(), data.getSeqData(), data.getReliability());
 
 	//CREATING EDGES FOR NOT TO SHORT VERTICES
-	Matrix m1;
-	m1 = data.getMatrix();
-	m1.createEdges(m1.getMatrix(), data.getSeqData(), m1.getInfoTable(), reliability);
+	data.createEdges(data.getMatrix(), data.getSeqData(), data.getInfoTable(data.getMatrix()), reliability);
 
 	cout << "dupa";
 

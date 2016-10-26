@@ -19,9 +19,9 @@ public:
 	void setMatrix(vector <vector <int>> matrix);
 	void countMatrixSizeFromSeq(vector<Sequence> data, int size);
 	void initializeMatrix(int size);
-	void createEdge(vector<vector<int>> matrix, int edgeIn, int edgeOut);
+	void createEdge(int edgeIn, int edgeOut);
 	void delVertex(int edge);
-	void createEdges(vector<vector<int>> matrix, vector<Sequence> data, vector<int> infoTable, int reliability);
+	//void createEdges(vector<vector<int>> matrix, vector<Sequence> data, vector<int> infoTable, int reliability);
 	//TODO: create edges
 	Matrix();
 	~Matrix();
