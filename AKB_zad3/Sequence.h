@@ -25,8 +25,7 @@ public:
 	vector <Vertex> getSubstrings();
 	Vertex getSubstrById(int noSubstr);
 	bool compareSubstrs(Vertex substr1, Vertex substr2, int usersSubstrLength, int reliability);//compare two substrings including deletions
-	//TODO: check if compareSubstr works
-	//TODO: filter for substrs -> -1 in column if too short, return if good
+	void vertexLvlUp(int noSubstr);//increment level of vertex
 	Sequence();
 	~Sequence();
 };

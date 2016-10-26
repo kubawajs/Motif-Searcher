@@ -52,6 +52,10 @@ int main()
 	//CREATING EDGES FOR NOT TO SHORT VERTICES
 	data.createEdges(data.getMatrix(), data.getSeqData(), data.getInfoTable(data.getMatrix()), reliability);
 
+	//TODO: adding level of vertex
+	//TODO: deleting vertices with low level
+	//TODO: searching for clique/series of cliques
+
 	cout << "dupa";
 
 	return 0;

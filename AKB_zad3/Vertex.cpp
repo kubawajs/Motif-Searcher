@@ -48,6 +48,11 @@ void Vertex::printQual()
 	cout << endl;
 }
 
+void Vertex::lvlUp(int n)
+{
+	Vertex::level += n;
+}
+
 Vertex::Vertex()
 {
 }

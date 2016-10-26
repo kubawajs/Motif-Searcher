@@ -19,6 +19,7 @@ public:
 	int getSubstrLength();
 	void printSubstr();//debugging time
 	void printQual();
+	void lvlUp(int n);
 	Vertex();
 	~Vertex();
 };

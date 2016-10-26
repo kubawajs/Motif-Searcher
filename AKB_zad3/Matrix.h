@@ -21,8 +21,6 @@ public:
 	void initializeMatrix(int size);
 	void createEdge(int edgeIn, int edgeOut);
 	void delVertex(int edge);
-	//void createEdges(vector<vector<int>> matrix, vector<Sequence> data, vector<int> infoTable, int reliability);
-	//TODO: create edges
 	Matrix();
 	~Matrix();
 };

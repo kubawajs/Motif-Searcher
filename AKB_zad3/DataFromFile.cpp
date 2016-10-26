@@ -167,6 +167,11 @@ void DataFromFile::filterLowSubstrs(Matrix matrix, vector<Sequence> data, int re
 	DataFromFile::matrix = matrix;
 }
 
+void DataFromFile::setSeqData(vector<Sequence> seqData)
+{
+	DataFromFile::seqData = seqData;
+}
+
 void DataFromFile::createEdges(Matrix matrix, vector <Sequence> data, vector <int> infoTable, int reliability) {
 	int actual = 0, createdEdges = 0;
 	vector <vector <int>> graph = matrix.getMatrix();
@@ -207,6 +212,8 @@ void DataFromFile::createEdges(Matrix matrix, vector <Sequence> data, vector <in
 
 					if (data[noSeq1].compareSubstrs(v1, v2, v1.getSubstrLength(), reliability)) {
 						matrix.createEdge(i, j);
+						data[noSeq1].vertexLvlUp(noSubstr1);//increment level of 1st vertex
+						data[noSeq2].vertexLvlUp(noSubstr2);//increment level of 2nd vertex
 						createdEdges++;
 					}
 				}
@@ -214,6 +221,7 @@ void DataFromFile::createEdges(Matrix matrix, vector <Sequence> data, vector <in
 		}
 	}
 	graph = matrix.getMatrix();
+	DataFromFile::setSeqData(data);
 	DataFromFile::matrix.setMatrix(graph);
 	cout << endl << "Utworzono polaczen: " << createdEdges << endl;
 }

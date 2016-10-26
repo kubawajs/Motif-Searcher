@@ -23,6 +23,7 @@ public:
 	void createGraph(Matrix matrix, vector <Sequence> data);
 	void filterLowSubstrs(Matrix matrix, vector<Sequence> data, int reliability);
 	//filter substrings with lower qual and notice in matrix
+	void setSeqData(vector <Sequence> seqData);
 	void createEdges(Matrix matrix, vector<Sequence> data, vector<int> infoTable, int reliability);
 	vector<int> getInfoTable(Matrix matrix);
 	DataFromFile();

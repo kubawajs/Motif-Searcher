@@ -133,6 +133,11 @@ bool Sequence::compareSubstrs(Vertex substr1, Vertex substr2, int usersSubstrLen
 	return false;
 }
 
+void Sequence::vertexLvlUp(int noSubstr)
+{
+	Sequence::substrings[noSubstr].lvlUp(1);
+}
+
 Sequence::Sequence()
 {
 }
