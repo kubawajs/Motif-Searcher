@@ -1,0 +1,18 @@
+﻿  stdafx.cpp
+  Vertex.cpp
+  Sequence.cpp
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\sequence.cpp(42): warning C4018: '<=': signed/unsigned mismatch
+  Matrix.cpp
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\matrix.cpp(28): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\matrix.cpp(63): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\matrix.cpp(68): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\matrix.cpp(78): warning C4018: '<': signed/unsigned mismatch
+  DataFromFile.cpp
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(95): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(121): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(137): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(145): warning C4018: '<': signed/unsigned mismatch
+  AKB_zad3.cpp
+  Generating Code...
+  AKB_zad3.vcxproj -> C:\Users\kubaw\Documents\Programming\AKwB3\Debug\AKB_zad3.exe
+  AKB_zad3.vcxproj -> C:\Users\kubaw\Documents\Programming\AKwB3\Debug\AKB_zad3.pdb (Full PDB)
