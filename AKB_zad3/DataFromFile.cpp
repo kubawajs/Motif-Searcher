@@ -226,6 +226,35 @@ void DataFromFile::createEdges(Matrix matrix, vector <Sequence> data, vector <in
 	cout << endl << "Utworzono polaczen: " << createdEdges << endl;
 }
 
+void DataFromFile::printSequences()
+{
+	for (int i = 0; i < DataFromFile::seqData.size(); i++) { //for each sequence
+		int seqSize = seqData[i].getSequence().size(); //get length of sequence
+		string sequence(seqSize, '-'); //create string with '-' chars with length of sequence
+		vector <Vertex> substrs = DataFromFile::seqData[i].getSubstrings();
+
+		cout << "\n" << DataFromFile::seqData[i].getName() << endl; //print name of sequence
+		cout << "O: " << DataFromFile::seqData[i].getSequence() << endl;
+
+		for (int j = 0; j < seqData[i].getSubstrSize(); j++) { //for each substring in sequence
+			int x = j;
+			//TODO: possible change in condition - depends on lvl of vertices?
+			if (substrs[j].getVertexLvl() >= 4) {
+				for (int k = 0; k < substrs[j].getSubstrLength(); k++) { //for each char in substring
+					if (substrs[j].getQual()[k] >= DataFromFile::reliability) {
+						sequence[x + k] = substrs[j].getSubstring()[k];
+					}
+					else {
+						sequence[x + k] = '*';
+					}
+				}
+			}
+		}
+
+		cout << "D: " << sequence << "\n" << endl;
+	}
+}
+
 vector <int> DataFromFile::getInfoTable(Matrix matrix) {
 	return matrix.getInfoTable();
 }

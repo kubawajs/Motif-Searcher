@@ -30,6 +30,11 @@ int Vertex::getSubstrLength()
 	return Vertex::substring.size();
 }
 
+int Vertex::getVertexLvl()
+{
+	return Vertex::level;
+}
+
 void Vertex::printSubstr()
 {
 	cout << "S: ";
@@ -55,6 +60,7 @@ void Vertex::lvlUp(int n)
 
 Vertex::Vertex()
 {
+	Vertex::level = 0;
 }
 
 

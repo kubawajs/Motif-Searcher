@@ -17,6 +17,7 @@ public:
 	void setQual(vector <int> qual);
 	vector <int> getQual();
 	int getSubstrLength();
+	int getVertexLvl();
 	void printSubstr();//debugging time
 	void printQual();
 	void lvlUp(int n);

@@ -52,11 +52,16 @@ int main()
 	//CREATING EDGES FOR NOT TO SHORT VERTICES
 	data.createEdges(data.getMatrix(), data.getSeqData(), data.getInfoTable(data.getMatrix()), reliability);
 
-	//TODO: adding level of vertex
+	//TEST - PRINT SEQUENCES
+	data.printSequences();
+
+	//TODO: code refactoring
+	//TODO: add conditions on all functions having access to private attributes
+	//TODO: function for checking if vertex has connection with min 5 other sequences
 	//TODO: deleting vertices with low level
 	//TODO: searching for clique/series of cliques
 
-	cout << "dupa";
+	cout << "dpa";
 
 	return 0;
 }

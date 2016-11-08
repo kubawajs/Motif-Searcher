@@ -25,6 +25,7 @@ public:
 	//filter substrings with lower qual and notice in matrix
 	void setSeqData(vector <Sequence> seqData);
 	void createEdges(Matrix matrix, vector<Sequence> data, vector<int> infoTable, int reliability);
+	void printSequences();
 	vector<int> getInfoTable(Matrix matrix);
 	DataFromFile();
 	DataFromFile(string dataName, int substrLength, int reliability);
