@@ -7,6 +7,7 @@ Vertex VertexInList::getVertex()
 	return VertexInList::vertex;
 }
 
+
 VertexInList::VertexInList(Vertex _vertex, int _index, int _seqIndex)
 {
 	VertexInList::vertex = _vertex;

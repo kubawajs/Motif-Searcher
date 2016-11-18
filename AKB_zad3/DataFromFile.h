@@ -32,6 +32,7 @@ public:
 	void printSequences();
 	void createListOfVerticesSorted();
 	vector<int> getInfoTable(Matrix matrix);
+	void sortByVertexLvl(vector<VertexInList> &vertexInLvlList, int left, int right);
 	DataFromFile();
 	DataFromFile(string dataName, int substrLength, int reliability);
 	~DataFromFile();

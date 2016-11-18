@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -305,26 +306,58 @@ void DataFromFile::createListOfVerticesSorted()
 	for (int i = 0; i < graph.size(); i++) {
 		if (graph[i][0] != -1) {
 			seqId = DataFromFile::matrix.getSequenceIdFromMatrix(i); //get sequence number
+			
 			if (seqId == 0) {//check which substring of actual sequence is being analyzed
 				noSubstr = i;
 			}
 			else {
 				noSubstr = i - infoTable[seqId - 1];
 			}
+			
 			v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
-			VertexInList vertexInList(v1, noSubstr, seqId);
-			DataFromFile::vertexByLevel.push_back(vertexInList);
+			
+			if (v1.getHasMinConnections()) {
+				VertexInList vertexInList(v1, i, seqId);
+				DataFromFile::vertexByLevel.push_back(vertexInList);
+			}	
 		}
 	}
-	
+	cout << "dupa";
 	//TODO: sort list
-	
+	DataFromFile::sortByVertexLvl(DataFromFile::vertexByLevel, 0, DataFromFile::vertexByLevel.size()-1);
 }
 
 vector <int> DataFromFile::getInfoTable(Matrix matrix) {
 	return matrix.getInfoTable();
 }
 
+void DataFromFile::sortByVertexLvl(vector <VertexInList> &vertexInLvlList, int left, int right)
+{
+	int i = left;
+	int j = right;
+	int x = vertexInLvlList[(left + right) / 2].getVertex().getVertexLvl();
+	do
+	{
+		while (vertexInLvlList[i].getVertex().getVertexLvl() > x)
+			i++;
+
+		while (vertexInLvlList[j].getVertex().getVertexLvl() < x)
+			j--;
+
+		if (i <= j)
+		{
+			swap(vertexInLvlList[i], vertexInLvlList[j]);
+
+			i++;
+			j--;
+		}
+	} while (i <= j);
+
+	if (left < j) sortByVertexLvl(vertexInLvlList, left, j);
+
+	if (right > i) sortByVertexLvl(vertexInLvlList, i, right);
+
+}
 DataFromFile::DataFromFile()
 {
 }
