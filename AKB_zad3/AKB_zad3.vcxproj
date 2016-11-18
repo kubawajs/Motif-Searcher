@@ -151,6 +151,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="VertexInList.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AKB_zad3.cpp" />
@@ -164,6 +165,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Vertex.cpp" />
+    <ClCompile Include="VertexInList.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

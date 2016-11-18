@@ -52,14 +52,19 @@ int main()
 	//CREATING EDGES FOR NOT TO SHORT VERTICES
 	data.createEdges(data.getMatrix(), data.getSeqData(), data.getInfoTable(data.getMatrix()), reliability);
 
+	//CHECK IF EVERY VERTEX HAS CONNECTION WITH MIN SEQUENCES
+	data.checkIfHasMinConnections(data.getMatrix());
+
 	//TEST - PRINT SEQUENCES
 	data.printSequences();
 
+	//CREATE LIST OF VERTICES SORTED BY LEVEL
+	data.createListOfVerticesSorted();
+
+	//TODO: (!) create list of vertices sorted by vertex lvl
+	//TODO: searching for clique/series of cliques
 	//TODO: code refactoring
 	//TODO: add conditions on all functions having access to private attributes
-	//TODO: function for checking if vertex has connection with min 5 other sequences
-	//TODO: deleting vertices with low level
-	//TODO: searching for clique/series of cliques
 
 	cout << "dpa";
 

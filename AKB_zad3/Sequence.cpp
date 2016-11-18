@@ -68,6 +68,11 @@ Vertex Sequence::getSubstrById(int noSubstr)
 	return Sequence::substrings[noSubstr];
 }
 
+void Sequence::setVertexHasMinConnections(int noSubstr)
+{
+	Sequence::substrings[noSubstr].setHasMinConnections(true);
+}
+
 bool Sequence::compareSubstrs(Vertex substr1, Vertex substr2, int usersSubstrLength, int reliability)
 {
 	vector <char> substrSh, substrLn;

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DataFromFile.h"
 
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -59,6 +58,7 @@ void DataFromFile::loadFromFile(string dataName, vector <Sequence> seqData) {
 			}
 		}
 	}
+	DataFromFile::minConnections = seqData.size() * 0.7;//seventy percents of sequences must have connections between each other
 	DataFromFile::seqData = seqData;
 }
 
@@ -226,6 +226,45 @@ void DataFromFile::createEdges(Matrix matrix, vector <Sequence> data, vector <in
 	cout << endl << "Utworzono polaczen: " << createdEdges << endl;
 }
 
+void DataFromFile::checkIfHasMinConnections(Matrix matrix)
+{
+	vector <int> infoTable = matrix.getInfoTable();
+	vector <vector <int>> m = matrix.getMatrix();
+	int actuali = 0;
+	int actualj = 0;
+	int noSubstr;
+	bool test = false;
+
+	for (int i = 0; i < matrix.getSize(); i++) {
+		if (i == infoTable[actuali]) {
+			actuali++;
+		}
+		int connections = 0;
+		if (m[i][0] != -1) {
+			//TODO: sth wrong here
+			actualj = 0;
+			for (int j = 0; j < matrix.getSize(); j++) {
+				if (j >= infoTable[actualj]) {
+					actualj++;
+				}
+				if (m[i][j] == 1) {
+					connections++;
+					j = infoTable[actualj];
+				}
+			}
+			if (connections >= DataFromFile::minConnections) {
+				if (actuali == 0) {//check which substring of actual sequence is being analyzed
+					noSubstr = i;
+				}
+				else {
+					noSubstr = i - infoTable[actuali - 1];
+				}
+				DataFromFile::seqData[actuali].setVertexHasMinConnections(noSubstr);
+			}
+		}
+	}
+}
+
 void DataFromFile::printSequences()
 {
 	for (int i = 0; i < DataFromFile::seqData.size(); i++) { //for each sequence
@@ -239,7 +278,7 @@ void DataFromFile::printSequences()
 		for (int j = 0; j < seqData[i].getSubstrSize(); j++) { //for each substring in sequence
 			int x = j;
 			//TODO: possible change in condition - depends on lvl of vertices?
-			if (substrs[j].getVertexLvl() >= 4) {
+			if (substrs[j].getHasMinConnections()) {
 				for (int k = 0; k < substrs[j].getSubstrLength(); k++) { //for each char in substring
 					if (substrs[j].getQual()[k] >= DataFromFile::reliability) {
 						sequence[x + k] = substrs[j].getSubstring()[k];
@@ -253,6 +292,33 @@ void DataFromFile::printSequences()
 
 		cout << "D: " << sequence << "\n" << endl;
 	}
+}
+
+void DataFromFile::createListOfVerticesSorted()
+{
+	vector <vector <int>> graph = DataFromFile::matrix.getMatrix();
+	vector <int> infoTable = DataFromFile::getInfoTable(DataFromFile::getMatrix());
+	int seqId, noSubstr;
+	Vertex v1;
+
+	//create list
+	for (int i = 0; i < graph.size(); i++) {
+		if (graph[i][0] != -1) {
+			seqId = DataFromFile::matrix.getSequenceIdFromMatrix(i); //get sequence number
+			if (seqId == 0) {//check which substring of actual sequence is being analyzed
+				noSubstr = i;
+			}
+			else {
+				noSubstr = i - infoTable[seqId - 1];
+			}
+			v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
+			VertexInList vertexInList(v1, noSubstr, seqId);
+			DataFromFile::vertexByLevel.push_back(vertexInList);
+		}
+	}
+	
+	//TODO: sort list
+	
 }
 
 vector <int> DataFromFile::getInfoTable(Matrix matrix) {

@@ -53,6 +53,15 @@ void Matrix::delVertex(int edge)
 	}
 }
 
+int Matrix::getSequenceIdFromMatrix(int index)
+{
+	int seqId = 0;
+	while (index >= infoTable[seqId]) {
+		seqId++;
+	}
+	return seqId;
+}
+
 Matrix::Matrix()
 {
 }

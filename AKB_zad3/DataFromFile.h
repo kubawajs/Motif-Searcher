@@ -2,16 +2,19 @@
 
 #include "Sequence.h"
 #include "Matrix.h"
+#include "VertexInList.h"
 
 using namespace std;
 
 class DataFromFile
 {
 	vector <Sequence> seqData;
+	vector <VertexInList> vertexByLevel;
 	Matrix matrix;
 	string dataName;
 	int substrLength;
 	int reliability;
+	int minConnections;
 
 public:
 	vector <Sequence> getSeqData();
@@ -25,7 +28,9 @@ public:
 	//filter substrings with lower qual and notice in matrix
 	void setSeqData(vector <Sequence> seqData);
 	void createEdges(Matrix matrix, vector<Sequence> data, vector<int> infoTable, int reliability);
+	void checkIfHasMinConnections(Matrix matrix);//function for checking if vertex has connection with min 5 other sequences
 	void printSequences();
+	void createListOfVerticesSorted();
 	vector<int> getInfoTable(Matrix matrix);
 	DataFromFile();
 	DataFromFile(string dataName, int substrLength, int reliability);

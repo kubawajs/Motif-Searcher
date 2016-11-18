@@ -25,6 +25,11 @@ vector<int> Vertex::getQual()
 	return Vertex::qual;
 }
 
+bool Vertex::getHasMinConnections()
+{
+	return Vertex::hasMinConnections;
+}
+
 int Vertex::getSubstrLength()
 {
 	return Vertex::substring.size();
@@ -58,9 +63,15 @@ void Vertex::lvlUp(int n)
 	Vertex::level += n;
 }
 
+void Vertex::setHasMinConnections(bool set)
+{
+	Vertex::hasMinConnections = set;
+}
+
 Vertex::Vertex()
 {
 	Vertex::level = 0;
+	Vertex::hasMinConnections = false;
 }
 
 

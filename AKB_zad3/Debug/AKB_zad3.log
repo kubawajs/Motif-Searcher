@@ -1,9 +1,13 @@
 ﻿  DataFromFile.cpp
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(61): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(95): warning C4018: '<': signed/unsigned mismatch
 c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(121): warning C4018: '<': signed/unsigned mismatch
 c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(137): warning C4018: '<': signed/unsigned mismatch
 c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(145): warning C4018: '<': signed/unsigned mismatch
 c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(197): warning C4018: '<': signed/unsigned mismatch
-c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(231): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(270): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(305): warning C4018: '<': signed/unsigned mismatch
+  AKB_zad3.cpp
+  Generating Code...
   AKB_zad3.vcxproj -> C:\Users\kubaw\Documents\Programming\AKwB3\Debug\AKB_zad3.exe
   AKB_zad3.vcxproj -> C:\Users\kubaw\Documents\Programming\AKwB3\Debug\AKB_zad3.pdb (Full PDB)
