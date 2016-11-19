@@ -7,6 +7,16 @@ Vertex VertexInList::getVertex()
 	return VertexInList::vertex;
 }
 
+int VertexInList::getIndex()
+{
+	return VertexInList::index;
+}
+
+int VertexInList::getSeqIndex()
+{
+	return VertexInList::seqIndex;
+}
+
 
 VertexInList::VertexInList(Vertex _vertex, int _index, int _seqIndex)
 {

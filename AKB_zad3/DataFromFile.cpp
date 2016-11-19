@@ -242,7 +242,6 @@ void DataFromFile::checkIfHasMinConnections(Matrix matrix)
 		}
 		int connections = 0;
 		if (m[i][0] != -1) {
-			//TODO: sth wrong here
 			actualj = 0;
 			for (int j = 0; j < matrix.getSize(); j++) {
 				if (j >= infoTable[actualj]) {
@@ -278,7 +277,6 @@ void DataFromFile::printSequences()
 
 		for (int j = 0; j < seqData[i].getSubstrSize(); j++) { //for each substring in sequence
 			int x = j;
-			//TODO: possible change in condition - depends on lvl of vertices?
 			if (substrs[j].getHasMinConnections()) {
 				for (int k = 0; k < substrs[j].getSubstrLength(); k++) { //for each char in substring
 					if (substrs[j].getQual()[k] >= DataFromFile::reliability) {
@@ -322,9 +320,26 @@ void DataFromFile::createListOfVerticesSorted()
 			}	
 		}
 	}
-	cout << "dupa";
-	//TODO: sort list
+
+	//sort list
 	DataFromFile::sortByVertexLvl(DataFromFile::vertexByLevel, 0, DataFromFile::vertexByLevel.size()-1);
+}
+
+void DataFromFile::buildClique() {
+	vector <VertexInList> clique;
+	vector <VertexInList> vertexByLevel = DataFromFile::vertexByLevel;
+
+	for (int i = 0; i < vertexByLevel.size(); i++) {
+		VertexInList analyzedVertex = vertexByLevel[i];
+		if (clique.size() == 0) {
+			clique.push_back(analyzedVertex);
+		}
+		else if (checkConnectionsInClique(clique, analyzedVertex, DataFromFile::getMatrix())) {//TODO: (!) probably del second condition
+			clique.push_back(analyzedVertex);
+		}
+	}
+
+	cout << "dupa";//TODO: del this line
 }
 
 vector <int> DataFromFile::getInfoTable(Matrix matrix) {
@@ -356,8 +371,18 @@ void DataFromFile::sortByVertexLvl(vector <VertexInList> &vertexInLvlList, int l
 	if (left < j) sortByVertexLvl(vertexInLvlList, left, j);
 
 	if (right > i) sortByVertexLvl(vertexInLvlList, i, right);
-
 }
+
+bool DataFromFile::checkConnectionsInClique(vector <VertexInList> result, VertexInList analyzedVertex, Matrix matrix) {
+	vector <vector <int>> graph = matrix.getMatrix();
+	for (int i = 0; i < result.size(); i++) {
+		if (graph[analyzedVertex.getIndex()][result[i].getIndex()] < 1 && analyzedVertex.getSeqIndex() != result[i].getSeqIndex()) {
+			return false;
+		}
+	}
+	return true;
+}
+
 DataFromFile::DataFromFile()
 {
 }

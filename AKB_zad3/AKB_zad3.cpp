@@ -61,7 +61,10 @@ int main()
 	//CREATE LIST OF VERTICES SORTED BY LEVEL
 	data.createListOfVerticesSorted();
 
-	//TODO: (!) create list of vertices sorted by vertex lvl
+	//BUILD A CLIQUE BASED ON VERTICES LEVEL
+	data.buildClique();
+
+	//TODO: print result (max clique)
 	//TODO: searching for clique/series of cliques
 	//TODO: code refactoring
 	//TODO: add conditions on all functions having access to private attributes

@@ -31,8 +31,10 @@ public:
 	void checkIfHasMinConnections(Matrix matrix);//function for checking if vertex has connection with min 5 other sequences
 	void printSequences();
 	void createListOfVerticesSorted();
+	void buildClique();
 	vector<int> getInfoTable(Matrix matrix);
 	void sortByVertexLvl(vector<VertexInList> &vertexInLvlList, int left, int right);
+	bool checkConnectionsInClique(vector<VertexInList> result, VertexInList analyzedVertex, Matrix matrix);
 	DataFromFile();
 	DataFromFile(string dataName, int substrLength, int reliability);
 	~DataFromFile();
