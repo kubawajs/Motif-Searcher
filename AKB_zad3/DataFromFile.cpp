@@ -325,62 +325,149 @@ void DataFromFile::createListOfVerticesSorted()
 	DataFromFile::sortByVertexLvl(DataFromFile::vertexByLevel, 0, DataFromFile::vertexByLevel.size()-1);
 }
 
-void DataFromFile::buildClique() {
+void DataFromFile::buildMaxClique() {
+	//TODO: build max clique
+	//dopóki przyrost wielkoœci kliki > 4 + 1 pêtla dodatkowo
+	//buduj klike dla danego zbioru wierzcholkow na podstawie listy wierzcholkow posortowanej wg vertex level
+	//		> dany zbior wierzcholkow => 1. iteracja normalnie na vertexByLevel, 2. i kolejne z budowanego zbioru wierzcholkow do sprawdzenia
+	//			> zbior wierzcholkow do sprawdzenia - dla kazdego wierzcholka w rozwiazaniu +- 1, 2 indeksy, posortuj wedlug poziomu wierzcholkow
+	//dodaj klike do aktualnego rozwiazania
+	vector <VertexInList> result;
+	vector <VertexInList> vertexToCheck;
+	vector <VertexInList> temporaryResult;
+	vector <VertexInList> verticesToAdd;
+
+	int increase = 0;
+	bool increaseUnderMin = false;
+
+	result = DataFromFile::buildClique(DataFromFile::vertexByLevel);
+
+	while (!increaseUnderMin) {
+		int lastIncrease = increase;
+
+		vertexToCheck.clear();
+		vertexToCheck = DataFromFile::prepareVertexSet(result, 2);// !!! important - sensitivity
+		temporaryResult = DataFromFile::buildClique(vertexToCheck);
+		
+		verticesToAdd.clear();
+		//check if not in actual result
+		for (int i = 0; i < vertexToCheck.size(); i++) {
+			for (int j = 0; j < result.size(); j++) {
+				if (vertexToCheck[i].getIndex() == result[j].getIndex()) {
+					break;
+				}
+				else if (j == result.size() - 1) {
+					verticesToAdd.push_back(vertexToCheck[i]);
+				}
+			}
+		}
+		
+		//add to result
+		if (!verticesToAdd.empty()) {
+			for (int i = 0; i < verticesToAdd.size(); i++) {
+				result.push_back(verticesToAdd[i]);
+			}
+		}
+
+		//TODO: change sensitivity of building result
+		//check if increase is more than 4
+		increase = result.size() - lastIncrease;
+
+		cout << "Result series of cliques size: " << result.size() << endl;
+	}
+
+	cout << "Result status: Ready" << endl;
+}
+
+vector <VertexInList> DataFromFile::prepareVertexSet(vector <VertexInList> actualResult, int sensitivity) {
+	//TODO: zmien t¹ funkcjê ¿eby nie dublowa³a dodawanych wierzcho³ków
+	//tzn. jak sprawdza dla wierzcho³ka i dodawanie i +- j to dla i+1 niech ju¿ nie sprawdza/nie dodaje wierzcho³ka!!!
+
+	vector <VertexInList> vertexToCheck;
+	vector <int> infoTable = DataFromFile::matrix.getInfoTable();
+
+	for (int i = 0; i < actualResult.size(); i++) {
+		int index = actualResult[i].getIndex();
+		int noSeq = actualResult[i].getSeqIndex();
+		for (int j = -sensitivity; j <= sensitivity; j++) {
+			if (j != 0) {
+				if (actualResult[i].getIndex() + j >= 0 && actualResult[i].getIndex() + j < infoTable[infoTable.size() - 1]) {
+					if (noSeq - 1 >= 0) { //check if is in the range of infoTable
+						if (index + j < infoTable[noSeq] && index + j > infoTable[noSeq - 1]) {
+							int noSubstr = index - infoTable[noSeq - 1] + j;
+							Vertex v1 = DataFromFile::seqData[noSeq].getSubstrById(noSubstr);
+							VertexInList vertexInList(v1, index + j, noSeq);
+							vertexToCheck.push_back(vertexInList);
+						}
+					}
+					else {
+						if (index + j < infoTable[noSeq] && index + j >= 0) {
+							int noSubstr = index + j;
+							Vertex v1 = DataFromFile::seqData[noSeq].getSubstrById(noSubstr);
+							VertexInList vertexInList(v1, index + j, noSeq);
+							vertexToCheck.push_back(vertexInList);
+						}
+					}
+				}
+			}
+		}
+	}
+	if (vertexToCheck.size() > 0) {
+		DataFromFile::sortByVertexLvl(vertexToCheck, 0, vertexToCheck.size() - 1);
+	}
+	cout << "Vertex set size: " << vertexToCheck.size() << " Ready" << endl;
+	return vertexToCheck;
+}
+
+vector <VertexInList> DataFromFile::buildClique(vector<VertexInList> vertexByLevel) {
 	vector <VertexInList> clique;
-	vector <VertexInList> vertexByLevel = DataFromFile::vertexByLevel;
 
 	for (int i = 0; i < vertexByLevel.size(); i++) {
 		VertexInList analyzedVertex = vertexByLevel[i];
 		if (clique.size() == 0) {
 			clique.push_back(analyzedVertex);
 		}
-		else if (checkConnectionsInClique(clique, analyzedVertex, DataFromFile::getMatrix())) {//TODO: (!) probably del second condition
+		else if (checkConnectionsInClique(clique, analyzedVertex, DataFromFile::getMatrix())) {
 			clique.push_back(analyzedVertex);
 		}
 	}
 
-	cout << "dupa";//TODO: del this line
+	cout << "Clique built." << endl;//TODO: del this line
+	return clique;
+}
+
+bool DataFromFile::checkConnectionsInClique(vector <VertexInList> result, VertexInList analyzedVertex, Matrix matrix) {
+	vector <vector <int>> graph = matrix.getMatrix();
+	for (int i = 0; i < result.size(); i++) {
+		if (graph[analyzedVertex.getIndex()][result[i].getIndex()] < 1) {//TODO: przemyslec - && analyzedVertex.getSeqIndex() != result[i].getSeqIndex()) { 
+			return false;
+		}
+	}
+	return true;
 }
 
 vector <int> DataFromFile::getInfoTable(Matrix matrix) {
 	return matrix.getInfoTable();
 }
 
-void DataFromFile::sortByVertexLvl(vector <VertexInList> &vertexInLvlList, int left, int right)
-{
+void DataFromFile::sortByVertexLvl(vector <VertexInList> &vertexInLvlList, int left, int right) {
 	int i = left;
 	int j = right;
 	int x = vertexInLvlList[(left + right) / 2].getVertex().getVertexLvl();
-	do
-	{
+	do {
 		while (vertexInLvlList[i].getVertex().getVertexLvl() > x)
 			i++;
-
 		while (vertexInLvlList[j].getVertex().getVertexLvl() < x)
 			j--;
-
-		if (i <= j)
-		{
+		if (i <= j) {
 			swap(vertexInLvlList[i], vertexInLvlList[j]);
-
 			i++;
 			j--;
 		}
 	} while (i <= j);
 
 	if (left < j) sortByVertexLvl(vertexInLvlList, left, j);
-
 	if (right > i) sortByVertexLvl(vertexInLvlList, i, right);
-}
-
-bool DataFromFile::checkConnectionsInClique(vector <VertexInList> result, VertexInList analyzedVertex, Matrix matrix) {
-	vector <vector <int>> graph = matrix.getMatrix();
-	for (int i = 0; i < result.size(); i++) {
-		if (graph[analyzedVertex.getIndex()][result[i].getIndex()] < 1 && analyzedVertex.getSeqIndex() != result[i].getSeqIndex()) {
-			return false;
-		}
-	}
-	return true;
 }
 
 DataFromFile::DataFromFile()

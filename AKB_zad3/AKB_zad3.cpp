@@ -62,7 +62,8 @@ int main()
 	data.createListOfVerticesSorted();
 
 	//BUILD A CLIQUE BASED ON VERTICES LEVEL
-	data.buildClique();
+	//data.buildClique();
+	data.buildMaxClique();
 
 	//TODO: print result (max clique)
 	//TODO: searching for clique/series of cliques

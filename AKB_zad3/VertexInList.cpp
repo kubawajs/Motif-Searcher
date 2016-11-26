@@ -17,7 +17,6 @@ int VertexInList::getSeqIndex()
 	return VertexInList::seqIndex;
 }
 
-
 VertexInList::VertexInList(Vertex _vertex, int _index, int _seqIndex)
 {
 	VertexInList::vertex = _vertex;
