@@ -36,6 +36,7 @@ public:
 	vector<VertexInList> buildClique(vector <VertexInList> vertexByLevel);
 	vector<int> getInfoTable(Matrix matrix);
 	void sortByVertexLvl(vector<VertexInList> &vertexInLvlList, int left, int right);
+	void sortByIndex(vector<VertexInList> &vertexInLvlList, int left, int right);
 	bool checkConnectionsInClique(vector<VertexInList> result, VertexInList analyzedVertex, Matrix matrix);
 	DataFromFile();
 	DataFromFile(string dataName, int substrLength, int reliability);

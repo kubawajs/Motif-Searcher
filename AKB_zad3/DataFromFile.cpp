@@ -326,12 +326,6 @@ void DataFromFile::createListOfVerticesSorted()
 }
 
 void DataFromFile::buildMaxClique() {
-	//TODO: build max clique
-	//dopóki przyrost wielkoœci kliki > 4 + 1 pêtla dodatkowo
-	//buduj klike dla danego zbioru wierzcholkow na podstawie listy wierzcholkow posortowanej wg vertex level
-	//		> dany zbior wierzcholkow => 1. iteracja normalnie na vertexByLevel, 2. i kolejne z budowanego zbioru wierzcholkow do sprawdzenia
-	//			> zbior wierzcholkow do sprawdzenia - dla kazdego wierzcholka w rozwiazaniu +- 1, 2 indeksy, posortuj wedlug poziomu wierzcholkow
-	//dodaj klike do aktualnego rozwiazania
 	vector <VertexInList> result;
 	vector <VertexInList> vertexToCheck;
 	vector <VertexInList> temporaryResult;
@@ -346,77 +340,166 @@ void DataFromFile::buildMaxClique() {
 		int lastIncrease = increase;
 
 		vertexToCheck.clear();
-		vertexToCheck = DataFromFile::prepareVertexSet(result, 2);// !!! important - sensitivity
-		temporaryResult = DataFromFile::buildClique(vertexToCheck);
-		
-		verticesToAdd.clear();
-		//check if not in actual result
-		for (int i = 0; i < vertexToCheck.size(); i++) {
-			for (int j = 0; j < result.size(); j++) {
-				if (vertexToCheck[i].getIndex() == result[j].getIndex()) {
-					break;
-				}
-				else if (j == result.size() - 1) {
-					verticesToAdd.push_back(vertexToCheck[i]);
+		vertexToCheck = DataFromFile::prepareVertexSet(result, 2);//TODO: !!! important - sensitivity
+
+		if (!vertexToCheck.empty()) {
+			temporaryResult = DataFromFile::buildClique(vertexToCheck);
+
+			verticesToAdd.clear();
+			//check if not in actual result
+			for (int i = 0; i < vertexToCheck.size(); i++) {
+				for (int j = 0; j < result.size(); j++) {
+					if (vertexToCheck[i].getIndex() == result[j].getIndex()) {
+						break;
+					}
+					else if (j == result.size() - 1) {
+						verticesToAdd.push_back(vertexToCheck[i]);
+					}
 				}
 			}
-		}
-		
-		//add to result
-		if (!verticesToAdd.empty()) {
-			for (int i = 0; i < verticesToAdd.size(); i++) {
-				result.push_back(verticesToAdd[i]);
+
+			//add to result
+			if (!verticesToAdd.empty()) {
+				for (int i = 0; i < verticesToAdd.size(); i++) {
+					result.push_back(verticesToAdd[i]);
+				}
 			}
+
+			//TODO: change sensitivity of building result
+			//check if increase is more than 4
+			increase = result.size() - lastIncrease;
+
+			if (increase < 4) {
+				increaseUnderMin = true;
+			}
+
+			cout << "Result series of cliques size: " << result.size() << endl;
 		}
-
-		//TODO: change sensitivity of building result
-		//check if increase is more than 4
-		increase = result.size() - lastIncrease;
-
-		cout << "Result series of cliques size: " << result.size() << endl;
+		else {
+			increaseUnderMin = true;
+		}
 	}
 
 	cout << "Result status: Ready" << endl;
+
+	//TODO: PRINTING RESULT
+	
+	//Temporary printing
+	DataFromFile::sortByIndex(result, 0, result.size() - 1);
+	vector<int> infoTable = DataFromFile::getInfoTable(DataFromFile::matrix);
+
+	int last = 0;
+
+	for (int i = 0; i < infoTable.size(); i++) {
+		int j = last;
+		while (j < result.size() && result[j].getIndex() < infoTable[i]) {
+			vector <char> substr = result[j].getVertex().getSubstring();
+			for (int k = 0; k < substr.size(); k++) {
+				cout << substr[k];
+			}
+			cout << " ";
+			j++;
+		}
+		cout << endl;
+		last = j;
+	}
+	cout << "Printed";
 }
 
 vector <VertexInList> DataFromFile::prepareVertexSet(vector <VertexInList> actualResult, int sensitivity) {
-	//TODO: zmien t¹ funkcjê ¿eby nie dublowa³a dodawanych wierzcho³ków
-	//tzn. jak sprawdza dla wierzcho³ka i dodawanie i +- j to dla i+1 niech ju¿ nie sprawdza/nie dodaje wierzcho³ka!!!
+	//TODO: poprawnie wyszukuje indeksy, dodaje wierzcholki, uwzglêdnia sensitivity (do przetestowania)
 
-	vector <VertexInList> vertexToCheck;
-	vector <int> infoTable = DataFromFile::matrix.getInfoTable();
+	vector <VertexInList> resultSortedByIndex = actualResult;
+	vector <VertexInList> vertexSet;
+	vector <int> infoTable = DataFromFile::getInfoTable(DataFromFile::matrix);
 
-	for (int i = 0; i < actualResult.size(); i++) {
-		int index = actualResult[i].getIndex();
-		int noSeq = actualResult[i].getSeqIndex();
-		for (int j = -sensitivity; j <= sensitivity; j++) {
-			if (j != 0) {
-				if (actualResult[i].getIndex() + j >= 0 && actualResult[i].getIndex() + j < infoTable[infoTable.size() - 1]) {
-					if (noSeq - 1 >= 0) { //check if is in the range of infoTable
-						if (index + j < infoTable[noSeq] && index + j > infoTable[noSeq - 1]) {
-							int noSubstr = index - infoTable[noSeq - 1] + j;
-							Vertex v1 = DataFromFile::seqData[noSeq].getSubstrById(noSubstr);
-							VertexInList vertexInList(v1, index + j, noSeq);
-							vertexToCheck.push_back(vertexInList);
+	DataFromFile::sortByIndex(resultSortedByIndex, 0, actualResult.size()-1);
+
+	int lastChecked = 0, index = 0;
+	int min, max;
+	int seqId, noSubstr;
+	Vertex v1;
+	vector<int> indexesToAdd;
+
+	for (int i = 0; i < infoTable.size(); i++) {
+		if (resultSortedByIndex[lastChecked].getIndex() < infoTable[i]) {
+			for (int j = 1; j <= sensitivity; j++) {
+				min = resultSortedByIndex[lastChecked].getIndex() - j;
+				seqId = DataFromFile::matrix.getSequenceIdFromMatrix(min); //get sequence number
+				cout << seqId << endl;
+				//cout << "min " << min << " ";
+
+				if (i == 0) {
+					if (min >= 0) {
+						noSubstr = min;
+						v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
+
+						if (v1.getHasMinConnections()) {
+							VertexInList vertexInList(v1, min, 0);
+							vertexSet.push_back(vertexInList);
+							j = sensitivity;
 						}
 					}
-					else {
-						if (index + j < infoTable[noSeq] && index + j >= 0) {
-							int noSubstr = index + j;
-							Vertex v1 = DataFromFile::seqData[noSeq].getSubstrById(noSubstr);
-							VertexInList vertexInList(v1, index + j, noSeq);
-							vertexToCheck.push_back(vertexInList);
+				}
+				else {
+					if (min >= infoTable[i - 1]) {
+						noSubstr = min - infoTable[seqId - 1];
+
+						v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
+
+						if (v1.getHasMinConnections()) {
+							VertexInList vertexInList(v1, min, seqId);
+							vertexSet.push_back(vertexInList);
+							j = sensitivity;
 						}
 					}
 				}
 			}
+			
+			
+			while (resultSortedByIndex[lastChecked].getIndex() < infoTable[i]) {
+				if (lastChecked < resultSortedByIndex.size() - 1) {
+					lastChecked++;
+				}
+				else {
+					lastChecked++;
+					i = infoTable.size() - 1;
+					break;
+				}
+			}
+
+			for (int j = 1; j <= sensitivity; j++) {
+				max = resultSortedByIndex[lastChecked - 1].getIndex() + j;
+				seqId = DataFromFile::matrix.getSequenceIdFromMatrix(max); //get sequence number
+				//cout << "max " << max << " ";
+				//cout << "info table: " << infoTable[i] << endl;
+				if (max < infoTable[i]) {
+					if (seqId == 0) {
+						noSubstr = max;
+					}
+					else {
+						noSubstr = max - infoTable[seqId - 1];
+					}
+
+					v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
+
+					if (v1.getHasMinConnections()) {
+						VertexInList vertexInList(v1, max, seqId);
+						vertexSet.push_back(vertexInList);
+						j = sensitivity;
+					}
+				}
+			}
+		
 		}
 	}
-	if (vertexToCheck.size() > 0) {
-		DataFromFile::sortByVertexLvl(vertexToCheck, 0, vertexToCheck.size() - 1);
+	
+	if (!vertexSet.empty()) {
+		DataFromFile::sortByVertexLvl(vertexSet, 0, vertexSet.size() - 1);
+		cout << "Vertex set built." << endl;
 	}
-	cout << "Vertex set size: " << vertexToCheck.size() << " Ready" << endl;
-	return vertexToCheck;
+	
+	return vertexSet;
 }
 
 vector <VertexInList> DataFromFile::buildClique(vector<VertexInList> vertexByLevel) {
@@ -468,6 +551,27 @@ void DataFromFile::sortByVertexLvl(vector <VertexInList> &vertexInLvlList, int l
 
 	if (left < j) sortByVertexLvl(vertexInLvlList, left, j);
 	if (right > i) sortByVertexLvl(vertexInLvlList, i, right);
+}
+
+void DataFromFile::sortByIndex(vector<VertexInList>& vertexInLvlList, int left, int right)
+{
+	int i = left;
+	int j = right;
+	int x = vertexInLvlList[(left + right) / 2].getIndex();
+	do {
+		while (vertexInLvlList[i].getIndex() < x)
+			i++;
+		while (vertexInLvlList[j].getIndex() > x)
+			j--;
+		if (i <= j) {
+			swap(vertexInLvlList[i], vertexInLvlList[j]);
+			i++;
+			j--;
+		}
+	} while (i <= j);
+
+	if (left < j) sortByIndex(vertexInLvlList, left, j);
+	if (right > i) sortByIndex(vertexInLvlList, i, right);
 }
 
 DataFromFile::DataFromFile()
