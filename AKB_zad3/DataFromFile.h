@@ -3,6 +3,7 @@
 #include "Sequence.h"
 #include "Matrix.h"
 #include "VertexInList.h"
+#include "Result.h"
 
 using namespace std;
 
@@ -32,6 +33,7 @@ public:
 	void printSequences();
 	void createListOfVerticesSorted();
 	void buildMaxClique();
+	//void printClique();
 	vector<VertexInList> prepareVertexSet(vector<VertexInList> actualResult, int sensitivity);
 	vector<VertexInList> buildClique(vector <VertexInList> vertexByLevel);
 	vector<int> getInfoTable(Matrix matrix);

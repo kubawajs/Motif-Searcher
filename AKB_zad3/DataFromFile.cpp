@@ -365,7 +365,6 @@ void DataFromFile::buildMaxClique() {
 				}
 			}
 
-			//TODO: change sensitivity of building result
 			//check if increase is more than 4
 			increase = result.size() - lastIncrease;
 
@@ -373,7 +372,7 @@ void DataFromFile::buildMaxClique() {
 				increaseUnderMin = true;
 			}
 
-			cout << "Result series of cliques size: " << result.size() << endl;
+			//cout << "Result series of cliques size: " << result.size() << endl;
 		}
 		else {
 			increaseUnderMin = true;
@@ -382,10 +381,11 @@ void DataFromFile::buildMaxClique() {
 
 	cout << "Result status: Ready" << endl;
 
-	//TODO: PRINTING RESULT
-	
+
+	Result result;
+
 	//Temporary printing
-	DataFromFile::sortByIndex(result, 0, result.size() - 1);
+	/*DataFromFile::sortByIndex(result, 0, result.size() - 1);
 	vector<int> infoTable = DataFromFile::getInfoTable(DataFromFile::matrix);
 
 	int last = 0;
@@ -403,7 +403,7 @@ void DataFromFile::buildMaxClique() {
 		cout << endl;
 		last = j;
 	}
-	cout << "Printed";
+	cout << "Printed";*/
 }
 
 vector <VertexInList> DataFromFile::prepareVertexSet(vector <VertexInList> actualResult, int sensitivity) {
@@ -426,7 +426,7 @@ vector <VertexInList> DataFromFile::prepareVertexSet(vector <VertexInList> actua
 			for (int j = 1; j <= sensitivity; j++) {
 				min = resultSortedByIndex[lastChecked].getIndex() - j;
 				seqId = DataFromFile::matrix.getSequenceIdFromMatrix(min); //get sequence number
-				cout << seqId << endl;
+				//cout << seqId << endl;
 				//cout << "min " << min << " ";
 
 				if (i == 0) {
@@ -515,7 +515,7 @@ vector <VertexInList> DataFromFile::buildClique(vector<VertexInList> vertexByLev
 		}
 	}
 
-	cout << "Clique built." << endl;//TODO: del this line
+	//cout << "Clique built." << endl;
 	return clique;
 }
 

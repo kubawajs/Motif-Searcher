@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="DataFromFile">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Members>
+      <Method Name="~DataFromFile" Hidden="true" />
+      <Method Name="buildClique" Hidden="true" />
+      <Method Name="buildMaxClique" Hidden="true" />
+      <Method Name="checkConnectionsInClique" Hidden="true" />
+      <Method Name="checkIfHasMinConnections" Hidden="true" />
+      <Method Name="createEdges" Hidden="true" />
+      <Method Name="createGraph" Hidden="true" />
+      <Method Name="createListOfVerticesSorted" Hidden="true" />
+      <Method Name="DataFromFile" Hidden="true" />
+      <Field Name="dataName" Hidden="true" />
+      <Method Name="filterLowSubstrs" Hidden="true" />
+      <Method Name="getDataName" Hidden="true" />
+      <Method Name="getInfoTable" Hidden="true" />
+      <Method Name="getMatrix" Hidden="true" />
+      <Method Name="getReliability" Hidden="true" />
+      <Method Name="getSeqData" Hidden="true" />
+      <Method Name="loadFromFile" Hidden="true" />
+      <Method Name="loadQualFile" Hidden="true" />
+      <Field Name="matrix" Hidden="true" />
+      <Field Name="minConnections" Hidden="true" />
+      <Method Name="prepareVertexSet" Hidden="true" />
+      <Method Name="printSequences" Hidden="true" />
+      <Field Name="reliability" Hidden="true" />
+      <Field Name="seqData" Hidden="true" />
+      <Method Name="setSeqData" Hidden="true" />
+      <Method Name="sortByIndex" Hidden="true" />
+      <Method Name="sortByVertexLvl" Hidden="true" />
+      <Field Name="substrLength" Hidden="true" />
+      <Field Name="vertexByLevel" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAEAEAAAKAAACBAIAAoIASAAAMAQAEBAAQCUAoAJEBA=</HashCode>
+      <FileName>DataFromFile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Matrix">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAgAAAIACAEAIAMAAACgAAAAhAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Matrix.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sequence">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAChEgEAAAAQAABAAAABgAAAAEkABBAQAEADEAAAA=</HashCode>
+      <FileName>Sequence.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vertex">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAWQABEAGBBQAAAAAAAAAQAAEAAAABgAAgBAAAAAA=</HashCode>
+      <FileName>Vertex.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VertexInList">
+    <Position X="2.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAABAAAAAQAAEAABAAAAAAAAEgAAAAABAAA=</HashCode>
+      <FileName>VertexInList.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Result">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAAAAQAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Result.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

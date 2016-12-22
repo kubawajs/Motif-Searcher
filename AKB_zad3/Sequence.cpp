@@ -33,6 +33,11 @@ vector<int> Sequence::getQual()
 	return Sequence::qual;
 }
 
+void Sequence::setSubstr(vector<Vertex> substrings)
+{
+	Sequence::substrings = substrings;
+}
+
 void Sequence::createSubstrings(string sequence, vector<int> qual, int substrLength, int reliability)
 {
 	Vertex v1; // temp object for data collection

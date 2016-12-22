@@ -20,6 +20,7 @@ public:
 	string getSequence();
 	void setQual(vector <int> qual);
 	vector <int> getQual();
+	void setSubstr(vector <Vertex> substrings);
 	void createSubstrings(string sequence, vector <int> qual, int substrLength, int reliability);
 	int getSubstrSize();
 	vector <Vertex> getSubstrings();

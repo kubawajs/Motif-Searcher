@@ -39,6 +39,9 @@
     <ClInclude Include="VertexInList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Result.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -62,5 +65,11 @@
     <ClCompile Include="VertexInList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Result.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>
