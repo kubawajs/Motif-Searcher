@@ -25,6 +25,26 @@ vector<int> Vertex::getQual()
 	return Vertex::qual;
 }
 
+int Vertex::getIndex()
+{
+	return Vertex::index;
+}
+
+void Vertex::setIndex(int _index)
+{
+	Vertex::index = _index;
+}
+
+int Vertex::getSeqIndex()
+{
+	return Vertex::seqIndex;
+}
+
+void Vertex::setSeqIndex(int _seqIndex)
+{
+	Vertex::seqIndex = _seqIndex;
+}
+
 bool Vertex::getHasMinConnections()
 {
 	return Vertex::hasMinConnections;

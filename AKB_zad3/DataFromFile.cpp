@@ -315,8 +315,9 @@ void DataFromFile::createListOfVerticesSorted()
 			v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
 			
 			if (v1.getHasMinConnections()) {
-				VertexInList vertexInList(v1, i, seqId);
-				DataFromFile::vertexByLevel.push_back(vertexInList);
+				v1.setIndex(i);
+				v1.setSeqIndex(seqId);
+				DataFromFile::vertexByLevel.push_back(v1);
 			}	
 		}
 	}
@@ -326,10 +327,10 @@ void DataFromFile::createListOfVerticesSorted()
 }
 
 void DataFromFile::buildMaxClique() {
-	vector <VertexInList> result;
-	vector <VertexInList> vertexToCheck;
-	vector <VertexInList> temporaryResult;
-	vector <VertexInList> verticesToAdd;
+	vector <Vertex> result;
+	vector <Vertex> vertexToCheck;
+	vector <Vertex> temporaryResult;
+	vector <Vertex> verticesToAdd;
 
 	int increase = 0;
 	bool increaseUnderMin = false;
@@ -381,11 +382,8 @@ void DataFromFile::buildMaxClique() {
 
 	cout << "Result status: Ready" << endl;
 
-
-	Result result;
-
 	//Temporary printing
-	/*DataFromFile::sortByIndex(result, 0, result.size() - 1);
+	DataFromFile::sortByIndex(result, 0, result.size() - 1);
 	vector<int> infoTable = DataFromFile::getInfoTable(DataFromFile::matrix);
 
 	int last = 0;
@@ -393,7 +391,7 @@ void DataFromFile::buildMaxClique() {
 	for (int i = 0; i < infoTable.size(); i++) {
 		int j = last;
 		while (j < result.size() && result[j].getIndex() < infoTable[i]) {
-			vector <char> substr = result[j].getVertex().getSubstring();
+			vector <char> substr = result[j].getSubstring();
 			for (int k = 0; k < substr.size(); k++) {
 				cout << substr[k];
 			}
@@ -403,14 +401,14 @@ void DataFromFile::buildMaxClique() {
 		cout << endl;
 		last = j;
 	}
-	cout << "Printed";*/
+	cout << "Printed";
 }
 
-vector <VertexInList> DataFromFile::prepareVertexSet(vector <VertexInList> actualResult, int sensitivity) {
+vector <Vertex> DataFromFile::prepareVertexSet(vector <Vertex> actualResult, int sensitivity) {
 	//TODO: poprawnie wyszukuje indeksy, dodaje wierzcholki, uwzglêdnia sensitivity (do przetestowania)
 
-	vector <VertexInList> resultSortedByIndex = actualResult;
-	vector <VertexInList> vertexSet;
+	vector <Vertex> resultSortedByIndex = actualResult;
+	vector <Vertex> vertexSet;
 	vector <int> infoTable = DataFromFile::getInfoTable(DataFromFile::matrix);
 
 	DataFromFile::sortByIndex(resultSortedByIndex, 0, actualResult.size()-1);
@@ -435,8 +433,9 @@ vector <VertexInList> DataFromFile::prepareVertexSet(vector <VertexInList> actua
 						v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
 
 						if (v1.getHasMinConnections()) {
-							VertexInList vertexInList(v1, min, 0);
-							vertexSet.push_back(vertexInList);
+							v1.setIndex(min);
+							v1.setSeqIndex(0);
+							vertexSet.push_back(v1);
 							j = sensitivity;
 						}
 					}
@@ -448,8 +447,9 @@ vector <VertexInList> DataFromFile::prepareVertexSet(vector <VertexInList> actua
 						v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
 
 						if (v1.getHasMinConnections()) {
-							VertexInList vertexInList(v1, min, seqId);
-							vertexSet.push_back(vertexInList);
+							v1.setIndex(min);
+							v1.setSeqIndex(seqId);
+							vertexSet.push_back(v1);
 							j = sensitivity;
 						}
 					}
@@ -484,8 +484,9 @@ vector <VertexInList> DataFromFile::prepareVertexSet(vector <VertexInList> actua
 					v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
 
 					if (v1.getHasMinConnections()) {
-						VertexInList vertexInList(v1, max, seqId);
-						vertexSet.push_back(vertexInList);
+						v1.setIndex(max);
+						v1.setSeqIndex(seqId);
+						vertexSet.push_back(v1);
 						j = sensitivity;
 					}
 				}
@@ -496,17 +497,17 @@ vector <VertexInList> DataFromFile::prepareVertexSet(vector <VertexInList> actua
 	
 	if (!vertexSet.empty()) {
 		DataFromFile::sortByVertexLvl(vertexSet, 0, vertexSet.size() - 1);
-		cout << "Vertex set built." << endl;
+		//cout << "Vertex set built." << endl;
 	}
 	
 	return vertexSet;
 }
 
-vector <VertexInList> DataFromFile::buildClique(vector<VertexInList> vertexByLevel) {
-	vector <VertexInList> clique;
+vector <Vertex> DataFromFile::buildClique(vector<Vertex> vertexByLevel) {
+	vector <Vertex> clique;
 
 	for (int i = 0; i < vertexByLevel.size(); i++) {
-		VertexInList analyzedVertex = vertexByLevel[i];
+		Vertex analyzedVertex = vertexByLevel[i];
 		if (clique.size() == 0) {
 			clique.push_back(analyzedVertex);
 		}
@@ -519,7 +520,7 @@ vector <VertexInList> DataFromFile::buildClique(vector<VertexInList> vertexByLev
 	return clique;
 }
 
-bool DataFromFile::checkConnectionsInClique(vector <VertexInList> result, VertexInList analyzedVertex, Matrix matrix) {
+bool DataFromFile::checkConnectionsInClique(vector <Vertex> result, Vertex analyzedVertex, Matrix matrix) {
 	vector <vector <int>> graph = matrix.getMatrix();
 	for (int i = 0; i < result.size(); i++) {
 		if (graph[analyzedVertex.getIndex()][result[i].getIndex()] < 1) {//TODO: przemyslec - && analyzedVertex.getSeqIndex() != result[i].getSeqIndex()) { 
@@ -533,14 +534,14 @@ vector <int> DataFromFile::getInfoTable(Matrix matrix) {
 	return matrix.getInfoTable();
 }
 
-void DataFromFile::sortByVertexLvl(vector <VertexInList> &vertexInLvlList, int left, int right) {
+void DataFromFile::sortByVertexLvl(vector <Vertex> &vertexInLvlList, int left, int right) {
 	int i = left;
 	int j = right;
-	int x = vertexInLvlList[(left + right) / 2].getVertex().getVertexLvl();
+	int x = vertexInLvlList[(left + right) / 2].getVertexLvl();
 	do {
-		while (vertexInLvlList[i].getVertex().getVertexLvl() > x)
+		while (vertexInLvlList[i].getVertexLvl() > x)
 			i++;
-		while (vertexInLvlList[j].getVertex().getVertexLvl() < x)
+		while (vertexInLvlList[j].getVertexLvl() < x)
 			j--;
 		if (i <= j) {
 			swap(vertexInLvlList[i], vertexInLvlList[j]);
@@ -553,7 +554,7 @@ void DataFromFile::sortByVertexLvl(vector <VertexInList> &vertexInLvlList, int l
 	if (right > i) sortByVertexLvl(vertexInLvlList, i, right);
 }
 
-void DataFromFile::sortByIndex(vector<VertexInList>& vertexInLvlList, int left, int right)
+void DataFromFile::sortByIndex(vector<Vertex> &vertexInLvlList, int left, int right)
 {
 	int i = left;
 	int j = right;

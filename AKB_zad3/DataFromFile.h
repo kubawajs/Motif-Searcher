@@ -2,15 +2,13 @@
 
 #include "Sequence.h"
 #include "Matrix.h"
-#include "VertexInList.h"
-#include "Result.h"
 
 using namespace std;
 
 class DataFromFile
 {
 	vector <Sequence> seqData;
-	vector <VertexInList> vertexByLevel;
+	vector <Vertex> vertexByLevel;
 	Matrix matrix;
 	string dataName;
 	int substrLength;
@@ -34,12 +32,12 @@ public:
 	void createListOfVerticesSorted();
 	void buildMaxClique();
 	//void printClique();
-	vector<VertexInList> prepareVertexSet(vector<VertexInList> actualResult, int sensitivity);
-	vector<VertexInList> buildClique(vector <VertexInList> vertexByLevel);
+	vector<Vertex> prepareVertexSet(vector<Vertex> actualResult, int sensitivity);
+	vector<Vertex> buildClique(vector <Vertex> vertexByLevel);
 	vector<int> getInfoTable(Matrix matrix);
-	void sortByVertexLvl(vector<VertexInList> &vertexInLvlList, int left, int right);
-	void sortByIndex(vector<VertexInList> &vertexInLvlList, int left, int right);
-	bool checkConnectionsInClique(vector<VertexInList> result, VertexInList analyzedVertex, Matrix matrix);
+	void sortByVertexLvl(vector<Vertex> &vertexInLvlList, int left, int right);
+	void sortByIndex(vector<Vertex> &vertexInLvlList, int left, int right);
+	bool checkConnectionsInClique(vector<Vertex> result, Vertex analyzedVertex, Matrix matrix);
 	DataFromFile();
 	DataFromFile(string dataName, int substrLength, int reliability);
 	~DataFromFile();

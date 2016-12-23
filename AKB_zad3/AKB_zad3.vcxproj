@@ -147,18 +147,15 @@
   <ItemGroup>
     <ClInclude Include="DataFromFile.h" />
     <ClInclude Include="Matrix.h" />
-    <ClInclude Include="Result.h" />
     <ClInclude Include="Sequence.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Vertex.h" />
-    <ClInclude Include="VertexInList.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AKB_zad3.cpp" />
     <ClCompile Include="DataFromFile.cpp" />
     <ClCompile Include="Matrix.cpp" />
-    <ClCompile Include="Result.cpp" />
     <ClCompile Include="Sequence.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -167,7 +164,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Vertex.cpp" />
-    <ClCompile Include="VertexInList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />

@@ -10,6 +10,8 @@ class Vertex
 	vector <char> substring;
 	vector <int> qual;
 	int level;
+	int index;
+	int seqIndex;
 	bool hasMinConnections;
 
 public:
@@ -17,6 +19,10 @@ public:
 	vector<char> getSubstring();
 	void setQual(vector <int> qual);
 	vector <int> getQual();
+	int getIndex();
+	void setIndex(int _index);
+	int getSeqIndex();
+	void setSeqIndex(int _seqIndex);
 	bool getHasMinConnections();
 	int getSubstrLength();
 	int getVertexLvl();
