@@ -265,25 +265,26 @@ void DataFromFile::checkIfHasMinConnections(Matrix matrix)
 	}
 }
 
-void DataFromFile::printSequences()
+void DataFromFile::printSequences(vector <Sequence> seqData)
 {
-	for (int i = 0; i < DataFromFile::seqData.size(); i++) { //for each sequence
+	//TODO: fix for printing motifs
+	for (int i = 0; i < seqData.size(); i++) { //for each sequence
 		int seqSize = seqData[i].getSequence().size(); //get length of sequence
 		string sequence(seqSize, '-'); //create string with '-' chars with length of sequence
-		vector <Vertex> substrs = DataFromFile::seqData[i].getSubstrings();
+		vector <Vertex> substrs = seqData[i].getSubstrings();
 
-		cout << "\n" << DataFromFile::seqData[i].getName() << endl; //print name of sequence
+		cout << "\n" << seqData[i].getName() << endl; //print name of sequence
 		cout << "O: " << DataFromFile::seqData[i].getSequence() << endl;
 
 		for (int j = 0; j < seqData[i].getSubstrSize(); j++) { //for each substring in sequence
-			int x = j;
 			if (substrs[j].getHasMinConnections()) {
-				for (int k = 0; k < substrs[j].getSubstrLength(); k++) { //for each char in substring
+				for (int k = 0; k < substrs[j].getSubstrLength(); k++) 
+				{ //for each char in substring
 					if (substrs[j].getQual()[k] >= DataFromFile::reliability) {
-						sequence[x + k] = substrs[j].getSubstring()[k];
+						sequence[j + k] = substrs[j].getSubstring()[k];
 					}
 					else {
-						sequence[x + k] = '*';
+						sequence[j + k] = '*';
 					}
 				}
 			}
@@ -382,25 +383,10 @@ void DataFromFile::buildMaxClique() {
 
 	cout << "Result status: Ready" << endl;
 
-	//Temporary printing
-	DataFromFile::sortByIndex(result, 0, result.size() - 1);
-	vector<int> infoTable = DataFromFile::getInfoTable(DataFromFile::matrix);
+	//Creating results
+	Result readyResult(result, DataFromFile::seqData.size());
+	readyResult.parseSequences(DataFromFile::reliability);
 
-	int last = 0;
-
-	for (int i = 0; i < infoTable.size(); i++) {
-		int j = last;
-		while (j < result.size() && result[j].getIndex() < infoTable[i]) {
-			vector <char> substr = result[j].getSubstring();
-			for (int k = 0; k < substr.size(); k++) {
-				cout << substr[k];
-			}
-			cout << " ";
-			j++;
-		}
-		cout << endl;
-		last = j;
-	}
 	cout << "Printed";
 }
 

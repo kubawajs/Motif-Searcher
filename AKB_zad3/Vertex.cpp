@@ -91,6 +91,7 @@ void Vertex::setHasMinConnections(bool set)
 Vertex::Vertex()
 {
 	Vertex::level = 0;
+	Vertex::index = -1;
 	Vertex::hasMinConnections = false;
 }
 

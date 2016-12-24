@@ -26,7 +26,7 @@ public:
 	bool getHasMinConnections();
 	int getSubstrLength();
 	int getVertexLvl();
-	void printSubstr();//debugging time
+	void printSubstr();
 	void printQual();
 	void lvlUp(int n);
 	void setHasMinConnections(bool set);

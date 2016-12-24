@@ -2,6 +2,7 @@
 
 #include "Sequence.h"
 #include "Matrix.h"
+#include "Result.h"
 
 using namespace std;
 
@@ -28,7 +29,8 @@ public:
 	void setSeqData(vector <Sequence> seqData);
 	void createEdges(Matrix matrix, vector<Sequence> data, vector<int> infoTable, int reliability);
 	void checkIfHasMinConnections(Matrix matrix);//function for checking if vertex has connection with min 5 other sequences
-	void printSequences();
+	void printSequences(vector <Sequence> seqData);
+	void parseMotif(vector <Sequence> seqData);
 	void createListOfVerticesSorted();
 	void buildMaxClique();
 	//void printClique();

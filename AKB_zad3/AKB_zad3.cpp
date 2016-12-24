@@ -56,7 +56,7 @@ int main()
 	data.checkIfHasMinConnections(data.getMatrix());
 
 	//TEST - PRINT SEQUENCES
-	data.printSequences();
+	data.printSequences(data.getSeqData());
 
 	//CREATE LIST OF VERTICES SORTED BY LEVEL
 	data.createListOfVerticesSorted();
