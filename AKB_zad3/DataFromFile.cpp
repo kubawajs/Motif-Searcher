@@ -386,6 +386,7 @@ void DataFromFile::buildMaxClique() {
 	//Creating results
 	Result readyResult(result, DataFromFile::seqData.size());
 	readyResult.parseSequences(DataFromFile::reliability);
+	readyResult.alignSequences(readyResult.getSequences());
 
 	cout << "Printed";
 }
