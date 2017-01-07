@@ -66,26 +66,6 @@ void Result::parseSequences(int reliability)
 	}
 }
 
-void Result::alignSequences(vector <Sequence> &result)
-{
-	for (int i = 0; i < result.size() - 1; i++)
-	{
-		string s1 = result[i].getSequence(), s2 = result[i + 1].getSequence();
-		if (s1.size() >= s2.size())
-		{
-			if (s1.find(s2) != string::npos) {
-				unsigned int position = s1.find(s2);
-			}
-		}
-		else
-		{
-			if (s2.find(s1) != string::npos) {
-				std::cout << "found!" << '\n';
-			}
-		}
-	}
-}
-
 vector<Sequence> Result::getSequences()
 {
 	return Result::result;
