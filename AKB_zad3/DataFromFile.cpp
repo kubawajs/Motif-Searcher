@@ -343,8 +343,8 @@ void DataFromFile::buildMaxClique() {
 
 		vertexToCheck.clear();
 		//vertexToCheck = DataFromFile::prepareVertexSet(result, 2);//TODO: !!! important - sensitivity
-		vertexToCheck = DataFromFile::prepareVertexSetLeft(result, 2);
-		//vertexToCheck = DataFromFile::prepareVertexSetRight(result, 2);
+		//vertexToCheck = DataFromFile::prepareVertexSetLeft(result, 2);
+		vertexToCheck = DataFromFile::prepareVertexSetRight(result, 2);
 
 		if (!vertexToCheck.empty()) {
 			temporaryResult = DataFromFile::buildClique(vertexToCheck);
@@ -392,99 +392,6 @@ void DataFromFile::buildMaxClique() {
  	cout << "Printed";
 }
 
-vector <Vertex> DataFromFile::prepareVertexSet(vector <Vertex> actualResult, int sensitivity) {
-
-	vector <Vertex> resultSortedByIndex = actualResult;
-	vector <Vertex> vertexSet;
-	vector <int> infoTable = DataFromFile::getInfoTable(DataFromFile::matrix);
-
-	DataFromFile::sortByIndex(resultSortedByIndex, 0, actualResult.size()-1);
-
-	int lastChecked = 0, index = 0;
-	int min, max;
-	int seqId, noSubstr;
-	Vertex v1;
-	vector<int> indexesToAdd;
-
-	for (int i = 0; i < infoTable.size(); i++) {
-		if (resultSortedByIndex[lastChecked].getIndex() < infoTable[i]) {
-			for (int j = 1; j <= sensitivity; j++) {
-				min = resultSortedByIndex[lastChecked].getIndex() - j;
-				seqId = DataFromFile::matrix.getSequenceIdFromMatrix(min); //get sequence number
-
-				if (i == 0) {
-					if (min >= 0) {
-						noSubstr = min;
-						v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
-
-						if (v1.getHasMinConnections()) {
-							v1.setIndex(min);
-							v1.setSeqIndex(0);
-							vertexSet.push_back(v1);
-							j = sensitivity;
-						}
-					}
-				}
-				else {
-					if (min >= infoTable[i - 1]) {
-						noSubstr = min - infoTable[seqId - 1];
-
-						v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
-
-						if (v1.getHasMinConnections()) {
-							v1.setIndex(min);
-							v1.setSeqIndex(seqId);
-							vertexSet.push_back(v1);
-							j = sensitivity;
-						}
-					}
-				}
-			}
-			
-			
-			while (resultSortedByIndex[lastChecked].getIndex() < infoTable[i]) {
-				if (lastChecked < resultSortedByIndex.size() - 1) {
-					lastChecked++;
-				}
-				else {
-					lastChecked++;
-					i = infoTable.size() - 1;
-					break;
-				}
-			}
-
-			for (int j = 1; j <= sensitivity; j++) {
-				max = resultSortedByIndex[lastChecked - 1].getIndex() + j;
-				seqId = DataFromFile::matrix.getSequenceIdFromMatrix(max); //get sequence number
-				if (max < infoTable[i]) {
-					if (seqId == 0) {
-						noSubstr = max;
-					}
-					else {
-						noSubstr = max - infoTable[seqId - 1];
-					}
-
-					v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
-
-					if (v1.getHasMinConnections()) {
-						v1.setIndex(max);
-						v1.setSeqIndex(seqId);
-						vertexSet.push_back(v1);
-						j = sensitivity;
-					}
-				}
-			}
-		
-		}
-	}
-	
-	if (!vertexSet.empty()) {
-		DataFromFile::sortByVertexLvl(vertexSet, 0, vertexSet.size() - 1);
-	}
-	
-	return vertexSet;
-}
-
 vector <Vertex> DataFromFile::prepareVertexSetLeft(vector <Vertex> actualResult, int sensitivity) {
 
 	vector <Vertex> resultSortedByIndex = actualResult;
@@ -493,8 +400,8 @@ vector <Vertex> DataFromFile::prepareVertexSetLeft(vector <Vertex> actualResult,
 
 	DataFromFile::sortByIndex(resultSortedByIndex, 0, actualResult.size() - 1);
 
-	int min, seqId, actInd, actSeq;
-	vector <int> indexesToAdd;
+	int seqId, actInd, actSeq;
+	vector <Vertex> verticesToAdd;
 	Vertex v1;
 
 	int it = 0;
@@ -502,9 +409,9 @@ vector <Vertex> DataFromFile::prepareVertexSetLeft(vector <Vertex> actualResult,
 	while (it < resultSortedByIndex.size())
 	{
 		seqId = resultSortedByIndex[it].getSeqIndex();
-		min = resultSortedByIndex[it].getIndex();
 		actSeq = seqId;
-		indexesToAdd.push_back(min);
+		v1 = resultSortedByIndex[it];
+		verticesToAdd.push_back(v1);
 
 		while (actSeq == seqId && it < resultSortedByIndex.size())
 		{
@@ -516,6 +423,50 @@ vector <Vertex> DataFromFile::prepareVertexSetLeft(vector <Vertex> actualResult,
 		}
 	}
 
+	for (int i = 0; i < verticesToAdd.size(); i++)
+	{
+		//TODO: why index -1
+		int index = verticesToAdd[i].getIndex();
+		int noSubstr, j = 0;
+		seqId = verticesToAdd[i].getSeqIndex();
+
+		while(j < sensitivity)
+		{
+			index -= 1;
+			if (seqId > 0)
+			{
+				if (index >= infoTable[seqId - 1])
+				{
+					noSubstr = index - infoTable[seqId - 1];
+					v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
+
+					if (v1.getHasMinConnections())
+					{
+						v1.setIndex(index);
+						vertexSet.push_back(v1);
+						j = sensitivity;
+					}
+				}
+			}
+			else
+			{
+				if (index >= 0)
+				{
+					noSubstr = index;
+					v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
+
+					if (v1.getHasMinConnections())
+					{
+						v1.setIndex(index);
+						vertexSet.push_back(v1);
+						j = sensitivity;
+					}
+				}
+			}
+			j++;
+		}
+	}
+
 	if (!vertexSet.empty()) {
 		DataFromFile::sortByVertexLvl(vertexSet, 0, vertexSet.size() - 1);
 	}
@@ -524,55 +475,84 @@ vector <Vertex> DataFromFile::prepareVertexSetLeft(vector <Vertex> actualResult,
 }
 
 vector <Vertex> DataFromFile::prepareVertexSetRight(vector <Vertex> actualResult, int sensitivity) {
+
 	vector <Vertex> resultSortedByIndex = actualResult;
 	vector <Vertex> vertexSet;
 	vector <int> infoTable = DataFromFile::getInfoTable(DataFromFile::matrix);
 
 	DataFromFile::sortByIndex(resultSortedByIndex, 0, actualResult.size() - 1);
 
-	int lastChecked = 0, index = 0;
-	int max;
-	int seqId, noSubstr;
+	int seqId, actInd, actSeq;
+	vector <Vertex> verticesToAdd;
 	Vertex v1;
-	vector<int> indexesToAdd;
 
-	for (int i = 0; i < infoTable.size(); i++) {
-		if (resultSortedByIndex[lastChecked].getIndex() < infoTable[i]) {
-			while (resultSortedByIndex[lastChecked].getIndex() < infoTable[i]) {
-				if (lastChecked < resultSortedByIndex.size() - 1) {
-					lastChecked++;
-				}
-				else {
-					lastChecked++;
-					i = infoTable.size() - 1;
-					break;
-				}
+	int it = 0;
+
+	while (it < resultSortedByIndex.size())
+	{
+		seqId = resultSortedByIndex[it].getSeqIndex();
+		actSeq = seqId;
+		v1 = resultSortedByIndex[it];
+		verticesToAdd.push_back(v1);
+
+		while (actSeq == seqId && it < resultSortedByIndex.size())
+		{
+			it++;
+			if (it < resultSortedByIndex.size())
+			{
+				actSeq = resultSortedByIndex[it].getSeqIndex();
 			}
+		}
+	}
 
-			for (int j = 1; j <= sensitivity; j++) {
-				max = resultSortedByIndex[lastChecked - 1].getIndex() + j;
-				seqId = DataFromFile::matrix.getSequenceIdFromMatrix(max); //get sequence number
-																		   //cout << "max " << max << " ";
-																		   //cout << "info table: " << infoTable[i] << endl;
-				if (max < infoTable[i]) {
-					if (seqId == 0) {
-						noSubstr = max;
-					}
-					else {
-						noSubstr = max - infoTable[seqId - 1];
-					}
+	for (int i = 0; i < verticesToAdd.size(); i++)
+	{
+		int index = verticesToAdd[i].getIndex();
+		int noSubstr, j = 0;
+		seqId = verticesToAdd[i].getSeqIndex();
 
+		while (j < sensitivity)
+		{
+			index += 1;
+			if (seqId < DataFromFile::seqData.size() - 1)
+			{
+				if (index < infoTable[seqId])
+				{
+					if (seqId == 0)
+					{
+						noSubstr = index;
+					}
+					else
+					{
+						noSubstr = index - infoTable[seqId - 1];
+					}
+					
 					v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
 
-					if (v1.getHasMinConnections()) {
-						v1.setIndex(max);
-						v1.setSeqIndex(seqId);
+					if (v1.getHasMinConnections())
+					{
+						v1.setIndex(index);
 						vertexSet.push_back(v1);
 						j = sensitivity;
 					}
 				}
 			}
+			else
+			{
+				if (index < DataFromFile::matrix.getMatrix()[0].size())
+				{
+					noSubstr = index - infoTable[seqId - 1];
+					v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
 
+					if (v1.getHasMinConnections())
+					{
+						v1.setIndex(index);
+						vertexSet.push_back(v1);
+						j = sensitivity;
+					}
+				}
+			}
+			j++;
 		}
 	}
 
