@@ -6,6 +6,8 @@
 
 using namespace std;
 
+const int SENSITIVITY = 2;
+
 class DataFromFile
 {
 	vector <Sequence> seqData;
@@ -31,7 +33,6 @@ public:
 	void printSequences(vector <Sequence> seqData);
 	void createListOfVerticesSorted();
 	void buildMaxClique();
-	//void printClique();
 	vector<Vertex> prepareVertexSet(vector<Vertex> actualResult, int sensitivity);
 	vector<Vertex> prepareVertexSetLeft(vector<Vertex> actualResult, int sensitivity);
 	vector<Vertex> prepareVertexSetRight(vector<Vertex> actualResult, int sensitivity);
@@ -40,8 +41,10 @@ public:
 	void sortByVertexLvl(vector<Vertex> &vertexInLvlList, int left, int right);
 	void sortByIndex(vector<Vertex> &vertexInLvlList, int left, int right);
 	bool checkConnectionsInClique(vector<Vertex> result, Vertex analyzedVertex, Matrix matrix);
+	string buildMotif(vector<Vertex> verticesToAlign, int reliability);
+	string parseMotifLeft(string existingMotif, string motifToAdd);
+	string parseMotifRight(string existingMotif, string motifToAdd);
 	DataFromFile();
 	DataFromFile(string dataName, int substrLength, int reliability);
 	~DataFromFile();
 };
-

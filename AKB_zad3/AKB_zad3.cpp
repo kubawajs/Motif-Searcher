@@ -15,7 +15,7 @@ using namespace std;
 int main()
 {
 	//TODO: input file name
-	string fileName = "test1"; // name of file in fasta (without .txt)
+	string fileName = "fasta"; // name of file in fasta (without .txt)
 	int substrLength;
 	int reliability;
 
@@ -62,7 +62,7 @@ int main()
 	data.createListOfVerticesSorted();
 
 	//BUILD A CLIQUE BASED ON VERTICES LEVEL
-	//data.buildClique();
+	//TODO: musi budowac wiêcej ni¿ jedno rozwiazanie i wg rankingu wybierac najlepsze
 	data.buildMaxClique();
 
 	//TODO: print result (max clique)

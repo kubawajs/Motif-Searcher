@@ -6,6 +6,7 @@
 #include <vector>
 #include <fstream>
 #include <algorithm>
+#include <map>
 
 using namespace std;
 
@@ -267,7 +268,6 @@ void DataFromFile::checkIfHasMinConnections(Matrix matrix)
 
 void DataFromFile::printSequences(vector <Sequence> seqData)
 {
-	//TODO: fix for printing motifs
 	for (int i = 0; i < seqData.size(); i++) { //for each sequence
 		int seqSize = seqData[i].getSequence().size(); //get length of sequence
 		string sequence(seqSize, '-'); //create string with '-' chars with length of sequence
@@ -278,7 +278,7 @@ void DataFromFile::printSequences(vector <Sequence> seqData)
 
 		for (int j = 0; j < seqData[i].getSubstrSize(); j++) { //for each substring in sequence
 			if (substrs[j].getHasMinConnections()) {
-				for (int k = 0; k < substrs[j].getSubstrLength(); k++) 
+				for (int k = 0; k < substrs[j].getSubstrLength(); k++)
 				{ //for each char in substring
 					if (substrs[j].getQual()[k] >= DataFromFile::reliability) {
 						sequence[j + k] = substrs[j].getSubstring()[k];
@@ -305,83 +305,59 @@ void DataFromFile::createListOfVerticesSorted()
 	for (int i = 0; i < graph.size(); i++) {
 		if (graph[i][0] != -1) {
 			seqId = DataFromFile::matrix.getSequenceIdFromMatrix(i); //get sequence number
-			
+
 			if (seqId == 0) {//check which substring of actual sequence is being analyzed
 				noSubstr = i;
 			}
 			else {
 				noSubstr = i - infoTable[seqId - 1];
 			}
-			
+
 			v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
-			
+
 			if (v1.getHasMinConnections()) {
 				v1.setIndex(i);
 				v1.setSeqIndex(seqId);
 				DataFromFile::vertexByLevel.push_back(v1);
-			}	
+			}
 		}
 	}
 
 	//sort list
-	DataFromFile::sortByVertexLvl(DataFromFile::vertexByLevel, 0, DataFromFile::vertexByLevel.size()-1);
+	DataFromFile::sortByVertexLvl(DataFromFile::vertexByLevel, 0, DataFromFile::vertexByLevel.size() - 1);
 }
 
 void DataFromFile::buildMaxClique() {
 	vector <Vertex> result;
-	vector <Vertex> vertexToCheck;
+	vector <Vertex> vertexToCheckLeft, vertexToCheckRight;
 	vector <Vertex> temporaryResult;
 	vector <Vertex> verticesToAdd;
-
-	int increase = 0;
-	bool increaseUnderMin = false;
+	string motif;
 
 	result = DataFromFile::buildClique(DataFromFile::vertexByLevel);
+	motif = DataFromFile::buildMotif(result, DataFromFile::reliability);
 
-	while (!increaseUnderMin) {
-		int lastIncrease = increase;
+	//rozbuduj w lewo
+	do
+	{
+		//TODO: zapetla sie na ostatnim podciagu jesli jest spelniony warunek (moze dac cos zeby sprawdzalo czy juz nalezy do rozwiazania?
+		//dodawaj do result, albo na input do szukania kliki dawaj output z poprzedniego
+		vertexToCheckLeft = DataFromFile::prepareVertexSetLeft(result, SENSITIVITY);//TODO: moze lepiej sprawdzi sie przesuniecie o max dlugosc podciagu - 1?
+		temporaryResult = DataFromFile::buildClique(vertexToCheckLeft);
+		string tempMotif = DataFromFile::buildMotif(temporaryResult, DataFromFile::reliability);
+		motif = DataFromFile::parseMotifLeft(motif, tempMotif);
+		//add tempRes to result but check if not exist yet
+	} while (temporaryResult.size() >= (0.6 * DataFromFile::seqData.size()));//TODO: przemysl czy nie zamienic na 0,55 -> da to min 4/7 sekwencji a nie 5/7
 
-		vertexToCheck.clear();
-		//vertexToCheck = DataFromFile::prepareVertexSet(result, 2);//TODO: !!! important - sensitivity
-		//vertexToCheck = DataFromFile::prepareVertexSetLeft(result, 2);
-		vertexToCheck = DataFromFile::prepareVertexSetRight(result, 2);
-
-		if (!vertexToCheck.empty()) {
-			temporaryResult = DataFromFile::buildClique(vertexToCheck);
-
-			verticesToAdd.clear();
-			//check if not in actual result
-			for (int i = 0; i < vertexToCheck.size(); i++) {
-				for (int j = 0; j < result.size(); j++) {
-					if (vertexToCheck[i].getIndex() == result[j].getIndex()) {
-						break;
-					}
-					else if (j == result.size() - 1) {
-						verticesToAdd.push_back(vertexToCheck[i]);
-					}
-				}
-			}
-
-			//add to result
-			if (!verticesToAdd.empty()) {
-				for (int i = 0; i < verticesToAdd.size(); i++) {
-					result.push_back(verticesToAdd[i]);
-				}
-			}
-
-			//check if increase is more than 4
-			increase = result.size() - lastIncrease;
-
-			if (increase < 4) {
-				increaseUnderMin = true;
-			}
-
-			//cout << "Result series of cliques size: " << result.size() << endl;
-		}
-		else {
-			increaseUnderMin = true;
-		}
-	}
+	//rozbuduj w prawo
+	do
+	{
+		vertexToCheckRight = DataFromFile::prepareVertexSetRight(result, SENSITIVITY);
+		temporaryResult = DataFromFile::buildClique(vertexToCheckRight);
+		string tempMotif = DataFromFile::buildMotif(temporaryResult, DataFromFile::reliability);
+		motif = DataFromFile::parseMotifRight(motif, tempMotif);
+		//add tempRes to result
+	} while (temporaryResult.size() >= (0.6 * DataFromFile::seqData.size()));
 
 	cout << "Result status: Ready" << endl;
 
@@ -389,7 +365,105 @@ void DataFromFile::buildMaxClique() {
 	Result readyResult(result, DataFromFile::seqData.size());
 	readyResult.parseSequences(DataFromFile::reliability);
 
- 	cout << "Printed";
+	cout << "Printed";
+}
+
+string DataFromFile::buildMotif(vector <Vertex> verticesToAlign, int reliability)//build motif for clique
+{
+	int actSeq, it = 0, maxValue = 0;
+	int seqId = verticesToAlign[0].getSeqIndex();
+	Vertex v1;
+	map <string, int> submotifs = {};
+	vector <char> preMotif;
+	string consensusMotif;
+
+	while (it < verticesToAlign.size())
+	{
+		v1 = verticesToAlign[it];
+		seqId = v1.getSeqIndex();
+		actSeq = seqId;
+		preMotif.clear();
+
+
+		for (int i = 0; i < v1.getQual().size(); i++)
+		{
+			if (v1.getQual()[i] >= reliability)
+			{
+				preMotif.push_back(v1.getSubstring()[i]);
+			}
+		}
+		string motif(preMotif.begin(), preMotif.end());
+		submotifs[motif]++;//add to map
+
+		while (actSeq == seqId && it < verticesToAlign.size())
+		{
+			it++;
+			if (it < verticesToAlign.size())
+			{
+				actSeq = verticesToAlign[it].getSeqIndex();
+			}
+		}
+	}
+
+	for (auto const& motif : submotifs)//foreach motif in motifs
+	{
+		if (motif.second > maxValue)
+		{
+			consensusMotif = motif.first;
+			maxValue = motif.second;
+		}
+		else if (motif.second == maxValue && motif.first.length() > consensusMotif.length())
+		{
+			consensusMotif = motif.first;
+			maxValue = motif.second;
+		}
+	}
+
+	return consensusMotif; //temporary
+}
+
+string DataFromFile::parseMotifLeft(string existingMotif, string motifToAdd)
+{
+	string toAdd = "";
+
+	for (int i = 0; i <= SENSITIVITY; i++)
+	{
+		if (i != 0) {
+			toAdd += motifToAdd[0];
+		}
+
+		motifToAdd.erase(0, i);
+		if (existingMotif.find(motifToAdd) != string::npos) {
+			existingMotif = toAdd + existingMotif;
+			i = SENSITIVITY;
+			break;
+		}
+	}
+
+	//cout << existingMotif << endl;
+	return existingMotif;
+}
+
+string DataFromFile::parseMotifRight(string existingMotif, string motifToAdd)
+{
+	string toAdd = "";
+
+	for (int i = 0; i <= SENSITIVITY; i++)
+	{
+		if (i != 0) {
+			toAdd += motifToAdd[motifToAdd.size() - 1];
+		}
+
+		motifToAdd = motifToAdd.substr(0, motifToAdd.size() - 1);
+		if (existingMotif.find(motifToAdd) != string::npos) {
+			existingMotif = toAdd + existingMotif;
+			i = SENSITIVITY;
+			break;
+		}
+	}
+
+	//cout << existingMotif << endl;
+	return existingMotif;
 }
 
 vector <Vertex> DataFromFile::prepareVertexSetLeft(vector <Vertex> actualResult, int sensitivity) {
@@ -430,7 +504,7 @@ vector <Vertex> DataFromFile::prepareVertexSetLeft(vector <Vertex> actualResult,
 		int noSubstr, j = 0;
 		seqId = verticesToAdd[i].getSeqIndex();
 
-		while(j < sensitivity)
+		while (j < sensitivity)
 		{
 			index -= 1;
 			if (seqId > 0)
@@ -443,6 +517,7 @@ vector <Vertex> DataFromFile::prepareVertexSetLeft(vector <Vertex> actualResult,
 					if (v1.getHasMinConnections())
 					{
 						v1.setIndex(index);
+						v1.setSeqIndex(seqId);
 						vertexSet.push_back(v1);
 						j = sensitivity;
 					}
@@ -458,6 +533,7 @@ vector <Vertex> DataFromFile::prepareVertexSetLeft(vector <Vertex> actualResult,
 					if (v1.getHasMinConnections())
 					{
 						v1.setIndex(index);
+						v1.setSeqIndex(seqId);
 						vertexSet.push_back(v1);
 						j = sensitivity;
 					}
@@ -474,7 +550,7 @@ vector <Vertex> DataFromFile::prepareVertexSetLeft(vector <Vertex> actualResult,
 	return vertexSet;
 }
 
-vector <Vertex> DataFromFile::prepareVertexSetRight(vector <Vertex> actualResult, int sensitivity) {
+vector <Vertex> DataFromFile::prepareVertexSetRight(vector <Vertex> actualResult, int sensitivity) {//TODO: sprawdz czy zamiast sensitivity lepiej nie daæ szerokoœæ okna
 
 	vector <Vertex> resultSortedByIndex = actualResult;
 	vector <Vertex> vertexSet;
@@ -526,12 +602,13 @@ vector <Vertex> DataFromFile::prepareVertexSetRight(vector <Vertex> actualResult
 					{
 						noSubstr = index - infoTable[seqId - 1];
 					}
-					
+
 					v1 = DataFromFile::seqData[seqId].getSubstrById(noSubstr);
 
 					if (v1.getHasMinConnections())
 					{
 						v1.setIndex(index);
+						v1.setSeqIndex(seqId);
 						vertexSet.push_back(v1);
 						j = sensitivity;
 					}
@@ -547,6 +624,7 @@ vector <Vertex> DataFromFile::prepareVertexSetRight(vector <Vertex> actualResult
 					if (v1.getHasMinConnections())
 					{
 						v1.setIndex(index);
+						v1.setSeqIndex(seqId);
 						vertexSet.push_back(v1);
 						j = sensitivity;
 					}
