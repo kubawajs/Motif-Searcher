@@ -391,6 +391,7 @@ string DataFromFile::buildMotif(vector <Vertex> verticesToAlign, int reliability
 	map <string, int> submotifs = {};
 	vector <char> preMotif;
 	string consensusMotif;
+	DataFromFile::sortByIndex(verticesToAlign, 0, verticesToAlign.size() - 1);
 
 	while (it < verticesToAlign.size())
 	{
@@ -398,7 +399,6 @@ string DataFromFile::buildMotif(vector <Vertex> verticesToAlign, int reliability
 		seqId = v1.getSeqIndex();
 		actSeq = seqId;
 		preMotif.clear();
-
 
 		for (int i = 0; i < v1.getQual().size(); i++)
 		{
@@ -442,14 +442,20 @@ string DataFromFile::parseMotifLeft(string existingMotif, string motifToAdd)
 	string toAdd = "";
 	string toCompare = "";
 
-	for (int i = 0; i <= SENSITIVITY; i++)
+	if (existingMotif.size() >= motifToAdd.size())
 	{
-		if (existingMotif.find(motifToAdd) != string::npos) {
+		toCompare = existingMotif.substr(0, motifToAdd.size());
+	}
+
+	for (int i = 1; i <= SENSITIVITY; i++)
+	{
+		if (toCompare.find(motifToAdd) != string::npos) {
 			existingMotif = toAdd + existingMotif;
 			i = SENSITIVITY;
 			break;
 		}
 
+		toCompare = toCompare.substr(0, toCompare.size() - 1);
 		toAdd += motifToAdd[0];
 		motifToAdd.erase(0, i);
 	}
@@ -461,17 +467,25 @@ string DataFromFile::parseMotifLeft(string existingMotif, string motifToAdd)
 string DataFromFile::parseMotifRight(string existingMotif, string motifToAdd)
 {
 	string toAdd = "";
+	string toCompare = "";
 
-	for (int i = 0; i <= SENSITIVITY; i++)
+	if (existingMotif.size() >= motifToAdd.size())
 	{
-		if (existingMotif.find(motifToAdd) != string::npos) {
+		int lengthDiff = existingMotif.size() - motifToAdd.size();
+		toCompare = existingMotif.substr(lengthDiff, motifToAdd.size());
+	}
+
+	for (int i = 1; i <= SENSITIVITY; i++)
+	{
+		if (toCompare.find(motifToAdd) != string::npos) {
 			existingMotif = existingMotif + toAdd;
 			i = SENSITIVITY;
 			break;
 		}
 
+		toCompare = toCompare.substr(1, toCompare.size());
 		toAdd += motifToAdd[motifToAdd.size() - 1];
-		motifToAdd = motifToAdd.substr(0, motifToAdd.size() - 1);
+		motifToAdd.pop_back();
 	}
 
 	//cout << existingMotif << endl;
@@ -656,14 +670,22 @@ vector <Vertex> DataFromFile::prepareVertexSetRight(vector <Vertex> actualResult
 
 vector <Vertex> DataFromFile::buildClique(vector<Vertex> vertexByLevel) {
 	vector <Vertex> clique;
+	vector <bool> usedSequences;
+
+	for (int i = 0; i < DataFromFile::seqData.size(); i++)
+	{
+		usedSequences.push_back(false);
+	}
 
 	for (int i = 0; i < vertexByLevel.size(); i++) {
 		Vertex analyzedVertex = vertexByLevel[i];
 		if (clique.size() == 0) {
 			clique.push_back(analyzedVertex);
+			usedSequences[analyzedVertex.getSeqIndex()] = true;
 		}
-		else if (checkConnectionsInClique(clique, analyzedVertex, DataFromFile::getMatrix())) {
+		else if (!usedSequences[analyzedVertex.getSeqIndex()] && checkConnectionsInClique(clique, analyzedVertex, DataFromFile::getMatrix())) {
 			clique.push_back(analyzedVertex);
+			usedSequences[analyzedVertex.getSeqIndex()] = true;
 		}
 	}
 
