@@ -37,6 +37,7 @@ public:
 	vector<Vertex> prepareVertexSetLeft(vector<Vertex> actualResult, int sensitivity);
 	vector<Vertex> prepareVertexSetRight(vector<Vertex> actualResult, int sensitivity);
 	vector<Vertex> buildClique(vector <Vertex> vertexByLevel);
+	vector<Vertex> sumResult(vector<Vertex> actualResult, vector<Vertex> tempResult);
 	vector<int> getInfoTable(Matrix matrix);
 	void sortByVertexLvl(vector<Vertex> &vertexInLvlList, int left, int right);
 	void sortByIndex(vector<Vertex> &vertexInLvlList, int left, int right);

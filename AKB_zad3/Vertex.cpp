@@ -88,6 +88,18 @@ void Vertex::setHasMinConnections(bool set)
 	Vertex::hasMinConnections = set;
 }
 
+bool Vertex::operator==(const Vertex &v)
+{
+	if (this->index == v.index)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 Vertex::Vertex()
 {
 	Vertex::level = 0;

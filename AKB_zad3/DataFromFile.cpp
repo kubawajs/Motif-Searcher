@@ -336,7 +336,9 @@ void DataFromFile::buildMaxClique() {
 
 	result = DataFromFile::buildClique(DataFromFile::vertexByLevel);
 	motif = DataFromFile::buildMotif(result, DataFromFile::reliability);
+	cout << motif << " - Center" << endl;
 
+	bool isInBuild = true;
 	//rozbuduj w lewo
 	do
 	{
@@ -344,25 +346,38 @@ void DataFromFile::buildMaxClique() {
 		//dodawaj do result, albo na input do szukania kliki dawaj output z poprzedniego
 		vertexToCheckLeft = DataFromFile::prepareVertexSetLeft(result, SENSITIVITY);//TODO: moze lepiej sprawdzi sie przesuniecie o max dlugosc podciagu - 1?
 		temporaryResult = DataFromFile::buildClique(vertexToCheckLeft);
+		if (temporaryResult.size() < 0.55 * DataFromFile::seqData.size())
+		{
+			isInBuild = false;
+			break;
+		}
 		string tempMotif = DataFromFile::buildMotif(temporaryResult, DataFromFile::reliability);
 		motif = DataFromFile::parseMotifLeft(motif, tempMotif);
-		//add tempRes to result but check if not exist yet
-	} while (temporaryResult.size() >= (0.6 * DataFromFile::seqData.size()));//TODO: przemysl czy nie zamienic na 0,55 -> da to min 4/7 sekwencji a nie 5/7
+		result = DataFromFile::sumResult(result, temporaryResult);
+		cout << motif << " - Left" << endl;
+	} while (isInBuild);//TODO: przemysl czy nie zamienic na 0,55 -> da to min 4/7 sekwencji a nie 5/7
 
 	//rozbuduj w prawo
+	isInBuild = true;
 	do
 	{
 		vertexToCheckRight = DataFromFile::prepareVertexSetRight(result, SENSITIVITY);
 		temporaryResult = DataFromFile::buildClique(vertexToCheckRight);
+		if (temporaryResult.size() < 0.55 * DataFromFile::seqData.size())
+		{
+			isInBuild = false;
+			break;
+		}
 		string tempMotif = DataFromFile::buildMotif(temporaryResult, DataFromFile::reliability);
 		motif = DataFromFile::parseMotifRight(motif, tempMotif);
-		//add tempRes to result
-	} while (temporaryResult.size() >= (0.6 * DataFromFile::seqData.size()));
+		result = DataFromFile::sumResult(result, temporaryResult);
+		cout << motif << " - Right" << endl;
+	} while (isInBuild);
 
 	cout << "Result status: Ready" << endl;
 
 	//Creating results
-	Result readyResult(result, DataFromFile::seqData.size());
+	Result readyResult(result, DataFromFile::seqData.size(), motif);
 	readyResult.parseSequences(DataFromFile::reliability);
 
 	cout << "Printed";
@@ -425,19 +440,18 @@ string DataFromFile::buildMotif(vector <Vertex> verticesToAlign, int reliability
 string DataFromFile::parseMotifLeft(string existingMotif, string motifToAdd)
 {
 	string toAdd = "";
+	string toCompare = "";
 
 	for (int i = 0; i <= SENSITIVITY; i++)
 	{
-		if (i != 0) {
-			toAdd += motifToAdd[0];
-		}
-
-		motifToAdd.erase(0, i);
 		if (existingMotif.find(motifToAdd) != string::npos) {
 			existingMotif = toAdd + existingMotif;
 			i = SENSITIVITY;
 			break;
 		}
+
+		toAdd += motifToAdd[0];
+		motifToAdd.erase(0, i);
 	}
 
 	//cout << existingMotif << endl;
@@ -450,16 +464,14 @@ string DataFromFile::parseMotifRight(string existingMotif, string motifToAdd)
 
 	for (int i = 0; i <= SENSITIVITY; i++)
 	{
-		if (i != 0) {
-			toAdd += motifToAdd[motifToAdd.size() - 1];
-		}
-
-		motifToAdd = motifToAdd.substr(0, motifToAdd.size() - 1);
 		if (existingMotif.find(motifToAdd) != string::npos) {
-			existingMotif = toAdd + existingMotif;
+			existingMotif = existingMotif + toAdd;
 			i = SENSITIVITY;
 			break;
 		}
+
+		toAdd += motifToAdd[motifToAdd.size() - 1];
+		motifToAdd = motifToAdd.substr(0, motifToAdd.size() - 1);
 	}
 
 	//cout << existingMotif << endl;
@@ -557,6 +569,7 @@ vector <Vertex> DataFromFile::prepareVertexSetRight(vector <Vertex> actualResult
 	vector <int> infoTable = DataFromFile::getInfoTable(DataFromFile::matrix);
 
 	DataFromFile::sortByIndex(resultSortedByIndex, 0, actualResult.size() - 1);
+	reverse(resultSortedByIndex.begin(), resultSortedByIndex.end());
 
 	int seqId, actInd, actSeq;
 	vector <Vertex> verticesToAdd;
@@ -655,6 +668,21 @@ vector <Vertex> DataFromFile::buildClique(vector<Vertex> vertexByLevel) {
 	}
 
 	return clique;
+}
+
+vector<Vertex> DataFromFile::sumResult(vector<Vertex> actualResult, vector<Vertex> tempResult)
+{
+	for (int i = 0; i < tempResult.size(); i++)
+	{
+		bool found = (std::find(actualResult.begin(), actualResult.end(), tempResult[i]) != actualResult.end());
+
+		if (!found)
+		{
+			actualResult.push_back(tempResult[i]);
+		}
+	}
+
+	return actualResult;
 }
 
 bool DataFromFile::checkConnectionsInClique(vector <Vertex> result, Vertex analyzedVertex, Matrix matrix) {

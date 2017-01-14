@@ -71,7 +71,7 @@ vector<Sequence> Result::getSequences()
 	return Result::result;
 }
 
-Result::Result(vector<Vertex> result, int numOfSeqs)
+Result::Result(vector<Vertex> result, int numOfSeqs, string motif)
 {
 	Sequence sequence;
 	Result::sortByIndex(result, 0, result.size() - 1);
@@ -86,6 +86,8 @@ Result::Result(vector<Vertex> result, int numOfSeqs)
 		int seqIndex = result[i].getSeqIndex();
 		Result::result[seqIndex].addSubstr(result[i]);
 	}
+
+	Result::motif = motif;
 }
 
 

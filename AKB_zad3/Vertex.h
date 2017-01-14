@@ -30,6 +30,7 @@ public:
 	void printQual();
 	void lvlUp(int n);
 	void setHasMinConnections(bool set);
+	bool operator==(const Vertex &v);
 	Vertex();
 	~Vertex();
 };
