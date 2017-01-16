@@ -33,7 +33,6 @@ public:
 	void printSequences(vector <Sequence> seqData);
 	void createListOfVerticesSorted();
 	void buildMaxClique();
-	vector<Vertex> prepareVertexSet(vector<Vertex> actualResult, int sensitivity);
 	vector<Vertex> prepareVertexSetLeft(vector<Vertex> actualResult, int sensitivity);
 	vector<Vertex> prepareVertexSetRight(vector<Vertex> actualResult, int sensitivity);
 	vector<Vertex> buildClique(vector <Vertex> vertexByLevel);

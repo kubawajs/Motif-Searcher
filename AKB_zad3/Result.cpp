@@ -66,6 +66,11 @@ void Result::parseSequences(int reliability)
 	}
 }
 
+void Result::setStartingClique(vector<Vertex> clique)
+{
+	Result::startingClique = clique;
+}
+
 vector<Sequence> Result::getSequences()
 {
 	return Result::result;

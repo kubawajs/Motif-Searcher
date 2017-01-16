@@ -328,13 +328,12 @@ void DataFromFile::createListOfVerticesSorted()
 }
 
 void DataFromFile::buildMaxClique() {
-	vector <Vertex> result;
-	vector <Vertex> vertexToCheckLeft, vertexToCheckRight;
-	vector <Vertex> temporaryResult;
-	vector <Vertex> verticesToAdd;
+	vector <Vertex> result, startingClique, vertexToCheckLeft, vertexToCheckRight,temporaryResult, verticesToAdd;
 	string motif;
 
-	result = DataFromFile::buildClique(DataFromFile::vertexByLevel);
+	//TODO: jesli results puste to rób normalnie, jak cos jest sprawdz czy wybrany wierzcholek nie jest w startingClique resultsów
+	startingClique = DataFromFile::buildClique(DataFromFile::vertexByLevel);
+	result = startingClique;
 	motif = DataFromFile::buildMotif(result, DataFromFile::reliability);
 	cout << motif << " - Center" << endl;
 
@@ -342,9 +341,7 @@ void DataFromFile::buildMaxClique() {
 	//rozbuduj w lewo
 	do
 	{
-		//TODO: zapetla sie na ostatnim podciagu jesli jest spelniony warunek (moze dac cos zeby sprawdzalo czy juz nalezy do rozwiazania?
-		//dodawaj do result, albo na input do szukania kliki dawaj output z poprzedniego
-		vertexToCheckLeft = DataFromFile::prepareVertexSetLeft(result, SENSITIVITY);//TODO: moze lepiej sprawdzi sie przesuniecie o max dlugosc podciagu - 1?
+		vertexToCheckLeft = DataFromFile::prepareVertexSetLeft(result, SENSITIVITY);
 		temporaryResult = DataFromFile::buildClique(vertexToCheckLeft);
 		if (temporaryResult.size() < 0.55 * DataFromFile::seqData.size())
 		{
@@ -355,7 +352,7 @@ void DataFromFile::buildMaxClique() {
 		motif = DataFromFile::parseMotifLeft(motif, tempMotif);
 		result = DataFromFile::sumResult(result, temporaryResult);
 		cout << motif << " - Left" << endl;
-	} while (isInBuild);//TODO: przemysl czy nie zamienic na 0,55 -> da to min 4/7 sekwencji a nie 5/7
+	} while (isInBuild);
 
 	//rozbuduj w prawo
 	isInBuild = true;
@@ -363,6 +360,7 @@ void DataFromFile::buildMaxClique() {
 	{
 		vertexToCheckRight = DataFromFile::prepareVertexSetRight(result, SENSITIVITY);
 		temporaryResult = DataFromFile::buildClique(vertexToCheckRight);
+		//TODO: tu coœ zjebane fes
 		if (temporaryResult.size() < 0.55 * DataFromFile::seqData.size())
 		{
 			isInBuild = false;
@@ -379,6 +377,7 @@ void DataFromFile::buildMaxClique() {
 	//Creating results
 	Result readyResult(result, DataFromFile::seqData.size(), motif);
 	readyResult.parseSequences(DataFromFile::reliability);
+	readyResult.setStartingClique(startingClique);
 
 	cout << "Printed";
 }
@@ -582,6 +581,7 @@ vector <Vertex> DataFromFile::prepareVertexSetRight(vector <Vertex> actualResult
 	vector <Vertex> vertexSet;
 	vector <int> infoTable = DataFromFile::getInfoTable(DataFromFile::matrix);
 
+
 	DataFromFile::sortByIndex(resultSortedByIndex, 0, actualResult.size() - 1);
 	reverse(resultSortedByIndex.begin(), resultSortedByIndex.end());
 
@@ -671,6 +671,12 @@ vector <Vertex> DataFromFile::prepareVertexSetRight(vector <Vertex> actualResult
 vector <Vertex> DataFromFile::buildClique(vector<Vertex> vertexByLevel) {
 	vector <Vertex> clique;
 	vector <bool> usedSequences;
+	
+	if (vertexByLevel.empty())
+	{
+		return clique;
+	}
+	DataFromFile::sortByVertexLvl(vertexByLevel, 0, vertexByLevel.size() - 1);
 
 	for (int i = 0; i < DataFromFile::seqData.size(); i++)
 	{
