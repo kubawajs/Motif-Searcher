@@ -63,7 +63,7 @@ int main()
 
 	//BUILD A CLIQUE BASED ON VERTICES LEVEL
 	//TODO: musi budowac wiêcej ni¿ jedno rozwiazanie i wg rankingu wybierac najlepsze
-	data.buildMaxClique();
+	data.buildResults();
 
 	//TODO: print result (max clique)
 	//TODO: searching for clique/series of cliques

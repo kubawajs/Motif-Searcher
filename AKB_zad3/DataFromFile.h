@@ -1,10 +1,8 @@
 #pragma once
 
-#include "Sequence.h"
 #include "Matrix.h"
-#include "Result.h"
-
-using namespace std;
+#include "Sequence.h"
+#include "ResultMotif.h"
 
 const int SENSITIVITY = 2;
 
@@ -32,7 +30,8 @@ public:
 	void checkIfHasMinConnections(Matrix matrix);//function for checking if vertex has connection with min 5 other sequences
 	void printSequences(vector <Sequence> seqData);
 	void createListOfVerticesSorted();
-	void buildMaxClique();
+	void buildResults();
+	void buildResult(vector <Vertex> startingClique);
 	vector<Vertex> prepareVertexSetLeft(vector<Vertex> actualResult, int sensitivity);
 	vector<Vertex> prepareVertexSetRight(vector<Vertex> actualResult, int sensitivity);
 	vector<Vertex> buildClique(vector <Vertex> vertexByLevel);

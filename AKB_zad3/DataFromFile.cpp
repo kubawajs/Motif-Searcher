@@ -327,12 +327,22 @@ void DataFromFile::createListOfVerticesSorted()
 	DataFromFile::sortByVertexLvl(DataFromFile::vertexByLevel, 0, DataFromFile::vertexByLevel.size() - 1);
 }
 
-void DataFromFile::buildMaxClique() {
-	vector <Vertex> result, startingClique, vertexToCheckLeft, vertexToCheckRight,temporaryResult, verticesToAdd;
+void DataFromFile::buildResults()
+{
+	vector <Vertex> startingClique, lastUsedClique;
+	//jesli results puste
+	startingClique = DataFromFile::buildClique(vertexByLevel);
+	DataFromFile::buildResult(startingClique);
+	
+	//jesli ju¿ jest jakieœ rozwi¹zanie usun pierwotna klike z wektora startowego
+
+	cout << "ready" << endl;
+}
+
+void DataFromFile::buildResult(vector <Vertex> startingClique) {
+	vector <Vertex> result, vertexToCheckLeft, vertexToCheckRight, temporaryResult, verticesToAdd;
 	string motif;
 
-	//TODO: jesli results puste to rób normalnie, jak cos jest sprawdz czy wybrany wierzcholek nie jest w startingClique resultsów
-	startingClique = DataFromFile::buildClique(DataFromFile::vertexByLevel);
 	result = startingClique;
 	motif = DataFromFile::buildMotif(result, DataFromFile::reliability);
 	cout << motif << " - Center" << endl;
@@ -375,11 +385,13 @@ void DataFromFile::buildMaxClique() {
 	cout << "Result status: Ready" << endl;
 
 	//Creating results
-	Result readyResult(result, DataFromFile::seqData.size(), motif);
+	ResultMotif readyResult;
+	readyResult.setResult(result, DataFromFile::seqData.size());
+	readyResult.setMotif(motif);
 	readyResult.parseSequences(DataFromFile::reliability);
 	readyResult.setStartingClique(startingClique);
 
-	cout << "Printed";
+	//tutaj zwroc rozwiazanie
 }
 
 string DataFromFile::buildMotif(vector <Vertex> verticesToAlign, int reliability)//build motif for clique

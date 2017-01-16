@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Sequence.h"
+
 #include <vector>
 #include <iostream>
 
