@@ -1,0 +1,27 @@
+﻿  ResultMotif.cpp
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.h(13): error C2065: 'ResultMotif': undeclared identifier
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.h(13): error C2923: 'std::vector': 'ResultMotif' is not a valid template type argument for parameter '_Ty'
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.h(13): error C3203: 'allocator': unspecialized class template can't be used as a template argument for template parameter '_Alloc', expected a real type
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.h(35): error C2061: syntax error: identifier 'ResultMotif'
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\resultmotif.cpp(80): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  Generating Code...
+  Compiling...
+  AKB_zad3.cpp
+  Generating Code...
+  Compiling...
+  DataFromFile.cpp
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(63): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(145): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(272): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(327): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(395): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(411): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(491): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(518): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(590): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(520): warning C4101: 'actInd': unreferenced local variable
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(603): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(683): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(606): warning C4101: 'actInd': unreferenced local variable
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(697): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  Generating Code...

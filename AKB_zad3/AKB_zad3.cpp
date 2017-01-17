@@ -15,7 +15,7 @@ using namespace std;
 int main()
 {
 	//TODO: input file name
-	string fileName = "fasta"; // name of file in fasta (without .txt)
+	string fileName = "sample"; // name of file in fasta (without .txt)
 	int substrLength;
 	int reliability;
 
@@ -69,7 +69,7 @@ int main()
 
 	//TODO: code refactoring
 	//TODO: add conditions on all functions having access to private attributes
-	//TODO: save to file
+	//TODO: improve printing
 
 	cout << "Press any key to end";
 

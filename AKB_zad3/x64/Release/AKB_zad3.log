@@ -1,0 +1,27 @@
+﻿  stdafx.cpp
+  AKB_zad3.cpp
+  DataFromFile.cpp
+DataFromFile.cpp(63): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+DataFromFile.cpp(145): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+DataFromFile.cpp(272): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+DataFromFile.cpp(327): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+DataFromFile.cpp(395): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+DataFromFile.cpp(411): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+DataFromFile.cpp(491): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+DataFromFile.cpp(518): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+DataFromFile.cpp(590): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+DataFromFile.cpp(520): warning C4101: 'actInd': unreferenced local variable
+DataFromFile.cpp(603): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+DataFromFile.cpp(683): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+DataFromFile.cpp(606): warning C4101: 'actInd': unreferenced local variable
+DataFromFile.cpp(697): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  Matrix.cpp
+  Result.cpp
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\DataFromFile.h(15): error C2065: 'Result': undeclared identifier
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\DataFromFile.h(15): error C2923: 'std::vector': 'Result' is not a valid template type argument for parameter '_Ty'
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\DataFromFile.h(15): error C3203: 'allocator': unspecialized class template can't be used as a template argument for template parameter '_Alloc', expected a real type
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\DataFromFile.h(37): error C2061: syntax error: identifier 'Result'
+Result.cpp(80): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  Sequence.cpp
+  Vertex.cpp
+Vertex.cpp(55): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data

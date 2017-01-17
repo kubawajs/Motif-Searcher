@@ -5,7 +5,7 @@
 #include "ResultMotif.h"
 
 const int SENSITIVITY = 2;
-const int NUMBER_OF_RESULTS = 5;
+const int NUMBER_OF_RESULTS = 10;
 
 class DataFromFile
 {

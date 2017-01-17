@@ -518,10 +518,12 @@ string DataFromFile::parseMotifRight(string existingMotif, string motifToAdd)
 			i = SENSITIVITY;
 			break;
 		}
-
-		toCompare = toCompare.substr(1, toCompare.size());
-		toAdd += motifToAdd[motifToAdd.size() - 1];
-		motifToAdd.pop_back();
+		else if (toCompare != "")
+		{
+			toCompare = toCompare.substr(1, toCompare.size());
+			toAdd += motifToAdd[motifToAdd.size() - 1];
+			motifToAdd.pop_back();
+		}
 	}
 
 	//cout << existingMotif << endl;
