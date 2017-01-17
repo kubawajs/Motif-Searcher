@@ -329,26 +329,51 @@ void DataFromFile::createListOfVerticesSorted()
 
 void DataFromFile::buildResults()
 {
-	vector <Vertex> startingClique, lastUsedClique;
+	vector <Vertex> startingClique;
+	ResultMotif resultMotif;
 	//jesli results puste
 	startingClique = DataFromFile::buildClique(vertexByLevel);
-	DataFromFile::buildResult(startingClique);
+	DataFromFile::addResult(DataFromFile::buildResult(startingClique));
 	
 	//jesli ju¿ jest jakieœ rozwi¹zanie usun pierwotna klike z wektora startowego
 
-	cout << "ready" << endl;
+	int i = 1;
+	while(i < NUMBER_OF_RESULTS)
+	{
+		vertexByLevel = DataFromFile::filterVector(vertexByLevel, startingClique);
+		if (!vertexByLevel.empty())
+		{
+			startingClique = DataFromFile::buildClique(vertexByLevel);
+			resultMotif = DataFromFile::buildResult(startingClique);
+			if (std::find(DataFromFile::results.begin(), DataFromFile::results.end(), resultMotif) == DataFromFile::results.end())
+			{
+				DataFromFile::addResult(resultMotif);
+				i++;
+			}
+		}
+		else
+		{
+			i = NUMBER_OF_RESULTS;
+		}
+	}
+
+	DataFromFile::sortResults(DataFromFile::results);
 }
 
-void DataFromFile::buildResult(vector <Vertex> startingClique) {
+void DataFromFile::addResult(ResultMotif result)
+{
+	DataFromFile::results.push_back(result);
+}
+
+ResultMotif DataFromFile::buildResult(vector <Vertex> startingClique) {
 	vector <Vertex> result, vertexToCheckLeft, vertexToCheckRight, temporaryResult, verticesToAdd;
 	string motif;
 
 	result = startingClique;
 	motif = DataFromFile::buildMotif(result, DataFromFile::reliability);
-	cout << motif << " - Center" << endl;
 
 	bool isInBuild = true;
-	//rozbuduj w lewo
+	//extend on left
 	do
 	{
 		vertexToCheckLeft = DataFromFile::prepareVertexSetLeft(result, SENSITIVITY);
@@ -361,16 +386,14 @@ void DataFromFile::buildResult(vector <Vertex> startingClique) {
 		string tempMotif = DataFromFile::buildMotif(temporaryResult, DataFromFile::reliability);
 		motif = DataFromFile::parseMotifLeft(motif, tempMotif);
 		result = DataFromFile::sumResult(result, temporaryResult);
-		cout << motif << " - Left" << endl;
 	} while (isInBuild);
 
-	//rozbuduj w prawo
+	//extend on right
 	isInBuild = true;
 	do
 	{
 		vertexToCheckRight = DataFromFile::prepareVertexSetRight(result, SENSITIVITY);
 		temporaryResult = DataFromFile::buildClique(vertexToCheckRight);
-		//TODO: tu coœ zjebane fes
 		if (temporaryResult.size() < 0.55 * DataFromFile::seqData.size())
 		{
 			isInBuild = false;
@@ -379,10 +402,7 @@ void DataFromFile::buildResult(vector <Vertex> startingClique) {
 		string tempMotif = DataFromFile::buildMotif(temporaryResult, DataFromFile::reliability);
 		motif = DataFromFile::parseMotifRight(motif, tempMotif);
 		result = DataFromFile::sumResult(result, temporaryResult);
-		cout << motif << " - Right" << endl;
 	} while (isInBuild);
-
-	cout << "Result status: Ready" << endl;
 
 	//Creating results
 	ResultMotif readyResult;
@@ -391,7 +411,12 @@ void DataFromFile::buildResult(vector <Vertex> startingClique) {
 	readyResult.parseSequences(DataFromFile::reliability);
 	readyResult.setStartingClique(startingClique);
 
-	//tutaj zwroc rozwiazanie
+	return readyResult;
+}
+
+vector<ResultMotif> DataFromFile::getResults()
+{
+	return DataFromFile::results;
 }
 
 string DataFromFile::buildMotif(vector <Vertex> verticesToAlign, int reliability)//build motif for clique
@@ -725,6 +750,19 @@ vector<Vertex> DataFromFile::sumResult(vector<Vertex> actualResult, vector<Verte
 	return actualResult;
 }
 
+vector<Vertex> DataFromFile::filterVector(vector<Vertex> toFilter, vector<Vertex> filtering)
+{
+	vector<Vertex> result;
+	for (auto &elementToFilter : toFilter) // access by reference to avoid copying
+	{
+		if (std::find(filtering.begin(), filtering.end(), elementToFilter) == filtering.end()) {
+			result.push_back(elementToFilter);
+		}
+	}
+
+	return result;
+}
+
 bool DataFromFile::checkConnectionsInClique(vector <Vertex> result, Vertex analyzedVertex, Matrix matrix) {
 	vector <vector <int>> graph = matrix.getMatrix();
 	for (int i = 0; i < result.size(); i++) {
@@ -778,6 +816,40 @@ void DataFromFile::sortByIndex(vector<Vertex> &vertexInLvlList, int left, int ri
 
 	if (left < j) sortByIndex(vertexInLvlList, left, j);
 	if (right > i) sortByIndex(vertexInLvlList, i, right);
+}
+
+void DataFromFile::sortResults(vector<ResultMotif>& results)
+{
+	std::sort(results.begin(), results.end());
+	std::reverse(results.begin(), results.end());
+}
+
+void DataFromFile::printBestMotifs(vector <ResultMotif> results)
+{
+	int i = 1;
+	if (!results.empty())
+	{
+		cout << "Znaleziono motyw:" << endl;
+		cout << results[0].getMotif() << endl;
+		while (i < results.size())
+		{
+			if (results[i - 1].getMotif().size() == results[i].getMotif().size())
+			{
+				cout << "Znaleziono motyw:" << endl;
+				cout << results[i].getMotif() << endl;
+				i++;
+			}
+			else
+			{
+				i = results.size();
+				break;
+			}
+		}
+	}
+	else
+	{
+		cout << "Nie znaleziono motywu w podanych sekwencjach";
+	}
 }
 
 DataFromFile::DataFromFile()

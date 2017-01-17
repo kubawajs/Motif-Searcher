@@ -62,15 +62,16 @@ int main()
 	data.createListOfVerticesSorted();
 
 	//BUILD A CLIQUE BASED ON VERTICES LEVEL
-	//TODO: musi budowac wiêcej ni¿ jedno rozwiazanie i wg rankingu wybierac najlepsze
 	data.buildResults();
 
-	//TODO: print result (max clique)
-	//TODO: searching for clique/series of cliques
+	//PRINT BEST RESULTS
+	data.printBestMotifs(data.getResults());
+
 	//TODO: code refactoring
 	//TODO: add conditions on all functions having access to private attributes
+	//TODO: save to file
 
-	cout << "dpa";
+	cout << "Press any key to end";
 
 	return 0;
 }

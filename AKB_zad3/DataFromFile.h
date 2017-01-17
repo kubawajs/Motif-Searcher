@@ -5,11 +5,13 @@
 #include "ResultMotif.h"
 
 const int SENSITIVITY = 2;
+const int NUMBER_OF_RESULTS = 5;
 
 class DataFromFile
 {
 	vector <Sequence> seqData;
 	vector <Vertex> vertexByLevel;
+	vector <ResultMotif> results;
 	Matrix matrix;
 	string dataName;
 	int substrLength;
@@ -31,14 +33,19 @@ public:
 	void printSequences(vector <Sequence> seqData);
 	void createListOfVerticesSorted();
 	void buildResults();
-	void buildResult(vector <Vertex> startingClique);
+	void addResult(ResultMotif result);
+	ResultMotif buildResult(vector <Vertex> startingClique);
+	vector<ResultMotif> getResults();
 	vector<Vertex> prepareVertexSetLeft(vector<Vertex> actualResult, int sensitivity);
 	vector<Vertex> prepareVertexSetRight(vector<Vertex> actualResult, int sensitivity);
 	vector<Vertex> buildClique(vector <Vertex> vertexByLevel);
 	vector<Vertex> sumResult(vector<Vertex> actualResult, vector<Vertex> tempResult);
+	vector<Vertex> filterVector(vector<Vertex> toFilter, vector<Vertex> filtering);
 	vector<int> getInfoTable(Matrix matrix);
 	void sortByVertexLvl(vector<Vertex> &vertexInLvlList, int left, int right);
 	void sortByIndex(vector<Vertex> &vertexInLvlList, int left, int right);
+	void sortResults(vector<ResultMotif> &results);
+	void printBestMotifs(vector<ResultMotif> results);
 	bool checkConnectionsInClique(vector<Vertex> result, Vertex analyzedVertex, Matrix matrix);
 	string buildMotif(vector<Vertex> verticesToAlign, int reliability);
 	string parseMotifLeft(string existingMotif, string motifToAdd);
