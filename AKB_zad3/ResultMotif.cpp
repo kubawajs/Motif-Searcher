@@ -109,10 +109,10 @@ void ResultMotif::printMotifOnSeq(vector<Vertex> result, int seqSize, int reliab
 		for (int k = 0; k < result[j].getSubstrLength(); k++)
 		{ //for each char in substring
 			if (result[j].getQual()[k] >= reliability) {
-				sequence[j + k] = result[j].getSubstring()[k];
+				sequence[result[j].getIndexInSeq() + k] = result[j].getSubstring()[k];
 			}
 			else {
-				sequence[j + k] = '*';
+				sequence[result[j].getIndexInSeq() + k] = '*';
 			}
 		}
 	}

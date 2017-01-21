@@ -66,6 +66,7 @@ void Sequence::createSubstrings(string sequence, vector<int> qual, int substrLen
 		}
 		v1.setSubstr(tempSub); // set substring in object
 		v1.setQual(tempQual); // set qualities of all letters in substring
+		v1.setIndexInSeq(x);
 		Sequence::substrings.push_back(v1); // add substring to vector in sequence data
 		//clear temp vectors for next substring
 		tempSub.clear();

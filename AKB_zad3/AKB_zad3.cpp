@@ -65,8 +65,7 @@ int main()
 	data.printBestMotifs(data.getResults());
 
 	//PRINT SEQUENCES WITH USEFUL DATA
-	//TODO: zmien na wypisywanie wszystkich wynikow
-	data.printSequences(data.getSeqData(), data.getResults()[0].getSequences());
+	data.printResult(data.getResults());
 
 	//TODO: zmien liczbe dozwolonych delecji w parametr
 	//TODO: code refactoring

@@ -45,6 +45,16 @@ void Vertex::setSeqIndex(int _seqIndex)
 	Vertex::seqIndex = _seqIndex;
 }
 
+int Vertex::getIndexInSeq()
+{
+	return Vertex::indexInSeq;
+}
+
+void Vertex::setIndexInSeq(int indexInSeq)
+{
+	Vertex::indexInSeq = indexInSeq;
+}
+
 bool Vertex::getHasMinConnections()
 {
 	return Vertex::hasMinConnections;

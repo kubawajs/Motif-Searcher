@@ -6,6 +6,7 @@
 
 const int SENSITIVITY = 2;
 const int NUMBER_OF_RESULTS = 10;
+const int PERMITTED_DELETIONS = 2;
 
 class DataFromFile
 {
@@ -50,6 +51,7 @@ public:
 	string buildMotif(vector<Vertex> verticesToAlign, int reliability);
 	string parseMotifLeft(string existingMotif, string motifToAdd);
 	string parseMotifRight(string existingMotif, string motifToAdd);
+	void printResult(vector <ResultMotif> result);
 	DataFromFile();
 	DataFromFile(string dataName, int substrLength, int reliability);
 	~DataFromFile();

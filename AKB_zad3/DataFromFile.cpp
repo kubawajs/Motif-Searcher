@@ -354,11 +354,11 @@ void DataFromFile::buildResults()
 	//jesli results puste
 	startingClique = DataFromFile::buildClique(vertexByLevel);
 	DataFromFile::addResult(DataFromFile::buildResult(startingClique));
-	
+
 	//jesli ju¿ jest jakieœ rozwi¹zanie usun pierwotna klike z wektora startowego
 
 	int i = 1;
-	while(i < NUMBER_OF_RESULTS)
+	while (i < NUMBER_OF_RESULTS)
 	{
 		vertexByLevel = DataFromFile::filterVector(vertexByLevel, startingClique);
 		if (!vertexByLevel.empty())
@@ -516,7 +516,6 @@ string DataFromFile::parseMotifLeft(string existingMotif, string motifToAdd)
 		motifToAdd.erase(0, i);
 	}
 
-	//cout << existingMotif << endl;
 	return existingMotif;
 }
 
@@ -546,8 +545,30 @@ string DataFromFile::parseMotifRight(string existingMotif, string motifToAdd)
 		}
 	}
 
-	//cout << existingMotif << endl;
 	return existingMotif;
+}
+
+void DataFromFile::printResult(vector<ResultMotif> result)
+{
+	int longestMotif = 0;
+	for (int i = 0; i < result.size(); i++)
+	{
+		if (i == 0)
+		{
+			longestMotif = result[0].getMotif().size();
+		}
+
+		if (longestMotif == result[i].getMotif().size())
+		{
+			cout << "Znalezione rozwiazanie id: " << i << endl;
+			DataFromFile::printSequences(DataFromFile::seqData, DataFromFile::results[i].getSequences());
+		}
+		else
+		{
+			i = result.size();
+			break;
+		}
+	}
 }
 
 vector <Vertex> DataFromFile::prepareVertexSetLeft(vector <Vertex> actualResult, int sensitivity) {
@@ -730,7 +751,7 @@ vector <Vertex> DataFromFile::prepareVertexSetRight(vector <Vertex> actualResult
 vector <Vertex> DataFromFile::buildClique(vector<Vertex> vertexByLevel) {
 	vector <Vertex> clique;
 	vector <bool> usedSequences;
-	
+
 	if (vertexByLevel.empty())
 	{
 		return clique;

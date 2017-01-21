@@ -11,6 +11,7 @@ class Vertex
 	vector <int> qual;
 	int level;
 	int index;
+	int indexInSeq;
 	int seqIndex;
 	bool hasMinConnections;
 
@@ -23,6 +24,8 @@ public:
 	void setIndex(int _index);
 	int getSeqIndex();
 	void setSeqIndex(int _seqIndex);
+	int getIndexInSeq();
+	void setIndexInSeq(int indexInSeq);
 	bool getHasMinConnections();
 	int getSubstrLength();
 	int getVertexLvl();
