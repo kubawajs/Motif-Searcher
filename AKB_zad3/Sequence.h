@@ -9,6 +9,7 @@ using namespace std;
 
 class Sequence
 {
+	int seqId;
 	string name; //sequence name
 	string sequence; //whole sequence as one string
 	vector <int> qual; //quality
@@ -22,6 +23,8 @@ public:
 	void setQual(vector <int> qual);
 	vector <int> getQual();
 	void setSubstr(vector <Vertex> substrings);
+	void setSeqId(int seqId);
+	int getSeqId();
 	void addSubstr(Vertex substring);
 	void createSubstrings(string sequence, vector <int> qual, int substrLength, int reliability);
 	int getSubstrSize();

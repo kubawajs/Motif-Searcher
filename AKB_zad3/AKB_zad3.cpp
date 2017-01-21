@@ -15,11 +15,11 @@ using namespace std;
 int main()
 {
 	//TODO: input file name
-	string fileName = "sample"; // name of file in fasta (without .txt)
+	string fileName = "fasta"; // name of file in fasta (without .txt)
 	int substrLength;
 	int reliability;
 
-	//USERS PARAMETERS
+	//USER PARAMETERS
 	do {
 		cout << "Podaj dlugosc generowanych podciagow (4-7): " << endl;
 		cin >> substrLength;
@@ -55,9 +55,6 @@ int main()
 	//CHECK IF EVERY VERTEX HAS CONNECTION WITH MIN SEQUENCES
 	data.checkIfHasMinConnections(data.getMatrix());
 
-	//TEST - PRINT SEQUENCES
-	data.printSequences(data.getSeqData());
-
 	//CREATE LIST OF VERTICES SORTED BY LEVEL
 	data.createListOfVerticesSorted();
 
@@ -67,6 +64,11 @@ int main()
 	//PRINT BEST RESULTS
 	data.printBestMotifs(data.getResults());
 
+	//PRINT SEQUENCES WITH USEFUL DATA
+	//TODO: zmien na wypisywanie wszystkich wynikow
+	data.printSequences(data.getSeqData(), data.getResults()[0].getSequences());
+
+	//TODO: zmien liczbe dozwolonych delecji w parametr
 	//TODO: code refactoring
 	//TODO: add conditions on all functions having access to private attributes
 	//TODO: improve printing

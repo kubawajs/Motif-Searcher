@@ -38,6 +38,16 @@ void Sequence::setSubstr(vector<Vertex> substrings)
 	Sequence::substrings = substrings;
 }
 
+void Sequence::setSeqId(int seqId)
+{
+	Sequence::seqId = seqId;
+}
+
+int Sequence::getSeqId()
+{
+	return Sequence::seqId;
+}
+
 void Sequence::addSubstr(Vertex substring)
 {
 	Sequence::substrings.push_back(substring);

@@ -30,7 +30,7 @@ public:
 	void setSeqData(vector <Sequence> seqData);
 	void createEdges(Matrix matrix, vector<Sequence> data, vector<int> infoTable, int reliability);
 	void checkIfHasMinConnections(Matrix matrix);//function for checking if vertex has connection with min 5 other sequences
-	void printSequences(vector <Sequence> seqData);
+	void printSequences(vector <Sequence> seqData, vector <Sequence> resultSeq);
 	void createListOfVerticesSorted();
 	void buildResults();
 	void addResult(ResultMotif result);

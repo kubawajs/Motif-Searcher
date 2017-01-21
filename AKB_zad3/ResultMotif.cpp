@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "ResultMotif.h"
 
+#include <iostream>
+#include <string>
+
 ResultMotif::ResultMotif()
 {
 }
@@ -81,6 +84,7 @@ void ResultMotif::setResult(vector<Vertex> result, int numOfSeqs)
 
 	for (int i = 0; i < numOfSeqs; i++)
 	{
+		sequence.setSeqId(i);
 		ResultMotif::result.push_back(sequence);
 	}
 
@@ -94,6 +98,26 @@ void ResultMotif::setResult(vector<Vertex> result, int numOfSeqs)
 void ResultMotif::setMotif(string motif)
 {
 	ResultMotif::motif = motif;
+}
+
+void ResultMotif::printMotifOnSeq(vector<Vertex> result, int seqSize, int reliability)
+{
+	string sequence(seqSize, '-');
+
+	for (int j = 0; j < result.size(); j++)
+	{
+		for (int k = 0; k < result[j].getSubstrLength(); k++)
+		{ //for each char in substring
+			if (result[j].getQual()[k] >= reliability) {
+				sequence[j + k] = result[j].getSubstring()[k];
+			}
+			else {
+				sequence[j + k] = '*';
+			}
+		}
+	}
+	
+	cout << "M: " << sequence << "\n" << endl;
 }
 
 string ResultMotif::getMotif()

@@ -43,9 +43,12 @@ void DataFromFile::loadFromFile(string dataName, vector <Sequence> seqData) {
 	}
 	else {
 		Sequence s1;
+		int seqId = 0;
 		while (getline(file, line)) {
 			if (line[0] == '>') {
 				s1.setName(line);
+				s1.setSeqId(seqId);
+				seqId++;
 			}
 			else {
 				if (lastSeq == "") {
@@ -266,15 +269,13 @@ void DataFromFile::checkIfHasMinConnections(Matrix matrix)
 	}
 }
 
-void DataFromFile::printSequences(vector <Sequence> seqData)
+void DataFromFile::printSequences(vector <Sequence> seqData, vector <Sequence> resultSeq)
 {
+	ResultMotif resultMotif;
 	for (int i = 0; i < seqData.size(); i++) { //for each sequence
 		int seqSize = seqData[i].getSequence().size(); //get length of sequence
 		string sequence(seqSize, '-'); //create string with '-' chars with length of sequence
 		vector <Vertex> substrs = seqData[i].getSubstrings();
-
-		cout << "\n" << seqData[i].getName() << endl; //print name of sequence
-		cout << "O: " << DataFromFile::seqData[i].getSequence() << endl;
 
 		for (int j = 0; j < seqData[i].getSubstrSize(); j++) { //for each substring in sequence
 			if (substrs[j].getHasMinConnections()) {
@@ -290,7 +291,26 @@ void DataFromFile::printSequences(vector <Sequence> seqData)
 			}
 		}
 
-		cout << "D: " << sequence << "\n" << endl;
+		cout << "\n" << seqData[i].getName() << endl; //print name of sequence
+		cout << "O: " << DataFromFile::seqData[i].getSequence() << endl;
+		cout << "D: " << sequence << endl;
+
+		//print motifs
+		for (int j = 0; j < resultSeq.size(); j++)
+		{
+			if (seqData[i].getSeqId() == resultSeq[j].getSeqId())
+			{
+				vector <Vertex> resultVertices = resultSeq[j].getSubstrings();
+				resultMotif.printMotifOnSeq(resultVertices, seqSize, reliability);
+				j = resultSeq.size();
+				break;
+			}
+			else if (j == resultSeq.size() - 1)
+			{
+				string seqMotifEmpty(seqSize, '-');
+				cout << "M: " << seqMotifEmpty << '\n' << endl;
+			}
+		}
 	}
 }
 

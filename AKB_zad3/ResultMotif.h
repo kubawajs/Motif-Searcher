@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Sequence.h"
-#include "Vertex.h"
 
 class ResultMotif
 {
@@ -15,6 +14,7 @@ public:
 	void setStartingClique(vector <Vertex> clique);
 	void setResult(vector <Vertex> result, int numOfSeqs);
 	void setMotif(string motif);
+	void printMotifOnSeq(vector <Vertex> result, int seqSize, int reliability);
 	string getMotif();
 	vector <Vertex> getStartingClique();
 	vector <Sequence> getSequences();
