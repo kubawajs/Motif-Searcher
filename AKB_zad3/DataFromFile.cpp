@@ -145,7 +145,7 @@ void DataFromFile::filterLowSubstrs(Matrix matrix, vector<Sequence> data, int re
 			countGoodNucs = 0;
 			checking = data[i].getSubstrings();
 			checkQuals = checking[j].getQual();
-			limit = (checkQuals.size() / 2) + 1; //min number of good nucs in substring
+			limit = checking[j].getQual().size() - PERMITTED_DELETIONS; //min number of good nucs in substring
 			//loop over elements of substring
 			for (int k = 0; k < checkQuals.size(); k++) {
 				if (checkQuals[k] >= reliability) {

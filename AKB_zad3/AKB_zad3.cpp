@@ -67,7 +67,6 @@ int main()
 	//PRINT SEQUENCES WITH USEFUL DATA
 	data.printResult(data.getResults());
 
-	//TODO: zmien liczbe dozwolonych delecji w parametr
 	//TODO: code refactoring
 	//TODO: add conditions on all functions having access to private attributes
 	//TODO: improve printing
