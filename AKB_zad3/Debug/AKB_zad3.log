@@ -1,44 +1,38 @@
-﻿  Vertex.cpp
-  Sequence.cpp
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\sequence.cpp(62): warning C4018: '<=': signed/unsigned mismatch
-  DataFromFile.cpp
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(66): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(100): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(126): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(142): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(150): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(202): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(250): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(274): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(291): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(315): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(334): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(348): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(476): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(483): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(493): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(496): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(578): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(612): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(619): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(622): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(629): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(675): warning C4102: 'std': unreferenced label
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(606): warning C4101: 'actInd': unreferenced local variable
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(697): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(704): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(707): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(714): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(723): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(749): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(768): warning C4102: 'std': unreferenced label
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(691): warning C4101: 'actInd': unreferenced local variable
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(785): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(790): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(783): warning C4102: 'std': unreferenced label
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(807): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(835): warning C4018: '<': signed/unsigned mismatch
-c:\users\mariusz\desktop\kuba\akb\zadanie 3\akwb3\akb_zad3\datafromfile.cpp(884): warning C4018: '<': signed/unsigned mismatch
-  AKB_zad3.cpp
-  Generating Code...
-  AKB_zad3.vcxproj -> C:\Users\Mariusz\Desktop\Kuba\AKB\Zadanie 3\AKwB3\Debug\AKB_zad3.exe
+﻿  DataFromFile.cpp
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(74): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(115): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(145): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(161): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(169): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(221): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(266): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(290): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(307): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(331): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(350): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(364): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(490): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(497): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(507): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(510): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(592): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(626): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(633): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(636): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(643): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(689): warning C4102: 'std': unreferenced label
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(711): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(718): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(721): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(728): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(737): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(763): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(782): warning C4102: 'std': unreferenced label
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(799): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(804): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(797): warning C4102: 'std': unreferenced label
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(821): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(849): warning C4018: '<': signed/unsigned mismatch
+c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(898): warning C4018: '<': signed/unsigned mismatch
+  AKB_zad3.vcxproj -> C:\Users\kubaw\Documents\Programming\AKwB3\Debug\AKB_zad3.exe
+  AKB_zad3.vcxproj -> C:\Users\kubaw\Documents\Programming\AKwB3\Debug\AKB_zad3.pdb (Full PDB)

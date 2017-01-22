@@ -254,10 +254,7 @@ void DataFromFile::checkIfHasMinConnections(Matrix matrix)
 {
 	vector <int> infoTable = matrix.getInfoTable();
 	vector <vector <int>> m = matrix.getMatrix();
-	int actuali = 0;
-	int actualj = 0;
-	int noSubstr;
-	bool test = false;
+	int actuali = 0, actualj, noSubstr;
 
 	for (int i = 0; i < matrix.getSize(); i++) {
 		if (i == infoTable[actuali]) {
@@ -266,7 +263,7 @@ void DataFromFile::checkIfHasMinConnections(Matrix matrix)
 
 		int connections = 0, linkedSeq = 0;
 		vector<bool> sequencesToMark;
-		for (int i = 0; i < DataFromFile::getSeqData().size(); i++)
+		for (int x = 0; x < DataFromFile::getSeqData().size(); x++)
 		{
 			sequencesToMark.push_back(false);
 		}
@@ -337,7 +334,6 @@ void DataFromFile::printSequences(vector <Sequence> seqData, vector <Sequence> r
 			{
 				vector <Vertex> resultVertices = resultSeq[j].getSubstrings();
 				resultMotif.printMotifOnSeq(resultVertices, seqSize, reliability);
-				j = resultSeq.size();
 				break;
 			}
 			else if (j == resultSeq.size() - 1)
@@ -442,7 +438,6 @@ ResultMotif DataFromFile::buildResult(vector <Vertex> startingClique) {
 		temporaryResult = DataFromFile::buildClique(vertexToCheckLeft);
 		if (temporaryResult.size() < 0.55 * DataFromFile::seqData.size())
 		{
-			isInBuild = false;
 			break;
 		}
 		string tempMotif = DataFromFile::buildMotif(temporaryResult, DataFromFile::reliability);
@@ -458,7 +453,6 @@ ResultMotif DataFromFile::buildResult(vector <Vertex> startingClique) {
 		temporaryResult = DataFromFile::buildClique(vertexToCheckRight);
 		if (temporaryResult.size() < 0.55 * DataFromFile::seqData.size())
 		{
-			isInBuild = false;
 			break;
 		}
 		string tempMotif = DataFromFile::buildMotif(temporaryResult, DataFromFile::reliability);
@@ -484,8 +478,7 @@ vector<ResultMotif> DataFromFile::getResults() const
 string DataFromFile::buildMotif(vector <Vertex> verticesToAlign, int reliability) const
 //build motif for clique
 {
-	int actSeq, it = 0, maxValue = 0;
-	int seqId = verticesToAlign[0].getSeqIndex();
+	int actSeq, it = 0, maxValue = 0, seqId;
 	Vertex v1;
 	map <string, int> submotifs = {};
 	vector <char> preMotif;
@@ -550,7 +543,6 @@ string DataFromFile::parseMotifLeft(string existingMotif, string motifToAdd)
 	{
 		if (toCompare.find(motifToAdd) != string::npos) {
 			existingMotif = toAdd + existingMotif;
-			i = SENSITIVITY;
 			break;
 		}
 
@@ -577,7 +569,6 @@ string DataFromFile::parseMotifRight(string existingMotif, string motifToAdd)
 	{
 		if (toCompare.find(motifToAdd) != string::npos) {
 			existingMotif = existingMotif + toAdd;
-			i = SENSITIVITY;
 			break;
 		}
 		else if (toCompare != "")
@@ -608,7 +599,6 @@ void DataFromFile::printResult(vector<ResultMotif> result)
 		}
 		else
 		{
-			i = result.size();
 			break;
 		}
 	}
@@ -622,7 +612,7 @@ vector <Vertex> DataFromFile::prepareVertexSetLeft(vector <Vertex> actualResult,
 
 	DataFromFile::sortByIndex(resultSortedByIndex, 0, actualResult.size() - 1);
 
-	int seqId, actInd, actSeq;
+	int seqId, actSeq;
 	vector <Vertex> verticesToAdd;
 	Vertex v1;
 
@@ -707,7 +697,7 @@ vector <Vertex> DataFromFile::prepareVertexSetRight(vector <Vertex> actualResult
 	DataFromFile::sortByIndex(resultSortedByIndex, 0, actualResult.size() - 1);
 	reverse(resultSortedByIndex.begin(), resultSortedByIndex.end());
 
-	int seqId, actInd, actSeq;
+	int seqId, actSeq;
 	vector <Vertex> verticesToAdd;
 	Vertex v1;
 
@@ -910,7 +900,6 @@ void DataFromFile::printBestMotifs(vector <ResultMotif> results)
 			}
 			else
 			{
-				i = results.size();
 				break;
 			}
 		}
@@ -923,6 +912,9 @@ void DataFromFile::printBestMotifs(vector <ResultMotif> results)
 
 DataFromFile::DataFromFile()
 {
+	DataFromFile::substrLength = 4;
+	DataFromFile::reliability = 10;
+	DataFromFile::minConnections = 0;
 }
 
 DataFromFile::DataFromFile(string dataName, int substrLength, int reliability)
@@ -930,6 +922,7 @@ DataFromFile::DataFromFile(string dataName, int substrLength, int reliability)
 	DataFromFile::dataName = dataName;
 	DataFromFile::substrLength = substrLength;
 	DataFromFile::reliability = reliability;
+	DataFromFile::minConnections = 0;
 }
 
 DataFromFile::~DataFromFile()

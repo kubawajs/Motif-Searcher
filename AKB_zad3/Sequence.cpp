@@ -102,7 +102,7 @@ void Sequence::setVertexNumOfConSeq(int noSubstr, int conSeq)
 bool Sequence::compareSubstrs(Vertex substr1, Vertex substr2, int usersSubstrLength, int reliability)
 {
 	vector <char> substrSh, substrLn;
-	int lengthSh, lengthLn, diffInLength, similarities = 0;
+	int lengthSh, lengthLn, diffInLength, similarities;
 
 	vector <int> tempQ;
 	vector <char> tempS;
