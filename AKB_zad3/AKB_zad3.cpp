@@ -7,15 +7,13 @@
 
 #include <iostream>
 #include <string>
-#include <fstream>
-#include <cstdlib>
 
 using namespace std;
 
 int main()
 {
 	//TODO: input file name
-	string fileName = "test1"; // name of file in fasta (without .txt)
+	string fileName = "fasta"; // name of file in fasta (without .txt)
 	int substrLength;
 	int reliability;
 

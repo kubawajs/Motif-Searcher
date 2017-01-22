@@ -14,9 +14,9 @@ class Matrix
 	int size;
 
 public:
-	int getSize();
-	vector <int> getInfoTable();
-	vector <vector <int>> getMatrix();
+	int getSize() const;
+	vector <int> getInfoTable() const;
+	vector <vector <int>> getMatrix() const;
 	void setMatrix(vector <vector <int>> matrix);
 	void countMatrixSizeFromSeq(vector<Sequence> data, int size);
 	void initializeMatrix(int size);

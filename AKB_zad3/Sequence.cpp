@@ -8,7 +8,7 @@ void Sequence::setName(string name)
 	Sequence::name = name;
 }
 
-string Sequence::getName()
+string Sequence::getName() const
 {
 	return string(Sequence::name);
 }
@@ -18,7 +18,7 @@ void Sequence::setSequence(string seq)
 	Sequence::sequence = seq;
 }
 
-string Sequence::getSequence()
+string Sequence::getSequence() const
 {
 	return string(Sequence::sequence);
 }
@@ -28,7 +28,7 @@ void Sequence::setQual(vector<int> qual)
 	Sequence::qual = qual;
 }
 
-vector<int> Sequence::getQual()
+vector<int> Sequence::getQual() const
 {
 	return Sequence::qual;
 }
@@ -43,7 +43,7 @@ void Sequence::setSeqId(int seqId)
 	Sequence::seqId = seqId;
 }
 
-int Sequence::getSeqId()
+int Sequence::getSeqId() const
 {
 	return Sequence::seqId;
 }
@@ -74,12 +74,12 @@ void Sequence::createSubstrings(string sequence, vector<int> qual, int substrLen
 	}
 }
 
-int Sequence::getSubstrSize()
+int Sequence::getSubstrSize() const
 {
 	return int(substrings.size());
 }
 
-vector<Vertex> Sequence::getSubstrings()
+vector<Vertex> Sequence::getSubstrings() const
 {
 	return Sequence::substrings;
 }
@@ -171,6 +171,7 @@ void Sequence::vertexLvlUp(int noSubstr)
 
 Sequence::Sequence()
 {
+	Sequence::seqId = -1;
 }
 
 

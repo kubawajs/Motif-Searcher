@@ -20,10 +20,10 @@ class DataFromFile
 	int minConnections;
 
 public:
-	vector <Sequence> getSeqData();
-	string getDataName();
-	Matrix getMatrix();
-	int getReliability();
+	vector <Sequence> getSeqData() const;
+	string getDataName() const;
+	Matrix getMatrix() const;
+	int getReliability() const;
 	void loadFromFile(string dataName, vector <Sequence> seqData);
 	void loadQualFile(string dataName, vector <Sequence> seqData);
 	void createGraph(Matrix matrix, vector <Sequence> data);
@@ -36,20 +36,20 @@ public:
 	void buildResults();
 	void addResult(ResultMotif result);
 	ResultMotif buildResult(vector <Vertex> startingClique);
-	vector<ResultMotif> getResults();
+	vector<ResultMotif> getResults() const;
 	vector<Vertex> prepareVertexSetLeft(vector<Vertex> actualResult, int sensitivity);
 	vector<Vertex> prepareVertexSetRight(vector<Vertex> actualResult, int sensitivity);
-	vector<Vertex> buildClique(vector <Vertex> vertexByLevel);
-	vector<Vertex> sumResult(vector<Vertex> actualResult, vector<Vertex> tempResult);
-	vector<Vertex> filterVector(vector<Vertex> toFilter, vector<Vertex> filtering);
-	vector<int> getInfoTable(Matrix matrix);
-	void sortByIndex(vector<Vertex> &vertexInLvlList, int left, int right);
-	void sortResults(vector<ResultMotif> &results);
-	void printBestMotifs(vector<ResultMotif> results);
-	bool checkConnectionsInClique(vector<Vertex> result, Vertex analyzedVertex, Matrix matrix);
-	string buildMotif(vector<Vertex> verticesToAlign, int reliability);
-	string parseMotifLeft(string existingMotif, string motifToAdd);
-	string parseMotifRight(string existingMotif, string motifToAdd);
+	vector<Vertex> buildClique(vector <Vertex> vertexByLevel) const;
+	static vector<Vertex> sumResult(vector<Vertex> actualResult, vector<Vertex> tempResult);
+	static vector<Vertex> filterVector(vector<Vertex> toFilter, vector<Vertex> filtering);
+	static vector<int> getInfoTable(Matrix matrix);
+	void sortByIndex(vector<Vertex> &vertexInLvlList, int left, int right) const;
+	void sortResults(vector<ResultMotif> &results) const;
+	static void printBestMotifs(vector<ResultMotif> results);
+	static bool checkConnectionsInClique(vector<Vertex> result, Vertex analyzedVertex, Matrix matrix);
+	string buildMotif(vector<Vertex> verticesToAlign, int reliability) const;
+	static string parseMotifLeft(string existingMotif, string motifToAdd);
+	static string parseMotifRight(string existingMotif, string motifToAdd);
 	void printResult(vector <ResultMotif> result);
 	DataFromFile();
 	DataFromFile(string dataName, int substrLength, int reliability);

@@ -9,18 +9,18 @@ class ResultMotif
 	string motif;
 
 public:
-	void sortByIndex(vector<Vertex>& vertexInLvlList, int left, int right);
+	void sortByIndex(vector<Vertex>& vertexInLvlList, int left, int right) const;
 	void parseSequences(int reliability);
 	void setStartingClique(vector <Vertex> clique);
 	void setResult(vector <Vertex> result, int numOfSeqs);
 	void setMotif(string motif);
-	void printMotifOnSeq(vector <Vertex> result, int seqSize, int reliability);
-	void printVerticesInMotif(vector<Vertex> result, int reliability);
-	string getMotif();
-	vector <Vertex> getStartingClique();
-	vector <Sequence> getSequences();
-	bool operator==(const ResultMotif &r);
-	bool operator<(const ResultMotif &r);
+	static void printMotifOnSeq(vector <Vertex> result, int seqSize, int reliability);
+	static void printVerticesInMotif(vector<Vertex> result, int reliability);
+	string getMotif() const;
+	vector <Vertex> getStartingClique() const;
+	vector <Sequence> getSequences() const;
+	bool operator==(const ResultMotif &r) const;
+	bool operator<(const ResultMotif &r) const;
 	ResultMotif();
 	~ResultMotif();
 };

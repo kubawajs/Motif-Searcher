@@ -17,22 +17,22 @@ class Sequence
 
 public:
 	void setName(string name);
-	string getName();
+	string getName() const;
 	void setSequence(string seq);
-	string getSequence();
+	string getSequence() const;
 	void setQual(vector <int> qual);
-	vector <int> getQual();
+	vector <int> getQual() const;
 	void setSubstr(vector <Vertex> substrings);
 	void setSeqId(int seqId);
-	int getSeqId();
+	int getSeqId() const;
 	void addSubstr(Vertex substring);
 	void createSubstrings(string sequence, vector <int> qual, int substrLength, int reliability);
-	int getSubstrSize();
-	vector <Vertex> getSubstrings();
+	int getSubstrSize() const;
+	vector <Vertex> getSubstrings() const;
 	Vertex getSubstrById(int noSubstr);
 	void setVertexHasMinConnections(int noSubstr);
 	void setVertexNumOfConSeq(int noSubstr, int conSeq);
-	bool compareSubstrs(Vertex substr1, Vertex substr2, int usersSubstrLength, int reliability);//compare two substrings including deletions
+	static bool compareSubstrs(Vertex substr1, Vertex substr2, int usersSubstrLength, int reliability);//compare two substrings including deletions
 	void vertexLvlUp(int noSubstr);//increment level of vertex
 	Sequence();
 	~Sequence();

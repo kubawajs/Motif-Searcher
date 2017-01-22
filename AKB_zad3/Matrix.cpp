@@ -3,17 +3,17 @@
 
 using namespace std;
 
-int Matrix::getSize()
+int Matrix::getSize() const
 {
 	return Matrix::size;
 }
 
-vector<int> Matrix::getInfoTable()
+vector<int> Matrix::getInfoTable() const
 {
 	return Matrix::infoTable;
 }
 
-vector<vector<int>> Matrix::getMatrix()
+vector<vector<int>> Matrix::getMatrix() const
 {
 	return Matrix::matrix;
 }

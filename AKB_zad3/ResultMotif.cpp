@@ -12,7 +12,7 @@ ResultMotif::~ResultMotif()
 {
 }
 
-void ResultMotif::sortByIndex(vector<Vertex> &vertexInLvlList, int left, int right)
+void ResultMotif::sortByIndex(vector<Vertex> &vertexInLvlList, int left, int right) const
 {
 	int i = left;
 	int j = right;
@@ -134,22 +134,22 @@ void ResultMotif::printVerticesInMotif(vector<Vertex> result, int reliability)
 	cout << endl;
 }
 
-string ResultMotif::getMotif()
+string ResultMotif::getMotif() const
 {
 	return ResultMotif::motif;
 }
 
-vector<Vertex> ResultMotif::getStartingClique()
+vector<Vertex> ResultMotif::getStartingClique() const
 {
 	return ResultMotif::startingClique;
 }
 
-vector<Sequence> ResultMotif::getSequences()
+vector<Sequence> ResultMotif::getSequences() const
 {
 	return ResultMotif::result;
 }
 
-bool ResultMotif::operator==(const ResultMotif&r)
+bool ResultMotif::operator==(const ResultMotif&r) const
 {
 	if (this->motif == r.motif)
 	{
@@ -161,7 +161,7 @@ bool ResultMotif::operator==(const ResultMotif&r)
 	}
 }
 
-bool ResultMotif::operator<(const ResultMotif & r)
+bool ResultMotif::operator<(const ResultMotif & r) const
 {
 	if (this->motif.size() < r.motif.size())
 	{

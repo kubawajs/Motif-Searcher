@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <iostream>
 
 using namespace std;
 
@@ -18,26 +17,26 @@ class Vertex
 
 public:
 	void setSubstr(vector <char> substr);
-	vector<char> getSubstring();
+	vector<char> getSubstring() const;
 	void setQual(vector <int> qual);
-	vector <int> getQual();
-	int getIndex();
+	vector <int> getQual() const;
+	int getIndex() const;
 	void setIndex(int _index);
-	int getSeqIndex();
+	int getSeqIndex() const;
 	void setSeqIndex(int _seqIndex);
-	int getIndexInSeq();
+	int getIndexInSeq() const;
 	void setIndexInSeq(int indexInSeq);
-	bool getHasMinConnections();
-	int getSubstrLength();
-	int getVertexLvl();
+	bool getHasMinConnections() const;
+	int getSubstrLength() const;
+	int getVertexLvl() const;
 	void setConWithOtherSeq(int conWithOtherSeq);
-	int getConWithOtherSeq();
+	int getConWithOtherSeq() const;
 	void printSubstr();
 	void printQual();
 	void lvlUp(int n);
 	void setHasMinConnections(bool set);
-	bool operator==(const Vertex &v);
-	bool operator<(const Vertex &v);
+	bool operator==(const Vertex &v) const;
+	bool operator<(const Vertex &v) const;
 	Vertex();
 	~Vertex();
 };

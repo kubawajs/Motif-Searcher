@@ -2,6 +2,7 @@
 #include "Vertex.h"
 
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -10,7 +11,7 @@ void Vertex::setSubstr(vector <char> substr)
 	Vertex::substring = substr;
 }
 
-vector<char> Vertex::getSubstring()
+vector<char> Vertex::getSubstring() const
 {
 	return vector<char>(Vertex::substring);
 }
@@ -20,12 +21,12 @@ void Vertex::setQual(vector<int> qual)
 	Vertex::qual = qual;
 }
 
-vector<int> Vertex::getQual()
+vector<int> Vertex::getQual() const
 {
 	return Vertex::qual;
 }
 
-int Vertex::getIndex()
+int Vertex::getIndex() const
 {
 	return Vertex::index;
 }
@@ -35,7 +36,7 @@ void Vertex::setIndex(int _index)
 	Vertex::index = _index;
 }
 
-int Vertex::getSeqIndex()
+int Vertex::getSeqIndex() const
 {
 	return Vertex::seqIndex;
 }
@@ -45,7 +46,7 @@ void Vertex::setSeqIndex(int _seqIndex)
 	Vertex::seqIndex = _seqIndex;
 }
 
-int Vertex::getIndexInSeq()
+int Vertex::getIndexInSeq() const
 {
 	return Vertex::indexInSeq;
 }
@@ -55,17 +56,17 @@ void Vertex::setIndexInSeq(int indexInSeq)
 	Vertex::indexInSeq = indexInSeq;
 }
 
-bool Vertex::getHasMinConnections()
+bool Vertex::getHasMinConnections() const
 {
 	return Vertex::hasMinConnections;
 }
 
-int Vertex::getSubstrLength()
+int Vertex::getSubstrLength() const
 {
 	return Vertex::substring.size();
 }
 
-int Vertex::getVertexLvl()
+int Vertex::getVertexLvl() const
 {
 	return Vertex::level;
 }
@@ -75,7 +76,7 @@ void Vertex::setConWithOtherSeq(int conWithOtherSeq)
 	Vertex::conWithOtherSeq = conWithOtherSeq;
 }
 
-int Vertex::getConWithOtherSeq()
+int Vertex::getConWithOtherSeq() const
 {
 	return Vertex::conWithOtherSeq;
 }
@@ -108,7 +109,7 @@ void Vertex::setHasMinConnections(bool set)
 	Vertex::hasMinConnections = set;
 }
 
-bool Vertex::operator==(const Vertex &v)
+bool Vertex::operator==(const Vertex &v) const
 {
 	if (this->index == v.index)
 	{
@@ -120,7 +121,7 @@ bool Vertex::operator==(const Vertex &v)
 	}
 }
 
-bool Vertex::operator<(const Vertex & v)
+bool Vertex::operator<(const Vertex & v) const
 {
 	if (this->conWithOtherSeq > v.conWithOtherSeq)
 	{
@@ -148,6 +149,9 @@ Vertex::Vertex()
 	Vertex::level = 0;
 	Vertex::index = -1;
 	Vertex::hasMinConnections = false;
+	Vertex::conWithOtherSeq = 0;
+	Vertex::seqIndex = -1;
+	Vertex::indexInSeq = -1;
 }
 
 

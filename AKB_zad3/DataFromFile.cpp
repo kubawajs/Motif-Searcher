@@ -10,51 +10,59 @@
 
 using namespace std;
 
-vector<Sequence> DataFromFile::getSeqData()
+vector<Sequence> DataFromFile::getSeqData() const
 {
 	return DataFromFile::seqData;
 }
 
-string DataFromFile::getDataName()
+string DataFromFile::getDataName() const
 {
 	return DataFromFile::dataName;
 }
 
-Matrix DataFromFile::getMatrix()
+Matrix DataFromFile::getMatrix() const
 {
 	return DataFromFile::matrix;
 }
 
-int DataFromFile::getReliability()
+int DataFromFile::getReliability() const
 {
 	return DataFromFile::reliability;
 }
 
-void DataFromFile::loadFromFile(string dataName, vector <Sequence> seqData) {
+void DataFromFile::loadFromFile(string dataName, vector <Sequence> seqData)
+{
 	fstream file;
 	string line;
 	string lastSeq = "";
 	string path = dataName + ".txt";
 
 	file.open(path);
-	if (!file.good()) {
+	if (!file.good())
+	{
 		cout << "Error! Can't open the file." << endl;
 		exit(0);
 	}
-	else {
+	else
+	{
 		Sequence s1;
 		int seqId = 0;
-		while (getline(file, line)) {
-			if (line[0] == '>') {
+		while (getline(file, line))
+		{
+			if (line[0] == '>')
+			{
 				s1.setName(line);
 				s1.setSeqId(seqId);
 				seqId++;
 			}
-			else {
-				if (lastSeq == "") {
+			else
+			{
+				if (lastSeq == "")
+				{
 					lastSeq = line;
 				}
-				else {
+				else
+				{
 					lastSeq += line;
 					s1.setSequence(lastSeq);
 					seqData.push_back(s1);
@@ -77,35 +85,46 @@ void DataFromFile::loadQualFile(string dataName, vector<Sequence> seqData)
 	string path = dataName + "-qual.txt";
 
 	file.open(path);
-	if (!file.good()) {
+	if (!file.good())
+	{
 		cout << "Error! Can't open the file." << endl;
 		exit(0);
 	}
-	else {
-		while (getline(file, line)) {
+	else
+	{
+		while (getline(file, line))
+		{
 			if (line[0] == '>') {
-				if (line != seqData[seqNo].getName()) {
+				if (line != seqData[seqNo].getName())
+				{
 					cout << "Error! Fasta file and qual file not equal." << endl;
 					exit(0);
 				}
-				else {
-					if (!qualities.empty()) {
+				else
+				{
+					if (!qualities.empty())
+					{
 						seqData[seqNo - 1].setQual(qualities);
 						qualities.clear();
 					}
 				}
 				seqNo++;
 			}
-			else {
-				for (int i = 0; i < line.size(); i++) {
-					if (line[i] == ' ' && number != "") {
+			else
+			{
+				for (int i = 0; i < line.size(); i++)
+				{
+					if (line[i] == ' ' && number != "")
+					{
 						qualities.push_back(atoi(number.c_str()));
 						number = "";
 					}
-					else if (line[i] != ' ' && number == "") {
+					else if (line[i] != ' ' && number == "")
+					{
 						number = line[i];
 					}
-					else if (line[i] != ' ' && number != "") {
+					else if (line[i] != ' ' && number != "")
+					{
 						number += line[i];
 						qualities.push_back(atoi(number.c_str()));
 						number = "";
@@ -457,12 +476,13 @@ ResultMotif DataFromFile::buildResult(vector <Vertex> startingClique) {
 	return readyResult;
 }
 
-vector<ResultMotif> DataFromFile::getResults()
+vector<ResultMotif> DataFromFile::getResults() const
 {
 	return DataFromFile::results;
 }
 
-string DataFromFile::buildMotif(vector <Vertex> verticesToAlign, int reliability)//build motif for clique
+string DataFromFile::buildMotif(vector <Vertex> verticesToAlign, int reliability) const
+//build motif for clique
 {
 	int actSeq, it = 0, maxValue = 0;
 	int seqId = verticesToAlign[0].getSeqIndex();
@@ -770,7 +790,8 @@ vector <Vertex> DataFromFile::prepareVertexSetRight(vector <Vertex> actualResult
 	return vertexSet;
 }
 
-vector <Vertex> DataFromFile::buildClique(vector<Vertex> vertexByLevel) {
+vector <Vertex> DataFromFile::buildClique(vector<Vertex> vertexByLevel) const
+{
 	vector <Vertex> clique;
 	vector <bool> usedSequences;
 
@@ -844,7 +865,7 @@ vector <int> DataFromFile::getInfoTable(Matrix matrix) {
 	return matrix.getInfoTable();
 }
 
-void DataFromFile::sortByIndex(vector<Vertex> &vertexInLvlList, int left, int right)
+void DataFromFile::sortByIndex(vector<Vertex> &vertexInLvlList, int left, int right) const
 {
 	int i = left;
 	int j = right;
@@ -866,7 +887,7 @@ void DataFromFile::sortByIndex(vector<Vertex> &vertexInLvlList, int left, int ri
 	if (right > i) sortByIndex(vertexInLvlList, i, right);
 }
 
-void DataFromFile::sortResults(vector<ResultMotif>& results)
+void DataFromFile::sortResults(vector<ResultMotif>& results) const
 {
 	std::sort(results.begin(), results.end());
 	std::reverse(results.begin(), results.end());
