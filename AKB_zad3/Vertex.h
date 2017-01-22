@@ -7,13 +7,14 @@ using namespace std;
 
 class Vertex
 {
-	vector <char> substring;
-	vector <int> qual;
-	int level;
 	int index;
 	int indexInSeq;
 	int seqIndex;
+	int level;
+	int conWithOtherSeq;
 	bool hasMinConnections;
+	vector <char> substring;
+	vector <int> qual;
 
 public:
 	void setSubstr(vector <char> substr);
@@ -29,11 +30,14 @@ public:
 	bool getHasMinConnections();
 	int getSubstrLength();
 	int getVertexLvl();
+	void setConWithOtherSeq(int conWithOtherSeq);
+	int getConWithOtherSeq();
 	void printSubstr();
 	void printQual();
 	void lvlUp(int n);
 	void setHasMinConnections(bool set);
 	bool operator==(const Vertex &v);
+	bool operator<(const Vertex &v);
 	Vertex();
 	~Vertex();
 };

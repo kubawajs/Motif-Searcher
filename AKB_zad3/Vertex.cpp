@@ -70,6 +70,16 @@ int Vertex::getVertexLvl()
 	return Vertex::level;
 }
 
+void Vertex::setConWithOtherSeq(int conWithOtherSeq)
+{
+	Vertex::conWithOtherSeq = conWithOtherSeq;
+}
+
+int Vertex::getConWithOtherSeq()
+{
+	return Vertex::conWithOtherSeq;
+}
+
 void Vertex::printSubstr()
 {
 	cout << "S: ";
@@ -103,6 +113,29 @@ bool Vertex::operator==(const Vertex &v)
 	if (this->index == v.index)
 	{
 		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Vertex::operator<(const Vertex & v)
+{
+	if (this->conWithOtherSeq < v.conWithOtherSeq)
+	{
+		return true;
+	}
+	else if (this->conWithOtherSeq == v.conWithOtherSeq)
+	{
+		if (this->level < v.level)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	else
 	{

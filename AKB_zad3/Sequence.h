@@ -31,6 +31,7 @@ public:
 	vector <Vertex> getSubstrings();
 	Vertex getSubstrById(int noSubstr);
 	void setVertexHasMinConnections(int noSubstr);
+	void setVertexNumOfConSeq(int noSubstr, int conSeq);
 	bool compareSubstrs(Vertex substr1, Vertex substr2, int usersSubstrLength, int reliability);//compare two substrings including deletions
 	void vertexLvlUp(int noSubstr);//increment level of vertex
 	Sequence();

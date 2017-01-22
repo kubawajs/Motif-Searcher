@@ -244,7 +244,14 @@ void DataFromFile::checkIfHasMinConnections(Matrix matrix)
 		if (i == infoTable[actuali]) {
 			actuali++;
 		}
-		int connections = 0;
+
+		int connections = 0, linkedSeq = 0;
+		vector<bool> sequencesToMark;
+		for (int i = 0; i < DataFromFile::getSeqData().size(); i++)
+		{
+			sequencesToMark.push_back(false);
+		}
+		
 		if (m[i][0] != -1) {
 			actualj = 0;
 			for (int j = 0; j < matrix.getSize(); j++) {
@@ -253,6 +260,7 @@ void DataFromFile::checkIfHasMinConnections(Matrix matrix)
 				}
 				if (m[i][j] == 1) {
 					connections++;
+					sequencesToMark[actualj] = true;
 					j = infoTable[actualj];
 				}
 			}
@@ -263,6 +271,14 @@ void DataFromFile::checkIfHasMinConnections(Matrix matrix)
 				else {
 					noSubstr = i - infoTable[actuali - 1];
 				}
+				for (int k = 0; k < sequencesToMark.size(); k++)
+				{
+					if (sequencesToMark[k])
+					{
+						linkedSeq++;
+					}
+				}
+				DataFromFile::seqData[actuali].setVertexNumOfConSeq(noSubstr, linkedSeq);
 				DataFromFile::seqData[actuali].setVertexHasMinConnections(noSubstr);
 			}
 		}
@@ -311,6 +327,13 @@ void DataFromFile::printSequences(vector <Sequence> seqData, vector <Sequence> r
 				cout << "M: " << seqMotifEmpty << '\n' << endl;
 			}
 		}
+	}
+
+	//print vertices
+	cout << "Wierzcholki biorace udzial w budowie rozwiazania (id_sekwencji:id_podciagu): " << endl;
+	for (int i = 0; i < resultSeq.size(); i++)
+	{
+		resultMotif.printVerticesInMotif(resultSeq[i].getSubstrings(), reliability);
 	}
 }
 

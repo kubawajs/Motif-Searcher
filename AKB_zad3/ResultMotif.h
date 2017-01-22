@@ -15,6 +15,7 @@ public:
 	void setResult(vector <Vertex> result, int numOfSeqs);
 	void setMotif(string motif);
 	void printMotifOnSeq(vector <Vertex> result, int seqSize, int reliability);
+	void printVerticesInMotif(vector<Vertex> result, int reliability);
 	string getMotif();
 	vector <Vertex> getStartingClique();
 	vector <Sequence> getSequences();

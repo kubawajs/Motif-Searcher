@@ -94,6 +94,11 @@ void Sequence::setVertexHasMinConnections(int noSubstr)
 	Sequence::substrings[noSubstr].setHasMinConnections(true);
 }
 
+void Sequence::setVertexNumOfConSeq(int noSubstr, int conSeq)
+{
+	Sequence::substrings[noSubstr].setConWithOtherSeq(conSeq);
+}
+
 bool Sequence::compareSubstrs(Vertex substr1, Vertex substr2, int usersSubstrLength, int reliability)
 {
 	vector <char> substrSh, substrLn;

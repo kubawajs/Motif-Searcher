@@ -120,6 +120,20 @@ void ResultMotif::printMotifOnSeq(vector<Vertex> result, int seqSize, int reliab
 	cout << "M: " << sequence << "\n" << endl;
 }
 
+void ResultMotif::printVerticesInMotif(vector<Vertex> result, int reliability)
+{
+	for (int j = 0; j < result.size(); j++)
+	{
+		cout << result[j].getSeqIndex() << ":" << result[j].getIndexInSeq() << " ";
+		for (int k = 0; k < result[j].getSubstrLength(); k++)
+		{ //for each char in substring
+			cout << result[j].getSubstring()[k];
+		}
+		cout << " ";
+	}
+	cout << endl;
+}
+
 string ResultMotif::getMotif()
 {
 	return ResultMotif::motif;
