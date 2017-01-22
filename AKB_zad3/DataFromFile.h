@@ -4,8 +4,8 @@
 #include "Sequence.h"
 #include "ResultMotif.h"
 
-const int SENSITIVITY = 2;
-const int NUMBER_OF_RESULTS = 10;
+const int SENSITIVITY = 3;
+const int NUMBER_OF_RESULTS = 8;
 const int PERMITTED_DELETIONS = 2;
 
 class DataFromFile
@@ -43,7 +43,6 @@ public:
 	vector<Vertex> sumResult(vector<Vertex> actualResult, vector<Vertex> tempResult);
 	vector<Vertex> filterVector(vector<Vertex> toFilter, vector<Vertex> filtering);
 	vector<int> getInfoTable(Matrix matrix);
-	void sortByVertexLvl(vector<Vertex> &vertexInLvlList, int left, int right);
 	void sortByIndex(vector<Vertex> &vertexInLvlList, int left, int right);
 	void sortResults(vector<ResultMotif> &results);
 	void printBestMotifs(vector<ResultMotif> results);

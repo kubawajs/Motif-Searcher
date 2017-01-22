@@ -15,7 +15,7 @@ using namespace std;
 int main()
 {
 	//TODO: input file name
-	string fileName = "fasta"; // name of file in fasta (without .txt)
+	string fileName = "test1"; // name of file in fasta (without .txt)
 	int substrLength;
 	int reliability;
 
@@ -68,7 +68,8 @@ int main()
 	data.printResult(data.getResults());
 
 	//TODO: add conditions on all functions having access to private attributes
-	//TODO: improve printing
+	//TODO: improve building graph (maybe string.find(substr)
+	//TODO: optimization
 
 	cout << "Press any key to end";
 

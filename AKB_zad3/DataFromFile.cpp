@@ -251,7 +251,7 @@ void DataFromFile::checkIfHasMinConnections(Matrix matrix)
 		{
 			sequencesToMark.push_back(false);
 		}
-		
+
 		if (m[i][0] != -1) {
 			actualj = 0;
 			for (int j = 0; j < matrix.getSize(); j++) {
@@ -367,7 +367,7 @@ void DataFromFile::createListOfVerticesSorted()
 	}
 
 	//sort list
-	DataFromFile::sortByVertexLvl(DataFromFile::vertexByLevel, 0, DataFromFile::vertexByLevel.size() - 1);
+	std::sort(vertexByLevel.begin(), vertexByLevel.end());
 }
 
 void DataFromFile::buildResults()
@@ -627,7 +627,6 @@ vector <Vertex> DataFromFile::prepareVertexSetLeft(vector <Vertex> actualResult,
 
 	for (int i = 0; i < verticesToAdd.size(); i++)
 	{
-		//TODO: why index -1
 		int index = verticesToAdd[i].getIndex();
 		int noSubstr, j = 0;
 		seqId = verticesToAdd[i].getSeqIndex();
@@ -672,7 +671,7 @@ vector <Vertex> DataFromFile::prepareVertexSetLeft(vector <Vertex> actualResult,
 	}
 
 	if (!vertexSet.empty()) {
-		DataFromFile::sortByVertexLvl(vertexSet, 0, vertexSet.size() - 1);
+	std:sort(vertexSet.begin(), vertexSet.end());
 	}
 
 	return vertexSet;
@@ -765,7 +764,7 @@ vector <Vertex> DataFromFile::prepareVertexSetRight(vector <Vertex> actualResult
 	}
 
 	if (!vertexSet.empty()) {
-		DataFromFile::sortByVertexLvl(vertexSet, 0, vertexSet.size() - 1);
+	std:sort(vertexSet.begin(), vertexSet.end());
 	}
 
 	return vertexSet;
@@ -779,7 +778,7 @@ vector <Vertex> DataFromFile::buildClique(vector<Vertex> vertexByLevel) {
 	{
 		return clique;
 	}
-	DataFromFile::sortByVertexLvl(vertexByLevel, 0, vertexByLevel.size() - 1);
+std:sort(vertexByLevel.begin(), vertexByLevel.end());
 
 	for (int i = 0; i < DataFromFile::seqData.size(); i++)
 	{
@@ -831,8 +830,10 @@ vector<Vertex> DataFromFile::filterVector(vector<Vertex> toFilter, vector<Vertex
 
 bool DataFromFile::checkConnectionsInClique(vector <Vertex> result, Vertex analyzedVertex, Matrix matrix) {
 	vector <vector <int>> graph = matrix.getMatrix();
-	for (int i = 0; i < result.size(); i++) {
-		if (graph[analyzedVertex.getIndex()][result[i].getIndex()] < 1) {//TODO: przemyslec - && analyzedVertex.getSeqIndex() != result[i].getSeqIndex()) { 
+	for (int i = 0; i < result.size(); i++)
+	{
+		if (graph[analyzedVertex.getIndex()][result[i].getIndex()] < 1)
+		{
 			return false;
 		}
 	}
@@ -843,32 +844,13 @@ vector <int> DataFromFile::getInfoTable(Matrix matrix) {
 	return matrix.getInfoTable();
 }
 
-void DataFromFile::sortByVertexLvl(vector <Vertex> &vertexInLvlList, int left, int right) {
-	int i = left;
-	int j = right;
-	int x = vertexInLvlList[(left + right) / 2].getVertexLvl();
-	do {
-		while (vertexInLvlList[i].getVertexLvl() > x)
-			i++;
-		while (vertexInLvlList[j].getVertexLvl() < x)
-			j--;
-		if (i <= j) {
-			swap(vertexInLvlList[i], vertexInLvlList[j]);
-			i++;
-			j--;
-		}
-	} while (i <= j);
-
-	if (left < j) sortByVertexLvl(vertexInLvlList, left, j);
-	if (right > i) sortByVertexLvl(vertexInLvlList, i, right);
-}
-
 void DataFromFile::sortByIndex(vector<Vertex> &vertexInLvlList, int left, int right)
 {
 	int i = left;
 	int j = right;
 	int x = vertexInLvlList[(left + right) / 2].getIndex();
-	do {
+	do
+	{
 		while (vertexInLvlList[i].getIndex() < x)
 			i++;
 		while (vertexInLvlList[j].getIndex() > x)
@@ -895,14 +877,14 @@ void DataFromFile::printBestMotifs(vector <ResultMotif> results)
 	int i = 1;
 	if (!results.empty())
 	{
-		cout << "Znaleziono motyw:" << endl;
-		cout << results[0].getMotif() << endl;
+		cout << endl << "Znaleziono motyw:" << endl;
+		cout << results[0].getMotif() << endl << endl;
 		while (i < results.size())
 		{
 			if (results[i - 1].getMotif().size() == results[i].getMotif().size())
 			{
-				cout << "Znaleziono motyw:" << endl;
-				cout << results[i].getMotif() << endl;
+				cout << endl << "Znaleziono motyw:" << endl;
+				cout << results[i].getMotif() << endl << endl;
 				i++;
 			}
 			else
@@ -914,7 +896,7 @@ void DataFromFile::printBestMotifs(vector <ResultMotif> results)
 	}
 	else
 	{
-		cout << "Nie znaleziono motywu w podanych sekwencjach";
+		cout << endl << "Nie znaleziono motywu w podanych sekwencjach";
 	}
 }
 

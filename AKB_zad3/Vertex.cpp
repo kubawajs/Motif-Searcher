@@ -122,13 +122,13 @@ bool Vertex::operator==(const Vertex &v)
 
 bool Vertex::operator<(const Vertex & v)
 {
-	if (this->conWithOtherSeq < v.conWithOtherSeq)
+	if (this->conWithOtherSeq > v.conWithOtherSeq)
 	{
 		return true;
 	}
 	else if (this->conWithOtherSeq == v.conWithOtherSeq)
 	{
-		if (this->level < v.level)
+		if (this->level > v.level)
 		{
 			return true;
 		}
