@@ -4,8 +4,8 @@
 #include "Sequence.h"
 #include "ResultMotif.h"
 
-const int SENSITIVITY = 3;
-const int NUMBER_OF_RESULTS = 8;
+const int SENSITIVITY = 5;
+const int NUMBER_OF_RESULTS = 5;
 const int PERMITTED_DELETIONS = 2;
 
 class DataFromFile
