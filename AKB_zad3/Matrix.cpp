@@ -5,17 +5,17 @@ using namespace std;
 
 int Matrix::getSize() const
 {
-	return Matrix::size;
+	return size;
 }
 
 vector<int> Matrix::getInfoTable() const
 {
-	return Matrix::infoTable;
+	return infoTable;
 }
 
 vector<vector<int>> Matrix::getMatrix() const
 {
-	return Matrix::matrix;
+	return matrix;
 }
 
 void Matrix::setMatrix(vector<vector<int>> matrix)
@@ -25,38 +25,41 @@ void Matrix::setMatrix(vector<vector<int>> matrix)
 
 void Matrix::countMatrixSizeFromSeq(vector<Sequence> data, int size)
 {
-	for (int i = 0; i < data.size(); i++) {
+	for (int i = 0; i < data.size(); i++)
+	{
 		size += data[i].getSubstrSize();
-		Matrix::infoTable.push_back(size);
+		infoTable.push_back(size);
 	}
 	Matrix::size = size;
 }
 
 void Matrix::initializeMatrix(int size)
 {
-	vector <vector <int> > tempMatrix(size, vector <int>(size));
-	Matrix::matrix = tempMatrix;
+	vector<vector<int>> tempMatrix(size, vector<int>(size));
+	matrix = tempMatrix;
 }
 
 void Matrix::createEdge(int edgeIn, int edgeOut)
 {
-	Matrix::matrix[edgeIn][edgeOut] = 1;
-	Matrix::matrix[edgeOut][edgeIn] = 1;
+	matrix[edgeIn][edgeOut] = 1;
+	matrix[edgeOut][edgeIn] = 1;
 }
 
 void Matrix::delVertex(int edge)
 {
 	int limit = Matrix::size;
-	for (int i = 0; i < limit; i++) {
-		Matrix::matrix[i][edge] = -1;
-		Matrix::matrix[edge][i] = -1;
+	for (int i = 0; i < limit; i++)
+	{
+		matrix[i][edge] = -1;
+		matrix[edge][i] = -1;
 	}
 }
 
 int Matrix::getSequenceIdFromMatrix(int index)
 {
 	int seqId = 0;
-	while (index >= infoTable[seqId]) {
+	while (index >= infoTable[seqId])
+	{
 		seqId++;
 	}
 	return seqId;

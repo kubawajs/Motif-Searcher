@@ -10,17 +10,17 @@ void Sequence::setName(string name)
 
 string Sequence::getName() const
 {
-	return string(Sequence::name);
+	return string(name);
 }
 
 void Sequence::setSequence(string seq)
 {
-	Sequence::sequence = seq;
+	sequence = seq;
 }
 
 string Sequence::getSequence() const
 {
-	return string(Sequence::sequence);
+	return string(sequence);
 }
 
 void Sequence::setQual(vector<int> qual)
@@ -30,7 +30,7 @@ void Sequence::setQual(vector<int> qual)
 
 vector<int> Sequence::getQual() const
 {
-	return Sequence::qual;
+	return qual;
 }
 
 void Sequence::setSubstr(vector<Vertex> substrings)
@@ -45,12 +45,12 @@ void Sequence::setSeqId(int seqId)
 
 int Sequence::getSeqId() const
 {
-	return Sequence::seqId;
+	return seqId;
 }
 
 void Sequence::addSubstr(Vertex substring)
 {
-	Sequence::substrings.push_back(substring);
+	substrings.push_back(substring);
 }
 
 void Sequence::createSubstrings(string sequence, vector<int> qual, int substrLength, int reliability)
@@ -67,7 +67,7 @@ void Sequence::createSubstrings(string sequence, vector<int> qual, int substrLen
 		v1.setSubstr(tempSub); // set substring in object
 		v1.setQual(tempQual); // set qualities of all letters in substring
 		v1.setIndexInSeq(x);
-		Sequence::substrings.push_back(v1); // add substring to vector in sequence data
+		substrings.push_back(v1); // add substring to vector in sequence data
 		//clear temp vectors for next substring
 		tempSub.clear();
 		tempQual.clear();
@@ -81,22 +81,22 @@ int Sequence::getSubstrSize() const
 
 vector<Vertex> Sequence::getSubstrings() const
 {
-	return Sequence::substrings;
+	return substrings;
 }
 
 Vertex Sequence::getSubstrById(int noSubstr)
 {
-	return Sequence::substrings[noSubstr];
+	return substrings[noSubstr];
 }
 
 void Sequence::setVertexHasMinConnections(int noSubstr)
 {
-	Sequence::substrings[noSubstr].setHasMinConnections(true);
+	substrings[noSubstr].setHasMinConnections(true);
 }
 
 void Sequence::setVertexNumOfConSeq(int noSubstr, int conSeq)
 {
-	Sequence::substrings[noSubstr].setConWithOtherSeq(conSeq);
+	substrings[noSubstr].setConWithOtherSeq(conSeq);
 }
 
 bool Sequence::compareSubstrs(Vertex substr1, Vertex substr2, int usersSubstrLength, int reliability)
@@ -166,12 +166,12 @@ bool Sequence::compareSubstrs(Vertex substr1, Vertex substr2, int usersSubstrLen
 
 void Sequence::vertexLvlUp(int noSubstr)
 {
-	Sequence::substrings[noSubstr].lvlUp(1);
+	substrings[noSubstr].lvlUp(1);
 }
 
 Sequence::Sequence()
 {
-	Sequence::seqId = -1;
+	seqId = -1;
 }
 
 

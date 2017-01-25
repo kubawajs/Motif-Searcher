@@ -1,0 +1,7 @@
+>sekwencja1 length=34
+>sekwencja2 length=34
+>sekwencja3 length=25
+>sekwencja4 length=32
+>sekwencja5 length=30
+>sekwencja6 length=25
+>sekwencja7 length=33

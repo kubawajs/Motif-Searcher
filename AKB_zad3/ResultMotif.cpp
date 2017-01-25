@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <algorithm>
 
 ResultMotif::ResultMotif()
 {
@@ -79,19 +80,24 @@ void ResultMotif::setStartingClique(vector<Vertex> clique)
 
 void ResultMotif::setResult(vector<Vertex> result, int numOfSeqs)
 {
-	Sequence sequence;
-	ResultMotif::sortByIndex(result, 0, result.size() - 1);
-
-	for (int i = 0; i < numOfSeqs; i++)
+	if(!result.empty())
 	{
-		sequence.setSeqId(i);
-		ResultMotif::result.push_back(sequence);
-	}
+		Sequence sequence;
 
-	for (int i = 0; i < result.size(); i++)
-	{
-		int seqIndex = result[i].getSeqIndex();
-		ResultMotif::result[seqIndex].addSubstr(result[i]);
+		std::sort(result.begin(), result.end(), [](const auto& A, const auto& B) {
+			return A.getIndex() < B.getIndex(); });
+
+		for (int i = 0; i < numOfSeqs; i++)
+		{
+			sequence.setSeqId(i);
+			ResultMotif::result.push_back(sequence);
+		}
+
+		for (int i = 0; i < result.size(); i++)
+		{
+			int seqIndex = result[i].getSeqIndex();
+			ResultMotif::result[seqIndex].addSubstr(result[i]);
+		}
 	}
 }
 

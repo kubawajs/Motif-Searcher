@@ -12,29 +12,38 @@ using namespace std;
 
 int main()
 {
-	//TODO: input file name
-	string fileName = "test1"; // name of file in fasta (without .txt)
+	string fileName = "fasta"; // name of file in fasta (without .txt)
+
+	cout << "Podaj nazwe pliku fasta (bez rozszerzenia): " << endl;
+	cin >> fileName;
+
 	int substrLength;
 	int reliability;
 
 	//USER PARAMETERS
-	do {
+	do
+	{
 		cout << "Podaj dlugosc generowanych podciagow (4-7): " << endl;
 		cin >> substrLength;
-		if (substrLength < 4 || substrLength > 7) {
+		if (substrLength < 4 || substrLength > 7)
+		{
 			cout << "Podano bledna dlugosc podciagu. Podaj wartosc z zakresu 4-7: " << endl;
 			cin >> substrLength;
 		}
-	} while (substrLength < 4 || substrLength > 7);
+	}
+	while (substrLength < 4 || substrLength > 7);
 
-	do {
+	do
+	{
 		cout << "Podaj minimalny poziom wiarygodnosci (10-40): " << endl;
 		cin >> reliability;
-		if (reliability < 10 || reliability > 40) {
+		if (reliability < 10 || reliability > 40)
+		{
 			cout << "Podano bledny poziom wiarygodnosci. Podaj minimalny poziom wiarygodnosci(10 - 40): " << endl;
 			cin >> reliability;
 		}
-	} while (reliability < 10 || reliability > 40);
+	}
+	while (reliability < 10 || reliability > 40);
 
 	//LOADING DATA	
 	DataFromFile data(fileName, substrLength, reliability);//create object data
@@ -69,7 +78,9 @@ int main()
 	//TODO: improve building graph (maybe string.find(substr)
 	//TODO: optimization
 
-	cout << "Press any key to end";
+	string wait;
+	cout << "Press any letter to end";
+	cin >> wait;
 
 	return 0;
 }
