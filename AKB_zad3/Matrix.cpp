@@ -47,7 +47,7 @@ void Matrix::createEdge(int edgeIn, int edgeOut)
 
 void Matrix::delVertex(int edge)
 {
-	int limit = Matrix::size;
+	int limit = size;
 	for (int i = 0; i < limit; i++)
 	{
 		matrix[i][edge] = -1;

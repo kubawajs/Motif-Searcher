@@ -68,10 +68,7 @@ int main()
 	//BUILD A CLIQUE BASED ON VERTICES LEVEL
 	data.buildResults();
 
-	//PRINT BEST RESULTS
-	data.printBestMotifs(data.getResults());
-
-	//PRINT SEQUENCES WITH USEFUL DATA
+	//PRINT RESULT
 	data.printResult(data.getResults());
 
 	//TODO: add conditions on all functions having access to private attributes

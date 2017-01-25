@@ -37,10 +37,10 @@ void ResultMotif::sortByIndex(vector<Vertex> &vertexInLvlList, int left, int rig
 
 void ResultMotif::parseSequences(int reliability)
 {
-	for (int i = 0; i < ResultMotif::result.size(); i++) //for each sequence
+	for (int i = 0; i < result.size(); i++) //for each sequence
 	{
 		string sequence = "";
-		vector<Vertex> substrs = ResultMotif::result[i].getSubstrings();
+		vector<Vertex> substrs = result[i].getSubstrings();
 
 		for (int j = 0; j < substrs.size(); j++)//for each substring of sequence
 		{
@@ -68,14 +68,14 @@ void ResultMotif::parseSequences(int reliability)
 			}
 			//cut start of string according to indexDiff
 		}
-		ResultMotif::result[i].setSequence(sequence);
+		result[i].setSequence(sequence);
 		//cout << sequence << endl;
 	}
 }
 
 void ResultMotif::setStartingClique(vector<Vertex> clique)
 {
-	ResultMotif::startingClique = clique;
+	startingClique = clique;
 }
 
 void ResultMotif::setResult(vector<Vertex> result, int numOfSeqs)
@@ -104,6 +104,24 @@ void ResultMotif::setResult(vector<Vertex> result, int numOfSeqs)
 void ResultMotif::setMotif(string motif)
 {
 	ResultMotif::motif = motif;
+}
+
+void ResultMotif::resetUsedSequences(int size)
+{
+	for(int i=0; i<size; i++)
+	{
+		usedSequences.push_back(false);
+	}
+}
+
+void ResultMotif::markSequence(int index)
+{
+	usedSequences[index] = true;
+}
+
+bool ResultMotif::getUsedSeqByIndex(int index)
+{
+	return usedSequences[index];
 }
 
 void ResultMotif::printMotifOnSeq(vector<Vertex> result, int seqSize, int reliability)
@@ -142,17 +160,17 @@ void ResultMotif::printVerticesInMotif(vector<Vertex> result, int reliability)
 
 string ResultMotif::getMotif() const
 {
-	return ResultMotif::motif;
+	return motif;
 }
 
 vector<Vertex> ResultMotif::getStartingClique() const
 {
-	return ResultMotif::startingClique;
+	return startingClique;
 }
 
 vector<Sequence> ResultMotif::getSequences() const
 {
-	return ResultMotif::result;
+	return result;
 }
 
 bool ResultMotif::operator==(const ResultMotif&r) const
@@ -161,10 +179,7 @@ bool ResultMotif::operator==(const ResultMotif&r) const
 	{
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
 bool ResultMotif::operator<(const ResultMotif & r) const
@@ -173,8 +188,5 @@ bool ResultMotif::operator<(const ResultMotif & r) const
 	{
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }

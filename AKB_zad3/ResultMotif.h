@@ -6,6 +6,7 @@ class ResultMotif
 {
 	vector <Sequence> result;
 	vector <Vertex> startingClique;
+	vector <bool> usedSequences;
 	string motif;
 
 public:
@@ -14,6 +15,9 @@ public:
 	void setStartingClique(vector <Vertex> clique);
 	void setResult(vector <Vertex> result, int numOfSeqs);
 	void setMotif(string motif);
+	void resetUsedSequences(int size);
+	void markSequence(int index);
+	bool getUsedSeqByIndex(int index);
 	static void printMotifOnSeq(vector <Vertex> result, int seqSize, int reliability);
 	static void printVerticesInMotif(vector<Vertex> result, int reliability);
 	string getMotif() const;

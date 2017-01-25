@@ -26,14 +26,14 @@ public:
 	void setSeqId(int seqId);
 	int getSeqId() const;
 	void addSubstr(Vertex substring);
-	void createSubstrings(string sequence, vector <int> qual, int substrLength, int reliability);
+	void createSubstrings(string sequence, vector <int> qual, int seqId, int startingIndex, int substrLength, int reliability);
 	int getSubstrSize() const;
 	vector <Vertex> getSubstrings() const;
 	Vertex getSubstrById(int noSubstr);
 	void setVertexHasMinConnections(int noSubstr);
 	void setVertexNumOfConSeq(int noSubstr, int conSeq);
 	static bool compareSubstrs(Vertex substr1, Vertex substr2, int usersSubstrLength, int reliability);//compare two substrings including deletions
-	void vertexLvlUp(int noSubstr);//increment level of vertex
+	void vertexLvlUp(int noSubstr);
 	Sequence();
 	~Sequence();
 };

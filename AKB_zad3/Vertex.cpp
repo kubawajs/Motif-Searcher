@@ -8,27 +8,27 @@ using namespace std;
 
 void Vertex::setSubstr(vector <char> substr)
 {
-	Vertex::substring = substr;
+	substring = substr;
 }
 
 vector<char> Vertex::getSubstring() const
 {
-	return vector<char>(Vertex::substring);
+	return substring;
 }
 
-void Vertex::setQual(vector<int> qual)
+void Vertex::setQual(vector<int> _qual)
 {
-	Vertex::qual = qual;
+	qual = _qual;
 }
 
 vector<int> Vertex::getQual() const
 {
-	return Vertex::qual;
+	return qual;
 }
 
 int Vertex::getIndex() const
 {
-	return Vertex::index;
+	return index;
 }
 
 void Vertex::setIndex(int _index)
@@ -38,54 +38,54 @@ void Vertex::setIndex(int _index)
 
 int Vertex::getSeqIndex() const
 {
-	return Vertex::seqIndex;
+	return seqIndex;
 }
 
 void Vertex::setSeqIndex(int _seqIndex)
 {
-	Vertex::seqIndex = _seqIndex;
+	seqIndex = _seqIndex;
 }
 
 int Vertex::getIndexInSeq() const
 {
-	return Vertex::indexInSeq;
+	return indexInSeq;
 }
 
-void Vertex::setIndexInSeq(int indexInSeq)
+void Vertex::setIndexInSeq(int _indexInSeq)
 {
-	Vertex::indexInSeq = indexInSeq;
+	indexInSeq = _indexInSeq;
 }
 
 bool Vertex::getHasMinConnections() const
 {
-	return Vertex::hasMinConnections;
+	return hasMinConnections;
 }
 
 int Vertex::getSubstrLength() const
 {
-	return Vertex::substring.size();
+	return substring.size();
 }
 
 int Vertex::getVertexLvl() const
 {
-	return Vertex::level;
+	return level;
 }
 
-void Vertex::setConWithOtherSeq(int conWithOtherSeq)
+void Vertex::setConWithOtherSeq(int _conWithOtherSeq)
 {
-	Vertex::conWithOtherSeq = conWithOtherSeq;
+	conWithOtherSeq = _conWithOtherSeq;
 }
 
 int Vertex::getConWithOtherSeq() const
 {
-	return Vertex::conWithOtherSeq;
+	return conWithOtherSeq;
 }
 
 void Vertex::printSubstr()
 {
 	cout << "S: ";
-	for (int i = 0; i < Vertex::getSubstrLength(); i++) {
-		cout << Vertex::substring[i];
+	for (int i = 0; i < getSubstrLength(); i++) {
+		cout << substring[i];
 	}
 	cout << " ";
 }
@@ -93,20 +93,20 @@ void Vertex::printSubstr()
 void Vertex::printQual()
 {
 	cout << "Q: ";
-	for (int i = 0; i < Vertex::getSubstrLength(); i++) {
-		cout <<  Vertex::qual[i] << " ";
+	for (int i = 0; i <getSubstrLength(); i++) {
+		cout <<  qual[i] << " ";
 	}
 	cout << endl;
 }
 
 void Vertex::lvlUp(int n)
 {
-	Vertex::level += n;
+	level += n;
 }
 
 void Vertex::setHasMinConnections(bool set)
 {
-	Vertex::hasMinConnections = set;
+	hasMinConnections = set;
 }
 
 bool Vertex::operator==(const Vertex &v) const
@@ -115,10 +115,7 @@ bool Vertex::operator==(const Vertex &v) const
 	{
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
 bool Vertex::operator<(const Vertex & v) const
@@ -127,31 +124,22 @@ bool Vertex::operator<(const Vertex & v) const
 	{
 		return true;
 	}
-	else if (this->conWithOtherSeq == v.conWithOtherSeq)
+	if (this->conWithOtherSeq == v.conWithOtherSeq)
 	{
 		if (this->level > v.level)
 		{
 			return true;
 		}
-		else
-		{
-			return false;
-		}
-	}
-	else
-	{
 		return false;
 	}
+	return false;
 }
 
 Vertex::Vertex()
 {
-	Vertex::level = 0;
-	Vertex::index = -1;
-	Vertex::hasMinConnections = false;
-	Vertex::conWithOtherSeq = 0;
-	Vertex::seqIndex = -1;
-	Vertex::indexInSeq = -1;
+	level = 0;
+	hasMinConnections = false;
+	conWithOtherSeq = 0;
 }
 
 

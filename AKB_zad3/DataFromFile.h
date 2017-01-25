@@ -4,15 +4,16 @@
 #include "Sequence.h"
 #include "ResultMotif.h"
 
-const int SENSITIVITY = 5;
-const int NUMBER_OF_RESULTS = 10;
+const int SENSITIVITY = 4;
+const int ITERATIONS = 5;
 const int PERMITTED_DELETIONS = 2;
+const double SEQUENCES_PERCENT = 0.55;
 
 class DataFromFile
 {
-	vector <Sequence> seqData;
-	vector <Vertex> vertexByLevel;
-	vector <ResultMotif> results;
+	vector<Sequence> seqData;
+	vector<Vertex> vertexByLevel;
+	vector<ResultMotif> results;
 	Matrix matrix;
 	string dataName;
 	int substrLength;
@@ -39,7 +40,7 @@ public:
 	vector<ResultMotif> getResults() const;
 	vector<Vertex> prepareVertexSetLeft(vector<Vertex> actualResult, int sensitivity);
 	vector<Vertex> prepareVertexSetRight(vector<Vertex> actualResult, int sensitivity);
-	vector<Vertex> buildClique(vector<Vertex> vertexByLevel) const;
+	vector<Vertex> buildClique(vector<Vertex> vertexByLevel, ResultMotif result) const;
 	static vector<Vertex> sumResult(vector<Vertex> actualResult, vector<Vertex> tempResult);
 	static vector<Vertex> filterVector(vector<Vertex> toFilter, vector<Vertex> filtering);
 	static vector<int> getInfoTable(Matrix matrix);

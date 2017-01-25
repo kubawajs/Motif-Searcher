@@ -53,7 +53,7 @@ void Sequence::addSubstr(Vertex substring)
 	substrings.push_back(substring);
 }
 
-void Sequence::createSubstrings(string sequence, vector<int> qual, int substrLength, int reliability)
+void Sequence::createSubstrings(string sequence, vector<int> qual, int seqId, int startingIndex, int substrLength, int reliability)
 {
 	Vertex v1; // temp object for data collection
 	vector <char> tempSub;
@@ -67,6 +67,8 @@ void Sequence::createSubstrings(string sequence, vector<int> qual, int substrLen
 		v1.setSubstr(tempSub); // set substring in object
 		v1.setQual(tempQual); // set qualities of all letters in substring
 		v1.setIndexInSeq(x);
+		v1.setIndex(x + startingIndex);
+		v1.setSeqIndex(seqId);
 		substrings.push_back(v1); // add substring to vector in sequence data
 		//clear temp vectors for next substring
 		tempSub.clear();
