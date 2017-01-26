@@ -4,8 +4,8 @@
 #include "Sequence.h"
 #include "ResultMotif.h"
 
-const int SENSITIVITY = 4;
-const int ITERATIONS = 5;
+const int SENSITIVITY = 5;
+const int ITERATIONS = 10;
 const int PERMITTED_DELETIONS = 2;
 const double SEQUENCES_PERCENT = 0.55;
 
@@ -31,7 +31,7 @@ public:
 	void filterLowSubstrs(Matrix matrix, vector<Sequence> data, int reliability);//filter substrings with lower qual and notice in matrix
 	void setSeqData(vector<Sequence> seqData);
 	void createEdges(Matrix matrix, vector<Sequence> data, vector<int> infoTable, int reliability);
-	void checkIfHasMinConnections(Matrix matrix);//function for checking if vertex has connection with min 5 other sequences
+	void checkIfHasMinConnections(Matrix matrix);
 	void printSequences(vector<Sequence> seqData, vector<Sequence> resultSeq);
 	void createListOfVerticesSorted();
 	void buildResults();
@@ -40,7 +40,7 @@ public:
 	vector<ResultMotif> getResults() const;
 	vector<Vertex> prepareVertexSetLeft(vector<Vertex> actualResult, int sensitivity);
 	vector<Vertex> prepareVertexSetRight(vector<Vertex> actualResult, int sensitivity);
-	vector<Vertex> buildClique(vector<Vertex> vertexByLevel, ResultMotif result) const;
+	vector<Vertex> buildClique(vector<Vertex> vertexByLevel, ResultMotif &result) const;
 	static vector<Vertex> sumResult(vector<Vertex> actualResult, vector<Vertex> tempResult);
 	static vector<Vertex> filterVector(vector<Vertex> toFilter, vector<Vertex> filtering);
 	static vector<int> getInfoTable(Matrix matrix);

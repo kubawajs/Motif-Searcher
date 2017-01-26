@@ -17,8 +17,7 @@ int main()
 	cout << "Podaj nazwe pliku fasta (bez rozszerzenia): " << endl;
 	cin >> fileName;
 
-	int substrLength;
-	int reliability;
+	int substrLength, reliability;
 
 	//USER PARAMETERS
 	do
@@ -70,10 +69,6 @@ int main()
 
 	//PRINT RESULT
 	data.printResult(data.getResults());
-
-	//TODO: add conditions on all functions having access to private attributes
-	//TODO: improve building graph (maybe string.find(substr)
-	//TODO: optimization
 
 	string wait;
 	cout << "Press any letter to end";

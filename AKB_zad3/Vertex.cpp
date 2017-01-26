@@ -120,17 +120,16 @@ bool Vertex::operator==(const Vertex &v) const
 
 bool Vertex::operator<(const Vertex & v) const
 {
-	if (this->conWithOtherSeq > v.conWithOtherSeq)
+	if(this->conWithOtherSeq > v.conWithOtherSeq)
 	{
 		return true;
 	}
-	if (this->conWithOtherSeq == v.conWithOtherSeq)
+	if(this->conWithOtherSeq == v.conWithOtherSeq)
 	{
 		if (this->level > v.level)
 		{
 			return true;
 		}
-		return false;
 	}
 	return false;
 }

@@ -25,7 +25,26 @@ vector<ResultMotif> DataFromFile::getResults() const { return results; }
 
 void DataFromFile::setSeqData(vector<Sequence> seqData) { if(!seqData . empty()) { DataFromFile::seqData = seqData; } }
 
-void DataFromFile::addResult(ResultMotif result) { results . push_back(result); }
+void DataFromFile::addResult(ResultMotif result)
+{
+	int counter = 0;
+	bool check = false;
+	for(int i=0; i<seqData.size(); i++)
+	{
+		if(result.getUsedSeqByIndex(i))
+		{
+			counter++;
+		}
+		/*if(seqData[i].getSequence().find(result.getMotif()) != string::npos)
+		{
+			check = true;
+		}*/
+	}
+	if(result.getMotif().size() >= SEQUENCES_PERCENT * seqData.size() && counter >= SEQUENCES_PERCENT * seqData.size())// && check)
+	{
+		results.push_back(result);
+	}
+}
 
 void DataFromFile::loadFromFile(string dataName, vector<Sequence> seqData)
 {
@@ -205,7 +224,7 @@ void DataFromFile::createEdges(Matrix matrix, vector<Sequence> data, vector<int>
 			{
 				if(graph[0][j] != -1)
 				{
-					int noSeq1, noSubstr1, noSeq2 = -1, noSubstr2 = -1;
+					int noSeq1, noSubstr1, noSeq2, noSubstr2 = -1;
 					noSeq1 = actual;//check 1st sequence
 					if(actual == 0)
 					{//check which substring of actual sequence is being analyzed
@@ -226,14 +245,14 @@ void DataFromFile::createEdges(Matrix matrix, vector<Sequence> data, vector<int>
 						}
 					}
 
-					auto v1 = data[noSeq1] . getSubstrById(noSubstr1);//get first vertex
-					auto v2 = data[noSeq2] . getSubstrById(noSubstr2);//get 2nd vertex
+					auto v1 = data[noSeq1].getSubstrById(noSubstr1);//get first vertex
+					auto v2 = data[noSeq2].getSubstrById(noSubstr2);//get 2nd vertex
 
-					if(data[noSeq1] . compareSubstrs(v1, v2, v1 . getSubstrLength(), reliability))
+					if (data[noSeq1].compareSubstrs(v1, v2, v1.getSubstrLength(), reliability))
 					{
-						matrix . createEdge(i, j);
-						data[noSeq1] . vertexLvlUp(noSubstr1);//increment level of 1st vertex
-						data[noSeq2] . vertexLvlUp(noSubstr2);//increment level of 2nd vertex
+						matrix.createEdge(i, j);
+						data[noSeq1].vertexLvlUp(noSubstr1);//increment level of 1st vertex
+						data[noSeq2].vertexLvlUp(noSubstr2);//increment level of 2nd vertex
 						createdEdges++;
 					}
 				}
@@ -417,7 +436,10 @@ ResultMotif DataFromFile::buildResult(vector<Vertex> startingClique)
 	{
 		vertexToCheckLeft = prepareVertexSetLeft(result, SENSITIVITY);
 		temporaryResult = buildClique(vertexToCheckLeft, readyResult);
-		if(temporaryResult . size() < SEQUENCES_PERCENT * seqData . size()) { break; }
+		if(temporaryResult . size() < SEQUENCES_PERCENT * seqData . size())
+		{
+			break;
+		}
 		string tempMotif = buildMotif(temporaryResult, reliability);
 		motif = parseMotifLeft(motif, tempMotif);
 		result = sumResult(result, temporaryResult);
@@ -494,21 +516,31 @@ string DataFromFile::buildMotif(vector<Vertex> verticesToAlign, int reliability)
 string DataFromFile::parseMotifLeft(string existingMotif, string motifToAdd)
 {
 	string toAdd = "";
-	string toCompare = "";
+	string toCompare;
 
-	if(existingMotif . size() >= motifToAdd . size()) { toCompare = existingMotif . substr(0, motifToAdd . size()); }
-
-	for(int i = 1; i <= SENSITIVITY; i++)
+	if(existingMotif . size() >= motifToAdd . size())
 	{
-		if(toCompare . find(motifToAdd) != string::npos)
-		{
-			existingMotif = toAdd + existingMotif;
-			break;
-		}
+		toCompare = existingMotif . substr(0, motifToAdd . size());
 
-		toCompare = toCompare . substr(0, toCompare . size() - 1);
-		toAdd += motifToAdd[0];
-		motifToAdd . erase(0, i);
+		for (int i = 1; i <= SENSITIVITY; i++)
+		{
+			if (toCompare.find(motifToAdd) != string::npos)
+			{
+				existingMotif = toAdd + existingMotif;
+				break;
+			}
+
+			toCompare = toCompare.substr(0, toCompare.size() - 1);
+			toAdd += motifToAdd[0];
+			motifToAdd.erase(0, i);
+		}
+	}
+	else
+	{
+		if(motifToAdd.find(existingMotif) != string::npos)
+		{
+			existingMotif = motifToAdd;
+		}
 	}
 
 	return existingMotif;
@@ -517,26 +549,33 @@ string DataFromFile::parseMotifLeft(string existingMotif, string motifToAdd)
 string DataFromFile::parseMotifRight(string existingMotif, string motifToAdd)
 {
 	string toAdd = "";
-	string toCompare = "";
+	string toCompare;
 
-	if(existingMotif . size() >= motifToAdd . size())
+	if (existingMotif.size() >= motifToAdd.size())
 	{
-		int lengthDiff = existingMotif . size() - motifToAdd . size();
-		toCompare = existingMotif . substr(lengthDiff, motifToAdd . size());
-	}
+		int lengthDiff = existingMotif.size() - motifToAdd.size();
+		toCompare = existingMotif.substr(lengthDiff, motifToAdd.size());
 
-	for(int i = 1; i <= SENSITIVITY; i++)
-	{
-		if(toCompare . find(motifToAdd) != string::npos)
+		for (int i = 1; i <= SENSITIVITY; i++)
 		{
-			existingMotif = existingMotif + toAdd;
-			break;
+			if (toCompare.find(motifToAdd) != string::npos)
+			{
+				existingMotif = existingMotif + toAdd;
+				break;
+			}
+			if (toCompare != "")
+			{
+				toCompare = toCompare.substr(1, toCompare.size());
+				toAdd += motifToAdd[motifToAdd.size() - 1];
+				motifToAdd.pop_back();
+			}
 		}
-		if(toCompare != "")
+	}
+	else
+	{
+		if(motifToAdd.find(existingMotif) != string::npos)
 		{
-			toCompare = toCompare . substr(1, toCompare . size());
-			toAdd += motifToAdd[motifToAdd . size() - 1];
-			motifToAdd . pop_back();
+			existingMotif = motifToAdd;
 		}
 	}
 
@@ -546,16 +585,23 @@ string DataFromFile::parseMotifRight(string existingMotif, string motifToAdd)
 void DataFromFile::printResult(vector<ResultMotif> result)
 {
 	int longestMotif = 0;
-	for(int i = 0; i < result . size(); i++)
+	if(!results.empty())
 	{
-		if(i == 0) { longestMotif = result[0] . getMotif() . size(); }
-
-		if(longestMotif == result[i] . getMotif() . size())
+		for (int i = 0; i < result.size(); i++)
 		{
-			cout << "Znaleziono motyw: " << results[i] . getMotif() << endl;
-			printSequences(seqData, results[i] . getSequences());
+			if (i == 0) { longestMotif = result[0].getMotif().size(); }
+
+			if (longestMotif == result[i].getMotif().size())
+			{
+				cout << "Znaleziono motyw: " << results[i].getMotif() << endl;
+				printSequences(seqData, results[i].getSequences());
+			}
+			else { break; }
 		}
-		else { break; }
+	}
+	else
+	{
+		cout << "\nNie znaleziono motywu w podanych sekwencjach." << endl;
 	}
 }
 
@@ -589,11 +635,12 @@ vector<Vertex> DataFromFile::prepareVertexSetLeft(vector<Vertex> actualResult, i
 
 	for(int i = 0; i < verticesToAdd . size(); i++)
 	{
+		int breaks = 0;
 		int index = verticesToAdd[i] . getIndex();
 		int noSubstr, j = 0;
 		seqId = verticesToAdd[i] . getSeqIndex();
 
-		while(j < sensitivity)
+		while(j < sensitivity && breaks <= PERMITTED_DELETIONS)
 		{
 			index -= 1;
 			if(seqId > 0)
@@ -606,7 +653,7 @@ vector<Vertex> DataFromFile::prepareVertexSetLeft(vector<Vertex> actualResult, i
 					if(v1 . getHasMinConnections())
 					{
 						vertexSet . push_back(v1);
-						j = sensitivity;
+						breaks++;
 					}
 				}
 			}
@@ -620,7 +667,7 @@ vector<Vertex> DataFromFile::prepareVertexSetLeft(vector<Vertex> actualResult, i
 					if(v1 . getHasMinConnections())
 					{
 						vertexSet . push_back(v1);
-						j = sensitivity;
+						breaks++;
 					}
 				}
 			}
@@ -660,13 +707,15 @@ vector<Vertex> DataFromFile::prepareVertexSetRight(vector<Vertex> actualResult, 
 		}
 	}
 
+	
 	for(int i = 0; i < verticesToAdd . size(); i++)
 	{
+		int breaks = 0;
 		int index = verticesToAdd[i] . getIndex();
 		int noSubstr, j = 0;
 		seqId = verticesToAdd[i] . getSeqIndex();
 
-		while(j < sensitivity)
+		while(j < sensitivity && breaks < PERMITTED_DELETIONS)
 		{
 			index += 1;
 			if(seqId < seqData . size() - 1)
@@ -681,7 +730,7 @@ vector<Vertex> DataFromFile::prepareVertexSetRight(vector<Vertex> actualResult, 
 					if(v1 . getHasMinConnections())
 					{
 						vertexSet . push_back(v1);
-						j = sensitivity;
+						breaks++;
 					}
 				}
 			}
@@ -695,7 +744,7 @@ vector<Vertex> DataFromFile::prepareVertexSetRight(vector<Vertex> actualResult, 
 					if(v1 . getHasMinConnections())
 					{
 						vertexSet . push_back(v1);
-						j = sensitivity;
+						breaks++;
 					}
 				}
 			}
@@ -706,7 +755,7 @@ vector<Vertex> DataFromFile::prepareVertexSetRight(vector<Vertex> actualResult, 
 	return vertexSet;
 }
 
-vector<Vertex> DataFromFile::buildClique(vector<Vertex> vertexByLevel, ResultMotif result) const
+vector<Vertex> DataFromFile::buildClique(vector<Vertex> vertexByLevel, ResultMotif &result) const
 {
 	vector<Vertex> clique;
 	vector<bool> usedSequences;
@@ -726,7 +775,7 @@ vector<Vertex> DataFromFile::buildClique(vector<Vertex> vertexByLevel, ResultMot
 			usedSequences[analyzedVertex . getSeqIndex()] = true;
 			result . markSequence(analyzedVertex . getSeqIndex());
 		}
-		else if(!usedSequences[analyzedVertex . getSeqIndex()] && checkConnectionsInClique(clique, analyzedVertex, getMatrix()))
+		else if(!usedSequences[analyzedVertex . getSeqIndex()] && checkConnectionsInClique(clique, analyzedVertex, matrix))
 		{
 			clique . push_back(analyzedVertex);
 			usedSequences[analyzedVertex . getSeqIndex()] = true;
@@ -757,7 +806,7 @@ vector<Vertex> DataFromFile::buildClique(vector<Vertex> vertexByLevel, ResultMot
 
 			for(int i = 0; i < vertexByLevel . size(); i++)
 			{
-				Vertex analyzedVertex = vertexByLevel[i];
+				auto analyzedVertex = vertexByLevel[i];
 				if(!usedSequences[analyzedVertex . getSeqIndex()] 
 					&& checkConnectionsInClique(clique, analyzedVertex, getMatrix()))
 				{

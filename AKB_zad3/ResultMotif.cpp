@@ -108,6 +108,7 @@ void ResultMotif::setMotif(string motif)
 
 void ResultMotif::resetUsedSequences(int size)
 {
+	usedSequences.clear();
 	for(int i=0; i<size; i++)
 	{
 		usedSequences.push_back(false);
