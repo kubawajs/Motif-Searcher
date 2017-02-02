@@ -1,12 +1,16 @@
-﻿  DataFromFile.cpp
-c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(90): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(165): warning C4267: '+=': conversion from 'size_t' to 'int', possible loss of data
-c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(188): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(315): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(393): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(428): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(463): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(556): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-c:\users\kubaw\documents\programming\akwb3\akb_zad3\datafromfile.cpp(592): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-  AKB_zad3.vcxproj -> C:\Users\kubaw\Documents\Programming\AKwB3\x64\Debug\AKB_zad3.exe
-  AKB_zad3.vcxproj -> C:\Users\kubaw\Documents\Programming\AKwB3\x64\Debug\AKB_zad3.pdb (Full PDB)
+﻿  AKB_zad3.cpp
+  Generating Code...
+  Compiling...
+  DataFromFile.cpp
+c:\users\kubaw\documents\programming\akwb3 — na liscie sasiadow\akb_zad3\datafromfile.cpp(47): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3 — na liscie sasiadow\akb_zad3\datafromfile.cpp(110): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3 — na liscie sasiadow\akb_zad3\datafromfile.cpp(265): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3 — na liscie sasiadow\akb_zad3\datafromfile.cpp(281): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3 — na liscie sasiadow\akb_zad3\datafromfile.cpp(689): warning C4267: '+=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3 — na liscie sasiadow\akb_zad3\datafromfile.cpp(719): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3 — na liscie sasiadow\akb_zad3\datafromfile.cpp(782): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3 — na liscie sasiadow\akb_zad3\datafromfile.cpp(814): warning C4267: '+=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\kubaw\documents\programming\akwb3 — na liscie sasiadow\akb_zad3\datafromfile.cpp(868): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+  Generating Code...
+  AKB_zad3.vcxproj -> C:\Users\kubaw\Documents\Programming\AKwB3 — na liscie sasiadow\x64\Debug\AKB_zad3.exe
+  AKB_zad3.vcxproj -> C:\Users\kubaw\Documents\Programming\AKwB3 — na liscie sasiadow\x64\Debug\AKB_zad3.pdb (Full PDB)

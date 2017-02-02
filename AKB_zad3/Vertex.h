@@ -12,31 +12,45 @@ class Vertex
 	int level;
 	int conWithOtherSeq;
 	bool hasMinConnections;
-	vector <char> substring;
-	vector <int> qual;
+	string substring;
+	string substringWithDeletions;
+	vector<int> qual;
+	vector<int> neighboursList;
 
 public:
-	void setSubstr(vector <char> substr);
-	vector<char> getSubstring() const;
-	void setQual(vector <int> qual);
-	vector <int> getQual() const;
+	//GETTERS
 	int getIndex() const;
-	void setIndex(int _index);
-	int getSeqIndex() const;
-	void setSeqIndex(int _seqIndex);
 	int getIndexInSeq() const;
-	void setIndexInSeq(int indexInSeq);
-	bool getHasMinConnections() const;
-	int getSubstrLength() const;
+	int getSeqIndex() const;
 	int getVertexLvl() const;
-	void setConWithOtherSeq(int conWithOtherSeq);
 	int getConWithOtherSeq() const;
-	void printSubstr();
-	void printQual();
-	void lvlUp(int n);
-	void setHasMinConnections(bool set);
-	bool operator==(const Vertex &v) const;
-	bool operator<(const Vertex &v) const;
+	bool getHasMinConnections() const;
+	string getSubstring() const;
+	string getSubstringWithDeletions() const;
+	vector<int> getQual() const;
+	vector<int> getNeighboursList() const;
+
+	//SETTERS
+	void setIndex(int _index);
+	void setIndexInSeq(int indexInSeq);
+	void setSeqIndex(int _seqIndex);
+	void setConWithOtherSeq(int _conWithOtherSeq);
+	void setHasMinConnections(bool _set);
+	void setSubstring(string _substring);
+	void setQual(vector<int> qual);
+	void setSubstringWithDeletions(string _substring);
+	void setNeighboursList(vector<int> _neighboursList);
+
+	//METHODS
+	void addToNeighboursList(int _neighbourToAddID);
+	void lvlUp();
+
+	//CONSTRUCTORS, DESTRUCTORS
 	Vertex();
+	Vertex(int _index, int _indexInSeq, int _seqIndex, string _substring, string _substringWithDeletions, vector<int> qual);
 	~Vertex();
+
+	//OPERATORS
+	bool operator==(const Vertex& v) const;
+	bool operator<(const Vertex& v) const;
 };

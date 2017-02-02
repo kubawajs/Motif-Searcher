@@ -3,72 +3,63 @@
 #pragma once
 
 #include "stdafx.h"
-#include "DataFromFile.h"
+#include "iostream"
+#include "string"
 
-#include <iostream>
-#include <string>
+#include "DataFromFile.h"
 
 using namespace std;
 
 int main()
 {
-	string fileName = "fasta"; // name of file in fasta (without .txt)
-
-	cout << "Podaj nazwe pliku fasta (bez rozszerzenia): " << endl;
-	cin >> fileName;
-
-	int substrLength, reliability;
+	//DEFAULT PARAMETERS
+	string FILE_NAME = "fasta"; // name of file in fasta (without .txt)
+	int SUBSTRING_LENGTH, RELIABILITY;
 
 	//USER PARAMETERS
+	cout << "Podaj nazwe pliku fasta (bez rozszerzenia): " << endl;
+	cin >> FILE_NAME;
+
 	do
 	{
 		cout << "Podaj dlugosc generowanych podciagow (4-7): " << endl;
-		cin >> substrLength;
-		if (substrLength < 4 || substrLength > 7)
+		cin >> SUBSTRING_LENGTH;
+		if(SUBSTRING_LENGTH < 4 || SUBSTRING_LENGTH > 7)
 		{
 			cout << "Podano bledna dlugosc podciagu. Podaj wartosc z zakresu 4-7: " << endl;
-			cin >> substrLength;
+			cin >> SUBSTRING_LENGTH;
 		}
-	}
-	while (substrLength < 4 || substrLength > 7);
+	} while(SUBSTRING_LENGTH < 4 || SUBSTRING_LENGTH > 7);
 
 	do
 	{
 		cout << "Podaj minimalny poziom wiarygodnosci (10-40): " << endl;
-		cin >> reliability;
-		if (reliability < 10 || reliability > 40)
+		cin >> RELIABILITY;
+		if(RELIABILITY < 10 || RELIABILITY > 40)
 		{
 			cout << "Podano bledny poziom wiarygodnosci. Podaj minimalny poziom wiarygodnosci(10 - 40): " << endl;
-			cin >> reliability;
+			cin >> RELIABILITY;
 		}
-	}
-	while (reliability < 10 || reliability > 40);
+	} while(RELIABILITY < 10 || RELIABILITY > 40);
 
 	//LOADING DATA	
-	DataFromFile data(fileName, substrLength, reliability);//create object data
-	data.loadFromFile(data.getDataName(), data.getSeqData());//load data from fasta file
-	data.loadQualFile(data.getDataName(), data.getSeqData());//load data from qual file
+	DataFromFile data(FILE_NAME, SUBSTRING_LENGTH, RELIABILITY);
 
 	//CREATING GRAPH
-	data.createGraph(data.getMatrix(), data.getSeqData());
-
-	//MARKING TOO SHORT SUBSTRINGS IN MATRIX
-	data.filterLowSubstrs(data.getMatrix(), data.getSeqData(), data.getReliability());
+	data.createGraph();
 
 	//CREATING EDGES FOR NOT TO SHORT VERTICES
-	data.createEdges(data.getMatrix(), data.getSeqData(), data.getInfoTable(data.getMatrix()), reliability);
-
-	//CHECK IF EVERY VERTEX HAS CONNECTION WITH MIN SEQUENCES
-	data.checkIfHasMinConnections(data.getMatrix());
+	data.createEdges();
 
 	//CREATE LIST OF VERTICES SORTED BY LEVEL
+	//najdluzej trwa
 	data.createListOfVerticesSorted();
 
 	//BUILD A CLIQUE BASED ON VERTICES LEVEL
 	data.buildResults();
 
-	//PRINT RESULT
-	data.printResult(data.getResults());
+	////PRINT RESULT
+	data.printResult();
 
 	string wait;
 	cout << "Press any letter to end";

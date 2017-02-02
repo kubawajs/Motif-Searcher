@@ -5,153 +5,145 @@
 #include <string>
 #include <algorithm>
 
-ResultMotif::ResultMotif()
+/**
+* \brief Return motif
+* \return
+*/
+string ResultMotif::getMotif() const
 {
+	return motif;
 }
 
-ResultMotif::~ResultMotif()
+/**
+ * \brief Return result sequences
+ * \return 
+ */
+vector<Sequence> ResultMotif::getResult() const
 {
+	return result;
 }
 
-void ResultMotif::sortByIndex(vector<Vertex> &vertexInLvlList, int left, int right) const
+/**
+* \brief Return starting clique
+* \return
+*/
+vector<Vertex> ResultMotif::getStartingClique() const
 {
-	int i = left;
-	int j = right;
-	int x = vertexInLvlList[(left + right) / 2].getIndex();
-	do {
-		while (vertexInLvlList[i].getIndex() < x)
-			i++;
-		while (vertexInLvlList[j].getIndex() > x)
-			j--;
-		if (i <= j) {
-			swap(vertexInLvlList[i], vertexInLvlList[j]);
-			i++;
-			j--;
-		}
-	} while (i <= j);
-
-	if (left < j) sortByIndex(vertexInLvlList, left, j);
-	if (right > i) sortByIndex(vertexInLvlList, i, right);
+	return startingClique;
 }
 
-
-void ResultMotif::parseSequences(int reliability)
+/**
+* \brief Return value of index from usedSequences
+* \param index
+* \return
+*/
+bool ResultMotif::getUsedSeqByIndex(int index)
 {
-	for (int i = 0; i < result.size(); i++) //for each sequence
+	if(index < usedSequences.size() && index >= 0)
 	{
-		string sequence = "";
-		vector<Vertex> substrs = result[i].getSubstrings();
-
-		for (int j = 0; j < substrs.size(); j++)//for each substring of sequence
-		{
-			int indexDiff;
-
-			if (j == 0)
-			{
-				indexDiff = substrs[j].getSubstrLength();
-			}
-			else {
-				indexDiff = substrs[j].getIndex() - substrs[j - 1].getIndex();
-				if (indexDiff > substrs[j].getSubstrLength())
-				{
-					indexDiff = substrs[j].getSubstrLength();
-				}
-			}
-
-			int startCopying = substrs[j].getSubstrLength() - indexDiff;
-
-			for (int k = startCopying; k < substrs[j].getSubstrLength(); k++) { //for each char in substring
-				if (substrs[j].getQual()[k] >= reliability)
-				{
-					sequence += substrs[j].getSubstring()[k];
-				}
-			}
-			//cut start of string according to indexDiff
-		}
-		result[i].setSequence(sequence);
-		//cout << sequence << endl;
+		return usedSequences[index];
 	}
+	cout << "Can't return usedSequences[index]. Wrong index value." << endl;
+	exit(0);
 }
 
-void ResultMotif::setStartingClique(vector<Vertex> clique)
-{
-	startingClique = clique;
-}
-
-void ResultMotif::setResult(vector<Vertex> result, int numOfSeqs)
-{
-	if(!result.empty())
-	{
-		Sequence sequence;
-
-		std::sort(result.begin(), result.end(), [](const auto& A, const auto& B) {
-			return A.getIndex() < B.getIndex(); });
-
-		for (int i = 0; i < numOfSeqs; i++)
-		{
-			sequence.setSeqId(i);
-			ResultMotif::result.push_back(sequence);
-		}
-
-		for (int i = 0; i < result.size(); i++)
-		{
-			int seqIndex = result[i].getSeqIndex();
-			ResultMotif::result[seqIndex].addSubstr(result[i]);
-		}
-	}
-}
-
+/**
+* \brief Set motif
+* \param motif
+*/
 void ResultMotif::setMotif(string motif)
 {
 	ResultMotif::motif = motif;
 }
 
-void ResultMotif::resetUsedSequences(int size)
+/**
+ * \brief Set result sequences
+ * \param _result 
+ * \param numOfSeqs 
+ */
+void ResultMotif::setResult(vector<Vertex> _result, int numOfSeqs)
 {
-	usedSequences.clear();
-	for(int i=0; i<size; i++)
+	if(!_result.empty())
 	{
-		usedSequences.push_back(false);
+		Sequence sequence;
+
+		sort(_result.begin(), _result.end(), [](const auto& A, const auto& B)
+		     {
+			     return A.getIndex() < B.getIndex();
+		     });
+
+		for(auto i = 0; i < numOfSeqs; i++)
+		{
+			sequence.setSeqId(i);
+			result.push_back(sequence);
+		}
+
+		for(auto i = 0; i < _result.size(); i++)
+		{
+			auto seqIndex = _result[i].getSeqIndex();
+			result[seqIndex].addSubstr(_result[i]);
+		}
 	}
 }
 
+/**
+* \brief Set starting clique
+* \param clique
+*/
+void ResultMotif::setStartingClique(vector<Vertex> clique)
+{
+	startingClique = clique;
+}
+
+/**
+* \brief Mark sequence as used
+* \param index
+*/
 void ResultMotif::markSequence(int index)
 {
 	usedSequences[index] = true;
 }
 
-bool ResultMotif::getUsedSeqByIndex(int index)
-{
-	return usedSequences[index];
-}
-
+/**
+* \brief Print motif based on original sequences
+* \param result
+* \param seqSize
+* \param reliability
+*/
 void ResultMotif::printMotifOnSeq(vector<Vertex> result, int seqSize, int reliability)
 {
 	string sequence(seqSize, '-');
 
-	for (int j = 0; j < result.size(); j++)
+	for(auto j = 0; j < result.size(); j++)
 	{
-		for (int k = 0; k < result[j].getSubstrLength(); k++)
-		{ //for each char in substring
-			if (result[j].getQual()[k] >= reliability) {
+		for(auto k = 0; k < result[j].getSubstring().length(); k++)
+		{
+			if(result[j].getQual()[k] >= reliability)
+			{
 				sequence[result[j].getIndexInSeq() + k] = result[j].getSubstring()[k];
 			}
-			else {
+			else
+			{
 				sequence[result[j].getIndexInSeq() + k] = '*';
 			}
 		}
 	}
-	
+
 	cout << "M: " << sequence << "\n" << endl;
 }
 
+/**
+ * \brief Print vertices used for build result
+ * \param result 
+ * \param reliability 
+ */
 void ResultMotif::printVerticesInMotif(vector<Vertex> result, int reliability)
 {
-	for (int j = 0; j < result.size(); j++)
+	for(auto j = 0; j < result.size(); j++)
 	{
 		cout << result[j].getSeqIndex() << ":" << result[j].getIndexInSeq() << " ";
-		for (int k = 0; k < result[j].getSubstrLength(); k++)
-		{ //for each char in substring
+		for(auto k = 0; k < result[j].getSubstring().length(); k++)
+		{
 			cout << result[j].getSubstring()[k];
 		}
 		cout << " ";
@@ -159,35 +151,55 @@ void ResultMotif::printVerticesInMotif(vector<Vertex> result, int reliability)
 	cout << endl;
 }
 
-string ResultMotif::getMotif() const
+/**
+* \brief Reset used sequences
+* \param size
+*/
+void ResultMotif::resetUsedSequences(int size)
 {
-	return motif;
+	usedSequences.clear();
+	for(auto i = 0; i < size; i++)
+	{
+		usedSequences.push_back(false);
+	}
 }
 
-vector<Vertex> ResultMotif::getStartingClique() const
+/**
+ * \brief Overload operator ==
+ * \param r 
+ * \return 
+ */
+bool ResultMotif::operator==(const ResultMotif& r) const
 {
-	return startingClique;
-}
-
-vector<Sequence> ResultMotif::getSequences() const
-{
-	return result;
-}
-
-bool ResultMotif::operator==(const ResultMotif&r) const
-{
-	if (this->motif == r.motif)
+	if(this->motif == r.motif)
 	{
 		return true;
 	}
 	return false;
 }
 
-bool ResultMotif::operator<(const ResultMotif & r) const
+/**
+ * \brief Overload operator <
+ * \param r 
+ * \return 
+ */
+bool ResultMotif::operator<(const ResultMotif& r) const
 {
-	if (this->motif.size() < r.motif.size())
+	if(this->motif.size() < r.motif.size())
 	{
 		return true;
 	}
 	return false;
+}
+
+ResultMotif::ResultMotif() {}
+
+/**
+ * \brief Destructor
+ */
+ResultMotif::~ResultMotif()
+{
+	startingClique.clear();
+	usedSequences.clear();
+	motif.clear();
 }

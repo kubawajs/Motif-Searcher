@@ -146,7 +146,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataFromFile.h" />
-    <ClInclude Include="Matrix.h" />
     <ClInclude Include="ResultMotif.h" />
     <ClInclude Include="Sequence.h" />
     <ClInclude Include="stdafx.h" />
@@ -156,7 +155,6 @@
   <ItemGroup>
     <ClCompile Include="AKB_zad3.cpp" />
     <ClCompile Include="DataFromFile.cpp" />
-    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="ResultMotif.cpp" />
     <ClCompile Include="Sequence.cpp" />
     <ClCompile Include="stdafx.cpp">

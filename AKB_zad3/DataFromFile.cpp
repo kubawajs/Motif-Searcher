@@ -8,340 +8,750 @@
 #include <algorithm>
 #include <map>
 #include <iterator>
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 
-vector<Sequence> DataFromFile::getSeqData() const { return seqData; }
+/**
+ * \brief Return dataName
+ * \return
+ */
+string DataFromFile::getDataName() const
+{
+	return dataName;
+}
 
-string DataFromFile::getDataName() const { return dataName; }
+/**
+ * \brief Return reliability
+ * \return
+ */
+int DataFromFile::getReliability() const
+{
+	return reliability;
+}
 
-Matrix DataFromFile::getMatrix() const { return matrix; }
+/**
+ * \brief Return vertex object by index of vertex
+ * \param ID 
+ * \return 
+ */
+Vertex DataFromFile::getVertexByID(int ID)
+{
+	auto it = 0, _lastSum = 0;
+	auto _sum = seqData[it].getSubstrings().size();
+	Vertex _vertex;
 
-int DataFromFile::getReliability() const { return reliability; }
+	while(ID >= _sum)
+	{
+		_lastSum = _sum;
+		it++;
+		_sum += seqData[it].getSubstrings().size();
+	}
 
-vector<int> DataFromFile::getInfoTable(Matrix matrix) { return matrix . getInfoTable(); }
+	_vertex = *seqData[it].getSubstrById(ID - _lastSum);
 
-vector<ResultMotif> DataFromFile::getResults() const { return results; }
+	return _vertex;
+}
 
-void DataFromFile::setSeqData(vector<Sequence> seqData) { if(!seqData . empty()) { DataFromFile::seqData = seqData; } }
+/**
+ * \brief Return sequence data
+ * \return
+ */
+vector<Sequence> DataFromFile::getSeqData() const
+{
+	return seqData;
+}
 
+/**
+ * \brief Return results
+ * \return
+ */
+vector<ResultMotif> DataFromFile::getResults() const
+{
+	return results;
+}
+
+/**
+ * \brief Set sequence data from vector
+ * \param _seqData
+ */
+void DataFromFile::setSeqData(vector<Sequence> _seqData)
+{
+	if(!_seqData.empty())
+	{
+		seqData = _seqData;
+	}
+	else
+	{
+		cout << "Can't assign. _seqData vector is empty." << endl;
+	}
+}
+
+/**
+ * \brief Set number of connected sequences in vertex
+ * \param vertex 
+ */
+void DataFromFile::setVertexConWithOtherSeq(Vertex& vertex)
+{
+	auto neighbours = vertex.getNeighboursList();
+	vector<int> conSequences;
+
+	for(auto& neighbourID : neighbours)
+	{
+		auto neighbour = getVertexByID(neighbourID);
+		if(find(conSequences.begin(), conSequences.end(), neighbour.getSeqIndex()) == conSequences.end())
+		{
+			conSequences.push_back(neighbour.getSeqIndex());
+		}
+	}
+
+	auto original = seqData[vertex.getSeqIndex()].getSubstrById(vertex.getIndexInSeq());
+	original->setConWithOtherSeq(conSequences.size());
+	if(conSequences.size() >= minConnections)
+	{
+		original->setHasMinConnections(true);
+	}
+}
+
+/**
+ * \brief Add new result to vector results
+ * \param result 
+ */
 void DataFromFile::addResult(ResultMotif result)
 {
-	int counter = 0;
-	bool check = false;
-	for(int i=0; i<seqData.size(); i++)
+	/*auto counter = 0;
+	for (auto i = 0; i < seqData.size(); i++)
 	{
-		if(result.getUsedSeqByIndex(i))
+		if (result.getUsedSeqByIndex(i))
 		{
 			counter++;
 		}
-		/*if(seqData[i].getSequence().find(result.getMotif()) != string::npos)
-		{
-			check = true;
-		}*/
-	}
-	if(result.getMotif().size() >= SEQUENCES_PERCENT * seqData.size() && counter >= SEQUENCES_PERCENT * seqData.size())// && check)
+	}*/
+	if(result.getMotif().size() >= minConnections)// && counter >= minConnections)
 	{
 		results.push_back(result);
 	}
 }
 
-void DataFromFile::loadFromFile(string dataName, vector<Sequence> seqData)
+/**
+ * \brief Build clique based on input vertex vector
+ * \param candidates 
+ * \return 
+ */
+vector<Vertex> DataFromFile::buildClique(vector<Vertex> candidates) const
+{
+	vector<Vertex> clique;
+	vector<bool> usedSequences;
+
+	sort(candidates.begin(), candidates.end());
+
+	if(candidates.empty())
+	{
+		return clique;
+	}
+	for(auto i = 0; i < seqData.size(); i++)
+	{
+		usedSequences.push_back(false);
+	}
+
+	for(auto& candidate : candidates)
+	{
+		if(candidate.getVertexLvl() < clique.size())
+		{
+			break;
+		}
+		if(clique.empty())
+		{
+			clique.push_back(candidate);
+			usedSequences[candidate.getSeqIndex()] = true;
+		}
+		else if(!usedSequences[candidate.getSeqIndex()] && checkConnectionsInClique(clique, candidate))
+		{
+			clique.push_back(candidate);
+			usedSequences[candidate.getSeqIndex()];
+		}
+	}
+
+	if(clique.size() >= minConnections)
+	{
+		return clique;
+	}
+
+	clique.clear();
+	return clique;
+}
+
+/**
+* \brief Create consensus motif for set of vertices
+* \param verticesToAlign
+* \return
+*/
+string DataFromFile::buildMotif(vector<Vertex> verticesToAlign)
+{
+	auto maxValue = 0;
+	map<string, int> submotifs = {};
+	string consensusMotif;
+
+	sort(verticesToAlign.begin(), verticesToAlign.end(), [](const auto& A, const auto& B)
+	     {
+		     return A.getIndex() < B.getIndex();
+	     });
+
+	for(auto& vertex : verticesToAlign)
+	{
+		submotifs[vertex.getSubstringWithDeletions()]++;
+	}
+
+	for(auto const& motif : submotifs)//foreach motif in motifs
+	{
+		if(motif.second > maxValue)
+		{
+			consensusMotif = motif.first;
+			maxValue = motif.second;
+		}
+		else if(motif.second == maxValue && motif.first.length() > consensusMotif.length())
+		{
+			consensusMotif = motif.first;
+			maxValue = motif.second;
+		}
+	}
+
+	return consensusMotif;
+}
+
+/**
+ * \brief Build result
+ */
+ResultMotif DataFromFile::buildResult()
+{
+	ResultMotif result;
+	string generalMotif, motif;
+	vector<Vertex> vertexSet, resultSet;
+	auto clique = buildClique(vertexByLevel);
+	generalMotif = buildMotif(clique);
+	result.setStartingClique(clique);
+	resultSet = clique;
+
+	auto isInBuild = true;
+	do
+	{
+		vertexSet = prepareVertexSetLeft(clique);
+		clique = buildClique(vertexSet);
+		if(clique.size() < minConnections)
+		{
+			break;
+		}
+		motif = buildMotif(clique);
+		generalMotif = parseMotifLeft(generalMotif, motif);
+		resultSet = sumResult(resultSet, clique);
+	} while(isInBuild);
+
+	clique = result.getStartingClique();
+	do
+	{
+		vertexSet = prepareVertexSetRight(clique);
+		clique = buildClique(vertexSet);
+		if(clique.size() < minConnections)
+		{
+			break;
+		}
+		motif = buildMotif(clique);
+		generalMotif = parseMotifRight(generalMotif, motif);
+		resultSet = sumResult(resultSet, clique);
+	} while(isInBuild);
+
+	result.setMotif(generalMotif);
+	result.setResult(resultSet, seqData.size());
+
+	return result;
+}
+
+/**
+ * \brief Build all results
+ */
+void DataFromFile::buildResults()
+{
+	cout << "Generuje rozwiazania, prosze czekac..." << endl;
+
+	vector<Vertex> startingClique;
+	vector<bool> usedSequences;
+
+	ResultMotif resultMotif;
+	resultMotif.resetUsedSequences(seqData.size());
+
+	//jesli results puste
+	for(auto i = 0; i < seqData.size(); i++)
+	{
+		usedSequences.push_back(false);
+	}
+
+	startingClique = buildClique(vertexByLevel);
+	addResult(buildResult());
+
+	//jesli ju¿ jest jakieœ rozwi¹zanie usun pierwotna klike z wektora startowego
+	auto i = 1;
+	while(i < ITERATIONS)
+	{
+		vertexByLevel = filterVector(vertexByLevel, startingClique);
+		if(!vertexByLevel.empty())
+		{
+			startingClique = buildClique(vertexByLevel);
+			resultMotif = buildResult();
+			if(find(results.begin(), results.end(), resultMotif) == results.end())
+			{
+				addResult(resultMotif);
+				i++;
+			}
+		}
+		else
+		{
+			i = ITERATIONS;
+		}
+	}
+
+	sortResults(results);
+}
+
+/**
+ * \brief Check if vertex can be add to clique
+ * \param clique 
+ * \param toCheck 
+ * \return 
+ */
+bool DataFromFile::checkConnectionsInClique(vector<Vertex> clique, Vertex toCheck)
+{
+	for(auto& vertex : clique)
+	{
+		auto neighbours = vertex.getNeighboursList();
+		if(find(neighbours.begin(), neighbours.end(), toCheck.getIndex()) == neighbours.end())
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+/**
+* \brief Create neighbours lists for all substrings
+*/
+void DataFromFile::createEdges()
+{
+	auto createdEdges = 0;
+
+	cout << "Tworze polaczenia, prosze czekac..." << endl;
+
+	for(auto i = 0; i < seqData.size() - 1; i++)
+	{
+		for(auto j = i + 1; j < seqData.size(); j++)
+		{
+			for(auto& substring1 : seqData[i].getSubstrings())
+			{
+				auto substr1 = substring1.getSubstringWithDeletions();
+
+				if(substr1.size() < substrLength - PERMITTED_DELETIONS)
+				{
+					continue;
+				}
+				for(auto& substring2 : seqData[j].getSubstrings())
+				{
+					auto substr2 = substring2.getSubstringWithDeletions();
+
+					if(substr2.size() >= substrLength - PERMITTED_DELETIONS)
+					{
+						auto vertex1 = seqData[i].getSubstrById(substring1.getIndexInSeq());
+						auto vertex2 = seqData[j].getSubstrById(substring2.getIndexInSeq());
+
+						if(substr1.size() >= substr2.size() && substr1.find(substr2) != string::npos)
+						{
+							vertex1->addToNeighboursList(vertex2->getIndex());
+							vertex2->addToNeighboursList(vertex1->getIndex());
+							seqData[i].getSubstrById(substring1.getIndexInSeq())->lvlUp();
+							seqData[j].getSubstrById(substring2.getIndexInSeq())->lvlUp();
+							createdEdges++;
+						}
+						else if(substr2.find(substr1) != string::npos)
+						{
+							vertex1->addToNeighboursList(vertex2->getIndex());
+							vertex2->addToNeighboursList(vertex1->getIndex());
+							seqData[i].getSubstrById(substring1.getIndexInSeq())->lvlUp();
+							seqData[j].getSubstrById(substring2.getIndexInSeq())->lvlUp();
+							createdEdges++;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if(createdEdges < 1)
+	{
+		cout << "Nie utworzono zadnych polaczen miedzy podciagami w sekwencjach." << endl;
+		exit(0);
+	}
+	cout << "Utworzono polaczen: " << createdEdges << endl;
+}
+
+/**
+ * \brief Create graph of substrings from loaded data
+ */
+void DataFromFile::createGraph()
+{
+	seqData = sequencesIntoSubstrings(seqData);
+}
+
+/**
+ * \brief Create sorted list of vertices
+ */
+void DataFromFile::createListOfVerticesSorted()
+{
+	cout << "Generuje liste wierzcholkow do startu budowy rozwiazania, prosze czekac..." << endl;
+	for(auto i = 0; i < seqData.size(); i++)
+	{
+		for(auto& substring : seqData[i].getSubstrings())
+		{
+			setVertexConWithOtherSeq(substring);
+
+			if(substring.getSubstringWithDeletions().size() >= substrLength - PERMITTED_DELETIONS)
+			{
+				vertexByLevel.push_back(substring);
+			}
+		}
+	}
+
+	//sort list
+	sort(vertexByLevel.begin(), vertexByLevel.end());
+	cout << "Pomyslnie wygenerowano liste wierzcholkow." << endl;
+}
+
+/**
+ * \brief Filter vector toFilter from elements from vector filtering
+ * \param toFilter 
+ * \param filtering 
+ * \return 
+ */
+vector<Vertex> DataFromFile::filterVector(vector<Vertex> toFilter, vector<Vertex> filtering)
+{
+	vector<Vertex> result;
+	for(auto& elementToFilter : toFilter)
+	{
+		if(find(filtering.begin(), filtering.end(), elementToFilter) == filtering.end())
+		{
+			result.push_back(elementToFilter);
+		}
+	}
+
+	return result;
+}
+
+/**
+* \brief Load data from fasta file
+* \param _dataName
+* \param _seqData
+*/
+void DataFromFile::loadFromFile(string _dataName, vector<Sequence> _seqData)
 {
 	fstream file;
 	string line;
 	string lastSeq = "";
-	string path = dataName + ".txt";
+	auto path = _dataName + ".txt";
 
-	file . open(path);
-	if(!file . good())
+	file.open(path);
+	if(!file.good())
 	{
 		cout << "Error! Can't open the file." << endl;
 		exit(0);
 	}
-	else
+
+	Sequence s1;
+	auto seqId = 0;
+
+	while(getline(file, line))
 	{
-		Sequence s1;
-		int seqId = 0;
-		while(getline(file, line))
+		if(line[0] == '>')
 		{
-			if(line[0] == '>')
+			if(lastSeq != "")
 			{
-				if(lastSeq != "")
-				{
-					s1 . setSequence(lastSeq);
-					seqData . push_back(s1);
-					lastSeq = "";
-				}
-				s1 . setName(line);
-				s1 . setSeqId(seqId);
-				seqId++;
+				s1.setSequence(lastSeq);
+				_seqData.push_back(s1);
+				lastSeq = "";
+			}
+			s1.setName(line);
+			s1.setSeqId(seqId);
+			seqId++;
+		}
+		else
+		{
+			if(lastSeq == "")
+			{
+				lastSeq = line;
 			}
 			else
 			{
-				if(lastSeq == "") { lastSeq = line; }
-				else { lastSeq += line; }
+				lastSeq += line;
 			}
 		}
-		s1 . setSequence(lastSeq);
-		seqData . push_back(s1);
-		lastSeq = "";
 	}
-	minConnections = SEQUENCES_PERCENT * seqData . size();//55 percents of sequences must have connections between each other
-	DataFromFile::seqData = seqData;
+
+	s1.setSequence(lastSeq);
+	_seqData.push_back(s1);
+	lastSeq = "";
+
+	if(!_seqData.empty())
+	{
+		seqData = _seqData;
+		cout << "Pomyslnie wczytano plik fasta" << endl;
+	}
+	else
+	{
+		cout << "Can't load fasta file." << endl;
+	}
 }
 
-void DataFromFile::loadQualFile(string dataName, vector<Sequence> seqData)
+/**
+* \brief Load data from qual file
+* \param _dataName
+* \param _seqData
+*/
+void DataFromFile::loadQualFile(string _dataName, vector<Sequence> _seqData)
 {
 	fstream file;
+	auto seqNo = 0;
 	string line;
 	vector<int> qualities;
-	string number = "";
-	int seqNo = 0;
-	string path = dataName + "-qual.txt";
 
-	file . open(path);
-	if(!file . good())
+	auto path = _dataName + "-qual.txt";
+
+	file.open(path);
+	if(!file.good())
 	{
 		cout << "Error! Can't open the file." << endl;
 		exit(0);
 	}
+
+	while(getline(file, line))
+	{
+		if(line[0] == '>')
+		{
+			if(line != _seqData[seqNo].getName())
+			{
+				cout << "Error! Fasta file and qual file not equal." << endl;
+				exit(0);
+			}
+			if(!qualities.empty())
+			{
+				_seqData[seqNo - 1].setQual(qualities);
+				qualities.clear();
+			}
+			seqNo++;
+		}
+		else
+		{
+			stringstream iss(line);
+			int number;
+
+			while(iss >> number)
+			{
+				qualities.push_back(number);
+			}
+		}
+	}
+
+	_seqData[seqNo - 1].setQual(qualities);
+
+	if(!_seqData.empty())
+	{
+		seqData = _seqData;
+		cout << "Pomyslnie wczytano plik qual" << endl;
+	}
 	else
 	{
-		while(getline(file, line))
-		{
-			if(line[0] == '>')
-			{
-				if(line != seqData[seqNo] . getName())
-				{
-					cout << "Error! Fasta file and qual file not equal." << endl;
-					exit(0);
-				}
-				else
-				{
-					if(!qualities . empty())
-					{
-						seqData[seqNo - 1] . setQual(qualities);
-						qualities . clear();
-					}
-				}
-				seqNo++;
-			}
-			else
-			{
-				for(int i = 0; i < line . size(); i++)
-				{
-					if(line[i] == ' ' && number != "")
-					{
-						qualities . push_back(atoi(number . c_str()));
-						number = "";
-					}
-					else if(line[i] != ' ' && number == "") { number = line[i]; }
-					else if(line[i] != ' ' && number != "")
-					{
-						number += line[i];
-						qualities . push_back(atoi(number . c_str()));
-						number = "";
-					}
-				}
-			}
-		}
-		if(seqNo == seqData . size())
-		{
-			seqData[seqNo - 1] . setQual(qualities);
-			qualities . clear();
-		}
+		cout << "Can't load qual file." << endl;
 	}
-	DataFromFile::seqData = seqData;
 }
 
-void DataFromFile::createGraph(Matrix matrix, vector<Sequence> data)
+/**
+ * \brief Parse general motif left with extension
+ * \param genMotif 
+ * \param toParse 
+ * \return 
+ */
+string DataFromFile::parseMotifLeft(string genMotif, string toParse)
 {
-	int startingIndex = 0;
-	for(int i = 0; i < data . size(); i++)
+	string toAdd = "", motif;
+	motif = genMotif;
+	if(toParse.size() > genMotif.size())
 	{
-		data[i] . createSubstrings(data[i] . getSequence(), data[i] . getQual(),
-		                           i, startingIndex, substrLength, reliability);
-		startingIndex += data[i] . getSubstrings() . size();
+		if(toParse.find(genMotif) != string::npos)
+		{
+			return toParse;
+		}
+		return (toParse + genMotif);
 	}
-	matrix . countMatrixSizeFromSeq(data, 0);//sum all sequences
-	matrix . initializeMatrix(matrix . getSize());
-	seqData = data;
-	DataFromFile::matrix = matrix;
+
+	auto diff = motif.size() - toParse.size();
+	motif = motif.substr(0, motif.size() - diff);
+
+	while(motif != toParse && toParse != "")
+	{
+		toAdd += toParse[0];
+		toParse = toParse.substr(1, toParse.size());
+		motif.pop_back();
+	}
+	if(toParse.empty())
+	{
+		return (toParse + genMotif);
+	}
+	return (toAdd + genMotif);
 }
 
-void DataFromFile::filterLowSubstrs(Matrix matrix, vector<Sequence> data, int reliability)
+/**
+* \brief Parse general motif with right extension
+* \param genMotif
+* \param toParse
+* \return
+*/
+string DataFromFile::parseMotifRight(string genMotif, string toParse)
 {
-	vector<Vertex> checking;
-	vector<int> checkQuals, infoTable;
-	int countGoodNucs, edge, limit;
-	infoTable = matrix . getInfoTable();
-	//loop over sequences
-	for(int i = 0; i < data . size(); i++)
+	string toAdd = "", motif;
+	motif = genMotif;
+	if(toParse.size() > genMotif.size())
 	{
-		//loop over substrings in sequence
-		for(int j = 0; j < data[i] . getSubstrSize(); j++)
+		if(toParse.find(genMotif) != string::npos)
 		{
-			countGoodNucs = 0;
-			checking = data[i] . getSubstrings();
-			checkQuals = checking[j] . getQual();
-			limit = checking[j] . getQual() . size() - PERMITTED_DELETIONS; //min number of good nucs in substring
-			//loop over elements of substring
-			for(int k = 0; k < checkQuals . size(); k++)
+			return toParse;
+		}
+		return (genMotif + toParse);
+	}
+
+	auto diff = motif.size() - toParse.size();
+	motif = motif.substr(diff, motif.size());
+
+	while(motif != toParse && toParse != "")
+	{
+		toAdd = toParse[toParse.size() - 1] + toAdd;
+		toParse.pop_back();
+		motif = motif.substr(1, motif.size());
+	}
+	return (genMotif + toAdd);
+}
+
+/**
+ * \brief Create set of vertices to extend motif on left
+ * \param actualResult 
+ * \return 
+ */
+vector<Vertex> DataFromFile::prepareVertexSetLeft(vector<Vertex> actualResult)
+{
+	auto resultSortedByIndex = actualResult;
+	vector<Vertex> vertexSet;
+
+	sort(resultSortedByIndex.begin(), resultSortedByIndex.end(), [](const auto& a, const auto& b)
+	     {
+		     return a.getIndex() < b.getIndex();
+	     });
+
+	for(auto& vertex : actualResult)
+	{
+		for(auto i = 1; i <= SENSITIVITY; i++)
+		{
+			auto index = vertex.getIndex() - i;
+			if(index >= 0
+			   && getVertexByID(index).getHasMinConnections()
+			   && getVertexByID(index).getSeqIndex() == vertex.getSeqIndex())
 			{
-				if(checkQuals[k] >= reliability)
-				{
-					countGoodNucs++;
-					if(countGoodNucs >= limit) { break; }
-				}
-				if(k == (limit - 1) && countGoodNucs == 0) { break; }
-			}
-			if(countGoodNucs < limit)
-			{
-				if(i == 0) { edge = j; }
-				else { edge = j + infoTable[i - 1]; }
-				matrix . delVertex(edge);
+				vertexSet.push_back(getVertexByID(index));
 			}
 		}
 	}
-	DataFromFile::matrix = matrix;
+
+	return vertexSet;
 }
 
-void DataFromFile::createEdges(Matrix matrix, vector<Sequence> data, vector<int> infoTable, int reliability)
+/**
+* \brief Create set of vertices to extend motif on right
+* \param actualResult
+* \return
+*/
+vector<Vertex> DataFromFile::prepareVertexSetRight(vector<Vertex> actualResult)
 {
-	int actual = 0, createdEdges = 0;
-	auto graph = matrix . getMatrix();
-	string waiting = "";
+	auto resultSortedByIndex = actualResult;
+	vector<Vertex> vertexSet;
 
-	cout << "Tworze polaczenia, prosze czekac...";
+	sort(resultSortedByIndex.begin(), resultSortedByIndex.end(), [](const auto& a, const auto& b)
+	     {
+		     return a.getIndex() > b.getIndex();
+	     });
 
-	for(int i = 0; i < matrix . getSize(); i++)
+	auto size = 0;
+	for(auto j = 0; j < seqData.size(); j++)
 	{
-		if(i == infoTable[actual]) { actual++; }
-		if(graph[i][0] != -1)
+		size += seqData[j].getSubstrings().size();
+	}
+
+	for(auto& vertex : actualResult)
+	{
+		for(auto i = 1; i <= SENSITIVITY; i++)
 		{
-			for(int j = infoTable[actual]; j < matrix . getSize(); j++)
+			auto index = vertex.getIndex() + i;
+			if(index < size
+			   && getVertexByID(index).getHasMinConnections()
+			   && getVertexByID(index).getSeqIndex() == vertex.getSeqIndex())
 			{
-				if(graph[0][j] != -1)
-				{
-					int noSeq1, noSubstr1, noSeq2, noSubstr2 = -1;
-					noSeq1 = actual;//check 1st sequence
-					if(actual == 0)
-					{//check which substring of actual sequence is being analyzed
-						noSubstr1 = i;
-					}
-					else { noSubstr1 = i - infoTable[actual - 1]; }
-					for(int k = 0; k < infoTable . size(); k++)
-					{//check 2nd sequence
-						if(j < infoTable[k])
-						{
-							noSeq2 = k;
-							if(k == 0)
-							{//check which substring of actual sequence is being analyzed
-								noSubstr2 = j;
-							}
-							else { noSubstr2 = j - infoTable[k - 1]; }
-							break;
-						}
-					}
-
-					auto v1 = data[noSeq1].getSubstrById(noSubstr1);//get first vertex
-					auto v2 = data[noSeq2].getSubstrById(noSubstr2);//get 2nd vertex
-
-					if (data[noSeq1].compareSubstrs(v1, v2, v1.getSubstrLength(), reliability))
-					{
-						matrix.createEdge(i, j);
-						data[noSeq1].vertexLvlUp(noSubstr1);//increment level of 1st vertex
-						data[noSeq2].vertexLvlUp(noSubstr2);//increment level of 2nd vertex
-						createdEdges++;
-					}
-				}
+				vertexSet.push_back(getVertexByID(index));
 			}
 		}
 	}
-	graph = matrix . getMatrix();
-	setSeqData(data);
-	DataFromFile::matrix . setMatrix(graph);
-	cout << endl << "Utworzono polaczen: " << createdEdges << endl;
+
+	return vertexSet;
 }
 
-void DataFromFile::checkIfHasMinConnections(Matrix matrix)
-{
-	auto infoTable = matrix . getInfoTable();
-	auto m = matrix . getMatrix();
-	int actuali = 0, actualj, noSubstr;
-
-	for(int i = 0; i < matrix . getSize(); i++)
-	{
-		if(i == infoTable[actuali]) { actuali++; }
-
-		int connections = 0, linkedSeq = 0;
-		vector<bool> sequencesToMark;
-		for(int x = 0; x < getSeqData() . size(); x++) { sequencesToMark . push_back(false); }
-
-		if(m[i][0] != -1)
-		{
-			actualj = 0;
-			for(int j = 0; j < matrix . getSize(); j++)
-			{
-				if(j >= infoTable[actualj]) { actualj++; }
-				if(m[i][j] == 1)
-				{
-					connections++;
-					sequencesToMark[actualj] = true;
-					j = infoTable[actualj];
-				}
-			}
-			if(connections >= minConnections)
-			{
-				if(actuali == 0)
-				{//check which substring of actual sequence is being analyzed
-					noSubstr = i;
-				}
-				else { noSubstr = i - infoTable[actuali - 1]; }
-				for(int k = 0; k < sequencesToMark . size(); k++) { if(sequencesToMark[k]) { linkedSeq++; } }
-				seqData[actuali] . setVertexNumOfConSeq(noSubstr, linkedSeq);
-				seqData[actuali] . setVertexHasMinConnections(noSubstr);
-			}
-		}
-	}
-}
-
+/**
+ * \brief Print sequences
+ * \param seqData 
+ * \param resultSeq 
+ */
 void DataFromFile::printSequences(vector<Sequence> seqData, vector<Sequence> resultSeq)
 {
 	ResultMotif resultMotif;
-	for(int i = 0; i < seqData . size(); i++)
+	for(auto i = 0; i < seqData.size(); i++)
 	{ //for each sequence
-		int seqSize = seqData[i] . getSequence() . size(); //get length of sequence
+		int seqSize = seqData[i].getSequence().size(); //get length of sequence
 		string sequence(seqSize, '-'); //create string with '-' chars with length of sequence
-		auto substrs = seqData[i] . getSubstrings();
+		auto substrs = seqData[i].getSubstrings();
 
-		for(int j = 0; j < seqData[i] . getSubstrSize(); j++)
+		for(auto j = 0; j < seqData[i].getSubstrings().size(); j++)
 		{ //for each substring in sequence
-			if(substrs[j] . getHasMinConnections())
+			if(substrs[j].getHasMinConnections())
 			{
-				for(int k = 0; k < substrs[j] . getSubstrLength(); k++)
+				for(auto k = 0; k < substrs[j].getSubstring().length(); k++)
 				{ //for each char in substring
-					if(substrs[j] . getQual()[k] >= reliability) { sequence[j + k] = substrs[j] . getSubstring()[k]; }
-					else { sequence[j + k] = '*'; }
+					if(substrs[j].getQual()[k] >= reliability)
+					{
+						sequence[j + k] = substrs[j].getSubstring()[k];
+					}
+					else
+					{
+						sequence[j + k] = '*';
+					}
 				}
 			}
 		}
 
-		cout << "\n" << seqData[i] . getName() << endl; //print name of sequence
-		cout << "O: " << DataFromFile::seqData[i] . getSequence() << endl;
+		cout << "\n" << seqData[i].getName() << endl; //print name of sequence
+		cout << "O: " << DataFromFile::seqData[i].getSequence() << endl;
 		cout << "D: " << sequence << endl;
 
 		//print motifs
-		for(int j = 0; j < resultSeq . size(); j++)
+		for(auto j = 0; j < resultSeq.size(); j++)
 		{
-			if(seqData[i] . getSeqId() == resultSeq[j] . getSeqId())
+			if(seqData[i].getSeqId() == resultSeq[j].getSeqId())
 			{
-				auto resultVertices = resultSeq[j] . getSubstrings();
-				resultMotif . printMotifOnSeq(resultVertices, seqSize, reliability);
+				auto resultVertices = resultSeq[j].getSubstrings();
+				resultMotif.printMotifOnSeq(resultVertices, seqSize, reliability);
 				break;
 			}
-			if(j == resultSeq . size() - 1)
+			if(j == resultSeq.size() - 1)
 			{
 				string seqMotifEmpty(seqSize, '-');
 				cout << "M: " << seqMotifEmpty << '\n' << endl;
@@ -351,252 +761,36 @@ void DataFromFile::printSequences(vector<Sequence> seqData, vector<Sequence> res
 
 	//print vertices
 	cout << "Wierzcholki biorace udzial w budowie rozwiazania (id_sekwencji:id_podciagu): " << endl;
-	for(int i = 0; i < resultSeq . size(); i++) { resultMotif . printVerticesInMotif(resultSeq[i] . getSubstrings(), reliability); }
+	for(auto i = 0; i < resultSeq.size(); i++)
+	{
+		resultMotif.printVerticesInMotif(resultSeq[i].getSubstrings(), reliability);
+	}
 }
 
-void DataFromFile::createListOfVerticesSorted()
+/**
+ * \brief Print all results
+ */
+void DataFromFile::printResult()
 {
-	auto graph = matrix . getMatrix();
-	auto infoTable = getInfoTable(getMatrix());
-	int seqId, noSubstr;
-	Vertex v1;
-
-	//create list
-	for(int i = 0; i < graph . size(); i++)
-	{
-		if(graph[i][0] != -1)
-		{
-			seqId = matrix . getSequenceIdFromMatrix(i); //get sequence number
-
-			if(seqId == 0)
-			{//check which substring of actual sequence is being analyzed
-				noSubstr = i;
-			}
-			else { noSubstr = i - infoTable[seqId - 1]; }
-
-			v1 = seqData[seqId] . getSubstrById(noSubstr);
-
-			if(v1 . getHasMinConnections()) { vertexByLevel . push_back(v1); }
-		}
-	}
-
-	//sort list
-	sort(vertexByLevel . begin(), vertexByLevel . end());
-}
-
-void DataFromFile::buildResults()
-{
-	vector<Vertex> startingClique;
-	vector<bool> usedSequences;
-
-	ResultMotif resultMotif;
-	resultMotif . resetUsedSequences(seqData . size());
-
-	//jesli results puste
-	for(int i = 0; i < seqData . size(); i++) { usedSequences . push_back(false); }
-
-	startingClique = buildClique(vertexByLevel, resultMotif);
-	addResult(buildResult(startingClique));
-
-	//jesli ju¿ jest jakieœ rozwi¹zanie usun pierwotna klike z wektora startowego
-	int i = 1;
-	while(i < ITERATIONS)
-	{
-		vertexByLevel = filterVector(vertexByLevel, startingClique);
-		if(!vertexByLevel . empty())
-		{
-			startingClique = buildClique(vertexByLevel, resultMotif);
-			resultMotif = buildResult(startingClique);
-			if(find(results . begin(), results . end(), resultMotif) == results . end())
-			{
-				addResult(resultMotif);
-				i++;
-			}
-		}
-		else { i = ITERATIONS; }
-	}
-
-	sortResults(results);
-}
-
-ResultMotif DataFromFile::buildResult(vector<Vertex> startingClique)
-{
-	vector<Vertex> result, vertexToCheckLeft, vertexToCheckRight, temporaryResult, verticesToAdd;
-	string motif;
-
-	ResultMotif readyResult;
-	readyResult . resetUsedSequences(seqData . size());
-
-	result = startingClique;
-	motif = buildMotif(result, reliability);
-
-	//extend on left
-	bool isInBuild = true;
-	do
-	{
-		vertexToCheckLeft = prepareVertexSetLeft(result, SENSITIVITY);
-		temporaryResult = buildClique(vertexToCheckLeft, readyResult);
-		if(temporaryResult . size() < SEQUENCES_PERCENT * seqData . size())
-		{
-			break;
-		}
-		string tempMotif = buildMotif(temporaryResult, reliability);
-		motif = parseMotifLeft(motif, tempMotif);
-		result = sumResult(result, temporaryResult);
-	}
-	while(isInBuild);
-
-	//extend on right
-	isInBuild = true;
-	do
-	{
-		vertexToCheckRight = prepareVertexSetRight(result, SENSITIVITY);
-		temporaryResult = buildClique(vertexToCheckRight, readyResult);
-		if(temporaryResult . size() < SEQUENCES_PERCENT * seqData . size()) { break; }
-		string tempMotif = buildMotif(temporaryResult, reliability);
-		motif = parseMotifRight(motif, tempMotif);
-		result = sumResult(result, temporaryResult);
-	}
-	while(isInBuild);
-
-	//Creating results
-	readyResult . setResult(result, seqData . size());
-	readyResult . setMotif(motif);
-	readyResult . parseSequences(reliability);
-	readyResult . setStartingClique(startingClique);
-
-	return readyResult;
-}
-
-string DataFromFile::buildMotif(vector<Vertex> verticesToAlign, int reliability)
-{
-	int actSeq, it = 0, maxValue = 0, seqId;
-	Vertex v1;
-	map<string, int> submotifs = {};
-	vector<char> preMotif;
-	string consensusMotif;
-
-	sort(verticesToAlign . begin(), verticesToAlign . end(), [](const auto& A, const auto& B) { return A . getIndex() < B . getIndex(); });
-
-	while(it < verticesToAlign . size())
-	{
-		v1 = verticesToAlign[it];
-		seqId = v1 . getSeqIndex();
-		actSeq = seqId;
-		preMotif . clear();
-
-		for(int i = 0; i < v1 . getQual() . size(); i++) { if(v1 . getQual()[i] >= reliability) { preMotif . push_back(v1 . getSubstring()[i]); } }
-		string motif(preMotif . begin(), preMotif . end());
-		submotifs[motif]++;//add to map
-
-		while(actSeq == seqId && it < verticesToAlign . size())
-		{
-			it++;
-			if(it < verticesToAlign . size()) { actSeq = verticesToAlign[it] . getSeqIndex(); }
-		}
-	}
-
-	for(auto const& motif : submotifs)//foreach motif in motifs
-	{
-		if(motif . second > maxValue)
-		{
-			consensusMotif = motif . first;
-			maxValue = motif . second;
-		}
-		else if(motif . second == maxValue && motif . first . length() > consensusMotif . length())
-		{
-			consensusMotif = motif . first;
-			maxValue = motif . second;
-		}
-	}
-
-	return consensusMotif;
-}
-
-string DataFromFile::parseMotifLeft(string existingMotif, string motifToAdd)
-{
-	string toAdd = "";
-	string toCompare;
-
-	if(existingMotif . size() >= motifToAdd . size())
-	{
-		toCompare = existingMotif . substr(0, motifToAdd . size());
-
-		for (int i = 1; i <= SENSITIVITY; i++)
-		{
-			if (toCompare.find(motifToAdd) != string::npos)
-			{
-				existingMotif = toAdd + existingMotif;
-				break;
-			}
-
-			toCompare = toCompare.substr(0, toCompare.size() - 1);
-			toAdd += motifToAdd[0];
-			motifToAdd.erase(0, i);
-		}
-	}
-	else
-	{
-		if(motifToAdd.find(existingMotif) != string::npos)
-		{
-			existingMotif = motifToAdd;
-		}
-	}
-
-	return existingMotif;
-}
-
-string DataFromFile::parseMotifRight(string existingMotif, string motifToAdd)
-{
-	string toAdd = "";
-	string toCompare;
-
-	if (existingMotif.size() >= motifToAdd.size())
-	{
-		int lengthDiff = existingMotif.size() - motifToAdd.size();
-		toCompare = existingMotif.substr(lengthDiff, motifToAdd.size());
-
-		for (int i = 1; i <= SENSITIVITY; i++)
-		{
-			if (toCompare.find(motifToAdd) != string::npos)
-			{
-				existingMotif = existingMotif + toAdd;
-				break;
-			}
-			if (toCompare != "")
-			{
-				toCompare = toCompare.substr(1, toCompare.size());
-				toAdd += motifToAdd[motifToAdd.size() - 1];
-				motifToAdd.pop_back();
-			}
-		}
-	}
-	else
-	{
-		if(motifToAdd.find(existingMotif) != string::npos)
-		{
-			existingMotif = motifToAdd;
-		}
-	}
-
-	return existingMotif;
-}
-
-void DataFromFile::printResult(vector<ResultMotif> result)
-{
-	int longestMotif = 0;
+	auto longestMotif = 0;
 	if(!results.empty())
 	{
-		for (int i = 0; i < result.size(); i++)
+		for(auto i = 0; i < results.size(); i++)
 		{
-			if (i == 0) { longestMotif = result[0].getMotif().size(); }
+			if(i == 0)
+			{
+				longestMotif = results[0].getMotif().size();
+			}
 
-			if (longestMotif == result[i].getMotif().size())
+			if(longestMotif == results[i].getMotif().size())
 			{
 				cout << "Znaleziono motyw: " << results[i].getMotif() << endl;
-				printSequences(seqData, results[i].getSequences());
+				printSequences(seqData, results[i].getResult());
 			}
-			else { break; }
+			else
+			{
+				break;
+			}
 		}
 	}
 	else
@@ -605,292 +799,82 @@ void DataFromFile::printResult(vector<ResultMotif> result)
 	}
 }
 
-vector<Vertex> DataFromFile::prepareVertexSetLeft(vector<Vertex> actualResult, int sensitivity)
+/**
+* \brief Transform sequences data into substrings for each sequence
+* \param _data
+* \return
+*/
+vector<Sequence> DataFromFile::sequencesIntoSubstrings(vector<Sequence> _data) const
 {
-	auto resultSortedByIndex = actualResult;
-	auto infoTable = getInfoTable(matrix);
-	vector<Vertex> vertexSet;
-
-	sort(resultSortedByIndex . begin(), resultSortedByIndex . end(), [](const auto& A, const auto& B) { return A . getIndex() < B . getIndex(); });
-
-	int seqId, actSeq;
-	vector<Vertex> verticesToAdd;
-	Vertex v1;
-
-	int it = 0;
-
-	while(it < resultSortedByIndex . size())
+	auto startingIndex = 0;
+	for(auto i = 0; i < _data.size(); i++)
 	{
-		seqId = resultSortedByIndex[it] . getSeqIndex();
-		actSeq = seqId;
-		v1 = resultSortedByIndex[it];
-		verticesToAdd . push_back(v1);
-
-		while(actSeq == seqId && it < resultSortedByIndex . size())
-		{
-			it++;
-			if(it < resultSortedByIndex . size()) { actSeq = resultSortedByIndex[it] . getSeqIndex(); }
-		}
+		_data[i].createSubstrings(_data[i].getSequence(), _data[i].getQual(),
+		                          i, startingIndex, substrLength, reliability);
+		startingIndex += _data[i].getSubstrings().size();
 	}
 
-	for(int i = 0; i < verticesToAdd . size(); i++)
-	{
-		int breaks = 0;
-		int index = verticesToAdd[i] . getIndex();
-		int noSubstr, j = 0;
-		seqId = verticesToAdd[i] . getSeqIndex();
-
-		while(j < sensitivity && breaks <= PERMITTED_DELETIONS)
-		{
-			index -= 1;
-			if(seqId > 0)
-			{
-				if(index >= infoTable[seqId - 1])
-				{
-					noSubstr = index - infoTable[seqId - 1];
-					v1 = seqData[seqId] . getSubstrById(noSubstr);
-
-					if(v1 . getHasMinConnections())
-					{
-						vertexSet . push_back(v1);
-						breaks++;
-					}
-				}
-			}
-			else
-			{
-				if(index >= 0)
-				{
-					noSubstr = index;
-					v1 = seqData[seqId] . getSubstrById(noSubstr);
-
-					if(v1 . getHasMinConnections())
-					{
-						vertexSet . push_back(v1);
-						breaks++;
-					}
-				}
-			}
-			j++;
-		}
-	}
-
-	return vertexSet;
+	return _data;
 }
 
-vector<Vertex> DataFromFile::prepareVertexSetRight(vector<Vertex> actualResult, int sensitivity)
+/**
+ * \brief Sort results
+ * \param results 
+ */
+void DataFromFile::sortResults(vector<ResultMotif>& results) const
 {
-	auto resultSortedByIndex = actualResult;
-	auto infoTable = getInfoTable(matrix);
-	vector<Vertex> vertexSet;
-
-	sort(resultSortedByIndex . begin(), resultSortedByIndex . end(), [](const auto& A, const auto& B) { return A . getIndex() < B . getIndex(); });
-	reverse(resultSortedByIndex . begin(), resultSortedByIndex . end());
-
-	int seqId, actSeq;
-	vector<Vertex> verticesToAdd;
-	Vertex v1;
-
-	int it = 0;
-
-	while(it < resultSortedByIndex . size())
-	{
-		seqId = resultSortedByIndex[it] . getSeqIndex();
-		actSeq = seqId;
-		v1 = resultSortedByIndex[it];
-		verticesToAdd . push_back(v1);
-
-		while(actSeq == seqId && it < resultSortedByIndex . size())
-		{
-			it++;
-			if(it < resultSortedByIndex . size()) { actSeq = resultSortedByIndex[it] . getSeqIndex(); }
-		}
-	}
-
-	
-	for(int i = 0; i < verticesToAdd . size(); i++)
-	{
-		int breaks = 0;
-		int index = verticesToAdd[i] . getIndex();
-		int noSubstr, j = 0;
-		seqId = verticesToAdd[i] . getSeqIndex();
-
-		while(j < sensitivity && breaks < PERMITTED_DELETIONS)
-		{
-			index += 1;
-			if(seqId < seqData . size() - 1)
-			{
-				if(index < infoTable[seqId])
-				{
-					if(seqId == 0) { noSubstr = index; }
-					else { noSubstr = index - infoTable[seqId - 1]; }
-
-					v1 = seqData[seqId] . getSubstrById(noSubstr);
-
-					if(v1 . getHasMinConnections())
-					{
-						vertexSet . push_back(v1);
-						breaks++;
-					}
-				}
-			}
-			else
-			{
-				if(index < matrix . getMatrix()[0] . size())
-				{
-					noSubstr = index - infoTable[seqId - 1];
-					v1 = seqData[seqId] . getSubstrById(noSubstr);
-
-					if(v1 . getHasMinConnections())
-					{
-						vertexSet . push_back(v1);
-						breaks++;
-					}
-				}
-			}
-			j++;
-		}
-	}
-
-	return vertexSet;
+	sort(results.begin(), results.end());
+	reverse(results.begin(), results.end());
 }
 
-vector<Vertex> DataFromFile::buildClique(vector<Vertex> vertexByLevel, ResultMotif &result) const
-{
-	vector<Vertex> clique;
-	vector<bool> usedSequences;
-
-	if(vertexByLevel . empty()) { return clique; }
-
-	sort(vertexByLevel . begin(), vertexByLevel . end());
-
-	for(int i = 0; i < seqData . size(); i++) { usedSequences . push_back(false); }
-
-	for(int i = 0; i < vertexByLevel . size(); i++)
-	{
-		Vertex analyzedVertex = vertexByLevel[i];
-		if(clique . size() == 0)
-		{
-			clique . push_back(analyzedVertex);
-			usedSequences[analyzedVertex . getSeqIndex()] = true;
-			result . markSequence(analyzedVertex . getSeqIndex());
-		}
-		else if(!usedSequences[analyzedVertex . getSeqIndex()] && checkConnectionsInClique(clique, analyzedVertex, matrix))
-		{
-			clique . push_back(analyzedVertex);
-			usedSequences[analyzedVertex . getSeqIndex()] = true;
-			result . markSequence(analyzedVertex . getSeqIndex());
-		}
-	}
-
-	//sprobuj rozszerzyc klike na niewykorzystane sekwencje
-
-	if(clique . size() >= SEQUENCES_PERCENT * seqData . size())
-	{
-		vertexByLevel . clear();
-
-		for(int i = 0; i < usedSequences . size(); i++)
-		{
-			if(usedSequences[i] == false && !result . getUsedSeqByIndex(i))
-			{
-				auto tempSubstrs = seqData[i] . getSubstrings();
-
-				for(auto& substr : tempSubstrs) // access by reference to avoid copying
-				{ if(substr . getHasMinConnections()) { vertexByLevel . push_back(substr); } }
-			}
-		}
-
-		if(!vertexByLevel . empty())
-		{
-			sort(vertexByLevel . begin(), vertexByLevel . end());
-
-			for(int i = 0; i < vertexByLevel . size(); i++)
-			{
-				auto analyzedVertex = vertexByLevel[i];
-				if(!usedSequences[analyzedVertex . getSeqIndex()] 
-					&& checkConnectionsInClique(clique, analyzedVertex, getMatrix()))
-				{
-					clique . push_back(analyzedVertex);
-					usedSequences[analyzedVertex . getSeqIndex()] = true;
-					result.markSequence(analyzedVertex.getSeqIndex());
-				}
-			}
-		}
-	}
-
-	return clique;
-}
-
+/**
+* \brief Sum two result vectors
+* \param actualResult
+* \param tempResult
+* \return
+*/
 vector<Vertex> DataFromFile::sumResult(vector<Vertex> actualResult, vector<Vertex> tempResult)
 {
-	for(int i = 0; i < tempResult . size(); i++)
+	for(auto i = 0; i < tempResult.size(); i++)
 	{
-		bool found = (find(actualResult . begin(), actualResult . end(), tempResult[i]) != actualResult . end());
+		auto found = (find(actualResult.begin(), actualResult.end(), tempResult[i]) != actualResult.end());
 
-		if(!found) { actualResult . push_back(tempResult[i]); }
+		if(!found)
+		{
+			actualResult.push_back(tempResult[i]);
+		}
 	}
-
 	return actualResult;
 }
 
-vector<Vertex> DataFromFile::filterVector(vector<Vertex> toFilter, vector<Vertex> filtering)
-{
-	vector<Vertex> result;
-	for(auto& elementToFilter : toFilter) // access by reference to avoid copying
-	{ if(find(filtering . begin(), filtering . end(), elementToFilter) == filtering . end()) { result . push_back(elementToFilter); } }
-
-	return result;
-}
-
-bool DataFromFile::checkConnectionsInClique(vector<Vertex> result, Vertex analyzedVertex, Matrix matrix)
-{
-	auto graph = matrix . getMatrix();
-
-	for(int i = 0; i < result . size(); i++) { if(graph[analyzedVertex . getIndex()][result[i] . getIndex()] < 1) { return false; } }
-	return true;
-}
-
-void DataFromFile::sortResults(vector<ResultMotif>& results) const
-{
-	sort(results . begin(), results . end());
-	reverse(results . begin(), results . end());
-}
-
-void DataFromFile::printBestMotifs(vector<ResultMotif> results)
-{
-	int i = 1;
-	if(!results . empty() && results . begin() -> getMotif() . size() != 0)
-	{
-		cout << endl << "Znaleziono motyw:" << endl;
-		cout << results[0] . getMotif() << endl << endl;
-		while(i < results . size())
-		{
-			if(results[i - 1] . getMotif() . size() == results[i] . getMotif() . size())
-			{
-				cout << endl << "Znaleziono motyw:" << endl;
-				cout << results[i] . getMotif() << endl << endl;
-				i++;
-			}
-			else { break; }
-		}
-	}
-	else { cout << endl << "Nie znaleziono motywu w podanych sekwencjach"; }
-}
-
-DataFromFile::DataFromFile()
-{
-	substrLength = 4;
-	reliability = 10;
-	minConnections = 1;
-}
-
+/**
+ * \brief Public constructor for object with data loaded from file
+ * \param _dataName
+ * \param _substrLength
+ * \param _reliability
+ */
 DataFromFile::DataFromFile(string _dataName, int _substrLength, int _reliability)
 {
+	//load users parameters
 	dataName = _dataName;
 	substrLength = _substrLength;
 	reliability = _reliability;
-	minConnections = 0;
+
+	//load data from fasta and qual file
+	loadFromFile(dataName, seqData);
+	loadQualFile(dataName, seqData);
+
+	//set minConnections parameter
+	minConnections = seqData.size() * SEQUENCES_PERCENT;
 }
 
-DataFromFile::~DataFromFile() {
+/**
+ * \brief Destructor for object with data loaded from file
+ */
+DataFromFile::~DataFromFile()
+{
+	dataName.clear();
+	seqData.clear();
+	vertexByLevel.clear();
+	results.clear();
 }

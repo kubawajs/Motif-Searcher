@@ -12,29 +12,34 @@ class Sequence
 	int seqId;
 	string name; //sequence name
 	string sequence; //whole sequence as one string
-	vector <int> qual; //quality
-	vector <Vertex> substrings; //vector of all substrings from sequence
+	vector<int> qual; //quality
+	vector<Vertex> substrings; //vector of all substrings from sequence
 
 public:
-	void setName(string name);
-	string getName() const;
-	void setSequence(string seq);
-	string getSequence() const;
-	void setQual(vector <int> qual);
-	vector <int> getQual() const;
-	void setSubstr(vector <Vertex> substrings);
-	void setSeqId(int seqId);
+	//GETTERS
 	int getSeqId() const;
-	void addSubstr(Vertex substring);
-	void createSubstrings(string sequence, vector <int> qual, int seqId, int startingIndex, int substrLength, int reliability);
-	int getSubstrSize() const;
-	vector <Vertex> getSubstrings() const;
-	Vertex getSubstrById(int noSubstr);
-	void setVertexHasMinConnections(int noSubstr);
-	void setVertexNumOfConSeq(int noSubstr, int conSeq);
-	static bool compareSubstrs(Vertex substr1, Vertex substr2, int usersSubstrLength, int reliability);//compare two substrings including deletions
-	void vertexLvlUp(int noSubstr);
+	string getName() const;
+	string getSequence() const;
+	vector<int> getQual() const;
+	vector<Vertex> getSubstrings() const;
+	Vertex* getSubstrById(int substrID);
+
+	//SETTERS
+	void setSeqId(int _id);
+	void setName(string _name);
+	void setSequence(string _seq);
+	void setQual(vector<int> _qual);
+	void setSubstrings(vector<Vertex> _substrings);
+
+	//METHODS
+	void createSubstrings(string sequence, vector<int> qual, int seqId,
+	                      int startingIndex, int substrLength, int reliability);
+
+	//CONSTRUCTORS, DESTRUCTORS
 	Sequence();
 	~Sequence();
-};
 
+	//BEFORE
+	void addSubstr(Vertex substring);
+	void setVertexNumOfConSeq(int noSubstr, int conSeq);
+};
